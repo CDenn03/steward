@@ -1,493 +1,138 @@
-# Steward — Full System Documentation
+# Steward — System Documentation
+### Version 3 · June 2025
 
-> **Steward** is a financial governance platform built for faith-based organizations, non-profits, and community groups. It handles the complete lifecycle of organizational finance: planning budgets, routing them through approval workflows, releasing disbursements, recording income, and ensuring every expenditure is accounted for with receipts.
+> Steward is a multi-tenant financial governance platform for faith-based organisations, non-profits, and community groups. It governs the complete lifecycle of organisational money: planning budgets, routing them through approval workflows, releasing disbursements, tracking income, and enforcing accountability through receipts and expenditure reports.
 
 ---
 
 ## Table of Contents
 
-1. [What Steward Does](#1-what-steward-does)
-2. [Who Uses It](#2-who-uses-it)
-3. [Core Concepts](#3-core-concepts)
-4. [The Budget Lifecycle](#4-the-budget-lifecycle)
-5. [Financial Accounts & Transactions](#5-financial-accounts--transactions)
-6. [Income Tracking](#6-income-tracking)
-7. [Disbursements](#7-disbursements)
-8. [Expenditure Reports & Receipts](#8-expenditure-reports--receipts)
-9. [Events & Templates](#9-events--templates)
-10. [Departments](#10-departments)
-11. [Analytics & Reporting](#11-analytics--reporting)
-12. [Notifications & Audit Trail](#12-notifications--audit-trail)
-13. [Role & Permission Reference](#13-role--permission-reference)
-14. [Multi-Organisation Support](#14-multi-organisation-support)
-15. [Developer Setup](#15-developer-setup)
-16. [Architecture Reference](#16-architecture-reference)
+1. [System Overview](#1-system-overview)
+2. [Multi-Organisation Architecture](#2-multi-organisation-architecture)
+3. [Authentication & Session Flow](#3-authentication--session-flow)
+4. [Roles & Permissions](#4-roles--permissions)
+5. [Core Domain: Budgets](#5-core-domain-budgets)
+6. [Core Domain: Approvals](#6-core-domain-approvals)
+7. [Core Domain: Disbursements](#7-core-domain-disbursements)
+8. [Core Domain: Expenditure Reports & Receipts](#8-core-domain-expenditure-reports--receipts)
+9. [Core Domain: Income](#9-core-domain-income)
+10. [Core Domain: Financial Accounts](#10-core-domain-financial-accounts)
+11. [Events & Templates](#11-events--templates)
+12. [Departments & Allocations](#12-departments--allocations)
+13. [Analytics & Dashboards](#13-analytics--dashboards)
+14. [Notifications](#14-notifications)
+15. [Audit Trail](#15-audit-trail)
+16. [Admin Panel](#16-admin-panel)
+17. [Developer Setup](#17-developer-setup)
+18. [Architecture Reference](#18-architecture-reference)
+19. [Database Schema Reference](#19-database-schema-reference)
 
 ---
 
-## 1. What Steward Does
+## 1. System Overview
 
-Steward solves a specific problem that every committee-run organization faces: **how do you manage money transparently when multiple departments, a finance team, and leadership all need to see, approve, and be accountable for the same funds?**
+Steward solves a specific governance problem: how does a committee-run organisation manage money transparently when multiple departments, a finance team, and a leadership body all need to plan, approve, spend, and account for the same funds — often concurrently?
 
-The answer is a governed workflow:
+The answer is a structured lifecycle with four phases:
 
 ```
-Department plans spending  →  Budget is reviewed  →  Funds are released
-       ↓                             ↓                       ↓
-  Creates a budget           Finance checks it          Disbursement
-  with line items            Chairperson approves       recorded in
-  per category               or requests changes        the account
-                                                              ↓
-                                                    Department spends
-                                                    money and uploads
-                                                    receipts to prove it
-                                                              ↓
-                                                    Finance reconciles
-                                                    receipts against
-                                                    the approved budget
+PLAN                  APPROVE               SPEND                 ACCOUNT
+────────────────      ────────────────      ────────────────      ────────────────
+Department Head       Finance Officer       Finance releases       Department Head
+creates a budget      reviews budget        disbursement           submits receipts
+with line items       ↓                     ↓                     ↓
+                      Chairperson gives     Department spends      Finance reconciles
+                      final approval        money                  receipts against
+                                                                   budget lines
 ```
 
-Every step is logged in an immutable audit trail, and the dashboard gives leadership a real-time picture of organizational finances.
+Every step is logged in an immutable audit trail. The dashboard gives each role a real-time view of the financial state relevant to their responsibilities.
 
 ---
 
-## 2. Who Uses It
+## 2. Multi-Organisation Architecture
 
-### Department Head
-Runs a ministry or department (Youth, Outreach, Missions, etc.). Creates budget proposals for events and operations, submits them for approval, receives disbursements, and submits expenditure reports with receipts after spending.
+### Concept
 
-### Finance Officer
-Reviews all submitted budgets, approves or requests changes before they go to the chairperson. Manages bank and M-Pesa accounts, records income, approves disbursements, and reviews expenditure reports.
+A single Steward installation can serve multiple independent organisations. Each organisation's data is completely isolated from all others. One user (identified by their email address) can be a member of many organisations, with a different role and different department assignment in each.
 
-### Chairperson
-Gives final approval on budgets that have passed finance review. Has visibility across all departments, events, and overall financial health. Can view all analytics.
-
-### Admin
-Has full access to everything. Manages users, departments, organization settings, and approval workflow configuration.
-
-### Member
-Limited role — can upload receipts to an existing expenditure report. Used for volunteers or team members who need to contribute supporting documents without having full financial access.
-
----
-
-## 3. Core Concepts
-
-### Organization
-Everything in Steward is scoped to an **Organization**. Every user belongs to an organization through a **Membership**. All budgets, accounts, income, and audit logs belong to one organization and are never visible to another.
-
-### Department
-A sub-unit of the organization (e.g. Youth Ministry, Worship & Arts, Outreach). Departments have heads, can have annual budget allocations, and own their own budgets and expenditure reports.
-
-### Event
-A planned activity (e.g. Youth Annual Camp, Easter Conference). Events can be linked to budgets, income, and expenditure reports, making it easy to see the full financial picture of a single activity. Events can be created from **templates** so recurring activities (Annual Camp, Sunday School Supplies) don't need to be rebuilt every year.
-
-### Budget
-A formal proposal for spending money. Contains line items with descriptions, quantities, and unit costs. Goes through a two-stage approval process before any money can be spent or disbursed.
-
-### Approval
-A formal review record attached to a budget. Finance approves first; the chairperson approves second. Each approval stage can result in approval, rejection, or a request for changes. Comments can be attached to any approval.
-
-### Financial Account
-A real-world account where money lives — a bank account, M-Pesa till, cash float, or savings account. Steward tracks balances and all transactions across every account.
-
-### Disbursement
-A formal release of funds from an account to a department for an approved budget. Must be approved before money moves.
-
-### Expenditure Report
-The accountability document submitted after money is spent. Contains receipts and maps each receipt to one or more budget line items. Finance reviews and either approves or requests more documentation.
-
-### Receipt
-A scanned or photographed receipt uploaded to an expenditure report. One receipt can be allocated across multiple budget line items (e.g. a single catering invoice split between "Youth Meals" and "Leadership Meals"). One budget line item can have multiple receipts.
-
-### Audit Log
-Every action taken in the system — budget submitted, approval granted, income recorded, receipt uploaded — is written to an append-only audit log with the actor, timestamp, and before/after state. Cannot be edited or deleted.
-
----
-
-## 4. The Budget Lifecycle
-
-This is the central workflow in Steward. Understanding it is essential.
-
-### States
+### Organisation Selection Flow
 
 ```
-DRAFT → SUBMITTED → FINANCE_APPROVED → CHAIR_APPROVED
-                         ↓
-                   NEEDS_CHANGES ← ── (either review stage)
-                         ↓
-                    (back to DRAFT for editing)
-                         
-     Any stage → REJECTED (terminal)
+Login (email + password / magic link / Google)
+    ↓
+Org Picker  (/org-picker)
+    — user sees all organisations they belong to
+    — each card shows: org name, colour, their role, their department
+    ↓
+Splash Screen  (/splash/[orgId])
+    — full-screen branded transition in the org's primary colour
+    — 3 phases: loading → ready (checkmark) → redirect
+    — total duration: ~2 seconds
+    ↓
+Dashboard  (/dashboard)
+    — all data scoped to the selected organisation
+    — sidebar shows active org with colour badge
 ```
 
-| Status | Meaning |
-|--------|---------|
-| `DRAFT` | Being written by the department head. Not yet visible to finance. |
-| `SUBMITTED` | Sent for review. Finance can now see and act on it. |
-| `NEEDS_CHANGES` | Reviewer requested revisions. Returns control to the department head. |
-| `FINANCE_APPROVED` | Finance has approved. Now queued for chairperson. |
-| `CHAIR_APPROVED` | Fully approved. Disbursements can now be requested against this budget. |
-| `REJECTED` | Permanently rejected at either review stage. A new budget must be created. |
+### Switching Organisations
 
-### Step-by-Step
+The org selector in the sidebar opens a dropdown listing all the user's organisations. Selecting a different one triggers the splash screen transition, then loads the new organisation's dashboard. The selection is stored in `sessionStorage` so a page refresh within the same browser tab restores the context automatically.
 
-**1. Department Head creates a budget (DRAFT)**
+### Data Isolation
 
-The department head opens *Budgets → New Budget* and fills in:
-- Title (e.g. "Youth Annual Camp 2025")
-- Department and optional event link
-- Period start and end dates
-- Line items: description, category, quantity, unit cost
-
-The form calculates totals live. The budget is saved as a DRAFT and only visible to the creator and admins.
-
-**2. Department Head submits (SUBMITTED)**
-
-Once satisfied, the department head clicks "Submit for Review". The status moves to `SUBMITTED`. Finance officers receive a notification. The department head can no longer edit the budget (unless it comes back as `NEEDS_CHANGES`).
-
-**3. Finance reviews (FINANCE_APPROVED or NEEDS_CHANGES)**
-
-The finance officer opens the budget from their Approvals queue. They can:
-- Read all line items and supporting attachments
-- Add comments asking for clarification
-- **Approve** → moves to `FINANCE_APPROVED`, queues for chairperson
-- **Request Changes** → moves to `NEEDS_CHANGES`, returns to department head
-- **Reject** → moves to `REJECTED`, terminal
-
-**4. Department Head revises (if needed)**
-
-If changes were requested, the department head sees the budget back in their drafts with the reviewer's comment. They edit and re-submit, restarting the finance review step.
-
-**5. Chairperson gives final approval (CHAIR_APPROVED)**
-
-The chairperson sees finance-approved budgets in their Approvals queue. They can:
-- **Approve** → moves to `CHAIR_APPROVED`. The budget is now active.
-- **Request Changes** → moves back to `NEEDS_CHANGES`
-- **Reject** → `REJECTED`
-
-**6. Disbursement is requested**
-
-With the budget approved, the department head (or finance) can request a disbursement: a formal request to release a specific amount from a specific account for this budget.
-
-**7. Finance approves and releases the disbursement**
-
-Finance reviews the disbursement request and releases the funds. The account balance is updated and a transaction is recorded.
-
-**8. Department spends the money**
-
-The department runs the event or activity and collects receipts.
-
-**9. Expenditure Report is submitted**
-
-The department head creates an expenditure report linked to the budget. They upload receipts and allocate each receipt to the relevant budget line item(s). The report is submitted to finance.
-
-**10. Finance reconciles and closes**
-
-Finance reviews each receipt against the budget. If everything checks out, the report is approved and the budget is considered fully accounted for. If receipts are missing or amounts don't match, Finance can request more information.
+Every database table that holds financial or organisational data includes `organizationId` as a required, indexed foreign key. All service-layer queries are built to always include this filter. It is structurally impossible for a query in one organisation's context to return data from another.
 
 ---
 
-## 5. Financial Accounts
+## 3. Authentication & Session Flow
 
-Steward tracks multiple financial accounts per organization.
+### Supported Methods (after Auth.js setup)
 
-### Account Types
-
-| Type | Example |
-|------|---------|
-| `BANK` | KCB Bank — Main Operating Account |
-| `MPESA` | Safaricom M-Pesa Till |
-| `CASH` | Petty cash float |
-| `SAVINGS` | Equity Bank — Youth Fund |
-| `PROJECT` | Dedicated project account |
-
-### Account Dashboard
-
-The Accounts page shows:
-- Current balance per account
-- This month's inflows and outflows
-- Full transaction history with filtering
-- Total liquid assets across all accounts
-
-### Account Transactions
-
-Every credit (income, transfers in) and debit (disbursement, expense) creates an `AccountTransaction` record with the balance after the transaction. This gives a complete, auditable ledger for each account.
-
----
-
-## 6. Income Tracking
-
-The Finance Officer records all income received by the organization.
-
-### Income Categories
-
-| Category | Example |
-|----------|---------|
-| `TITHE` | Monthly tithes |
-| `OFFERING` | Sunday offering |
-| `DONATION` | One-off donor gift |
-| `REGISTRATION` | Event registration fees |
-| `FUNDRAISING` | Fundraiser proceeds |
-| `GRANT` | External grant or funding |
-| `OTHER` | Miscellaneous income |
-
-### Recording Income
-
-Finance opens *Income → Record Income* and enters:
-- The account the money was received into
-- Category and amount
-- Description and date received
-- Optional: link to a department or event
-
-The account balance is updated immediately and a credit transaction is created.
-
-### Income Analytics
-
-The Analytics page shows monthly income trends broken down by category, so leadership can see seasonal patterns (e.g. higher offerings during Easter, lower during school holidays).
-
----
-
-## 7. Disbursements
-
-A disbursement is a formal, auditable release of money from an account to a department for an approved budget.
-
-### Disbursement Flow
-
-```
-Department Head requests disbursement
-        ↓
-Finance reviews the request
-        ↓
-Finance approves → account balance decreases → debit transaction created
-        ↓
-Department receives funds and can begin spending
-```
-
-### Disbursement States
-
-| Status | Meaning |
-|--------|---------|
-| `PENDING` | Submitted, awaiting finance review |
-| `APPROVED` | Finance has approved but funds not yet released |
-| `RELEASED` | Funds transferred, account balance updated |
-| `CANCELLED` | Withdrawn before release |
-
-### Partial Disbursements
-
-A department does not have to disburse the full budget at once. Multiple disbursements can be made against a single budget as spending phases progress (e.g. first disbursement for transport, second for accommodation).
-
----
-
-## 8. Expenditure Reports & Receipts
-
-This is the accountability layer — the proof that approved budget funds were spent correctly.
-
-### Many-to-Many Receipt Allocation
-
-Steward supports a flexible receipt allocation model:
-
-```
-One receipt → many budget items
-  (e.g. a single catering invoice split across "Meals Day 1" and "Meals Day 2")
-
-One budget item → many receipts
-  (e.g. "Transport" covered by multiple taxi receipts)
-```
-
-This mirrors real-world spending patterns and prevents the common problem of "this receipt doesn't fit one line item exactly."
-
-### Submitting an Expenditure Report
-
-1. Department head opens *Expenditures → New Report*
-2. Links the report to the budget
-3. Uploads receipts (PDF, JPEG, PNG) — stored in Cloudflare R2
-4. For each receipt: sets amount, vendor, date, and allocates to budget line item(s)
-5. Submits the report to finance
-
-### Finance Review
-
-Finance opens the report and can:
-- View each receipt (linked from R2)
-- See the allocation mapping
-- Approve the report
-- Request more receipts or documentation
-- Reject the report
-
-### Outstanding Accountability
-
-The dashboard shows "Outstanding Reports" — budgets that have been fully disbursed but don't yet have an approved expenditure report. This is a key governance indicator. A high outstanding count means departments are not yet submitting their receipts.
-
----
-
-## 9. Events & Templates
-
-### Events
-
-Events are planned activities with dates and a status:
-
-| Status | Meaning |
-|--------|---------|
-| `PLANNING` | Being planned, budget may not be approved yet |
-| `ACTIVE` | Currently in progress |
-| `COMPLETED` | Finished |
-| `CANCELLED` | Called off |
-
-Events can be linked to budgets, income records, and expenditure reports, giving a complete financial picture per event.
-
-### Templates
-
-Recurring events (Annual Youth Camp, Sunday School Supplies, Easter Conference) can be saved as **Event Templates** with default budget line items and categories.
-
-When creating a new event from a template, all the standard line items are pre-populated. The department head adjusts quantities and costs for the current year, saving significant time.
-
-### Example Template: Youth Annual Camp
-
-```
-Template: Youth Annual Camp
-─────────────────────────────────────────────────
-Transport          │ Bus hire × 2           │ per bus
-Accommodation      │ Camp site × participants│ per person/night
-Catering           │ Full board × participants│ per person
-Speaker Fees       │ Guest speaker × 1      │ per speaker
-Equipment          │ Sound system rental    │ lump sum
-Printing           │ T-shirts & materials   │ per participant
-Contingency        │ 10% of total           │ lump sum
-```
-
-Each year, the department head creates "Youth Annual Camp 2026" from this template, updates the participant count and current prices, and submits — instead of rebuilding from scratch.
-
----
-
-## 10. Departments
-
-### Department Structure
-
-Each department has:
-- A name and optional description
-- A designated department head (a user with the `DEPARTMENT_HEAD` role)
-- An optional annual budget allocation (soft limit — warns but doesn't block)
-
-### Department Budget Allocations
-
-The admin can set an annual allocation per department (e.g. Youth: KES 600,000 for FY2026). This is stored in `DepartmentAllocation` and is used in analytics to show allocation vs. actual spend.
-
-It is a **soft limit** — the system will show a warning when a budget would exceed the department's allocation, but it does not prevent submission. The finance officer decides whether to approve an over-allocation.
-
-### Department Analytics
-
-The Analytics page shows per-department:
-- Total allocated
-- Total approved budget
-- Total spent
-- Variance (how much is left)
-- Utilisation percentage
-
----
-
-## 11. Analytics & Reporting
-
-All analytics are computed **server-side** using Prisma queries and cached with Next.js `unstable_cache()`. They are never calculated in React components. This keeps the interface fast and the data consistent.
-
-### Dashboard Widgets
-
-**Finance Officer view:**
-- Pending Reviews — budgets waiting for finance review
-- Pending Disbursements — disbursement requests awaiting approval
-- Pending Accountability — submitted expenditure reports awaiting review
-- Account Balances — current balance across all accounts
-
-**Chairperson view:**
-- Organization Income — total income year to date
-- Organization Expenses — total expenditure year to date
-- Outstanding Accountability — departments with unsubmitted expenditure reports
-- Upcoming Events — events with approved budgets
-- Department Utilisation — how much each department has spent relative to allocation
-- Budget Variance — approved vs. actual across all budgets
-
-**Department Head view:**
-- Draft Budgets — their own budgets in progress
-- Pending Approvals — their submitted budgets awaiting review
-- Approved Budgets — their active budgets
-- Outstanding Reports — their expenditure reports not yet submitted
-
-### Analytics Pages
-
-| Metric | Description |
+| Method | Description |
 |--------|-------------|
-| Department Budget vs Spend | Bar chart comparing allocated vs. spent per department |
-| Income Trend | Month-by-month income broken down by category |
-| Budget Allocation by Dept | Pie chart of total budget allocation |
-| Budget Variance Report | Table: allocated, spent, variance, utilisation per budget |
+| Email + Password | Standard credential login |
+| Magic Link | Passwordless — a link is emailed and expires in 15 minutes |
+| Google OAuth | Single sign-on via Google account |
 
-### Export
+### Session Context
 
-Budgets, income records, expenditure reports, and audit logs can be exported. Format options are planned for CSV and PDF.
+After authentication, the session carries:
+- `userId` — the authenticated user
+- `organizationId` — the currently selected organisation
+- `role` — the user's role within that organisation
+- `departmentId` — the user's department (if applicable)
+- `membershipId` — the specific membership record
 
----
+This context is injected into every Server Action via `requireSession()`, ensuring all mutations are automatically scoped to the correct organisation and actor.
 
-## 12. Notifications & Audit Trail
+### Invitations
 
-### Notifications
+New users join an organisation via an invitation:
+1. Admin sends an invite with email, role, and optional department
+2. Recipient receives an email with a unique, time-limited token
+3. They click the link and create a password (or link Google)
+4. They are added to the organisation immediately
 
-Steward sends in-app notifications (and optionally email via Resend) for key events:
-
-| Trigger | Recipients |
-|---------|------------|
-| Budget submitted for review | All Finance Officers |
-| Budget approved by finance | Department Head, Chairperson |
-| Budget needs changes | Department Head |
-| Budget finally approved | Department Head |
-| Budget rejected | Department Head |
-| Disbursement requested | Finance Officers |
-| Disbursement released | Department Head |
-| Expenditure report submitted | Finance Officers |
-| Expenditure report approved | Department Head |
-| Outstanding report reminder | Department Head (weekly) |
-
-### Audit Log
-
-Every state-changing action creates an immutable `AuditLog` record containing:
-
-| Field | Description |
-|-------|-------------|
-| `actorId` | Who performed the action |
-| `entityType` | What kind of record was affected (Budget, Income, Receipt…) |
-| `entityId` | The specific record ID |
-| `action` | What happened (submitted, approved, uploaded, recorded…) |
-| `before` | JSON snapshot of state before the change |
-| `after` | JSON snapshot of state after the change |
-| `createdAt` | Exact timestamp |
-
-The Audit Log page shows this trail with filtering by entity type, actor, and date range. It cannot be edited or deleted — it is append-only by design.
+Existing Steward users (already in another org) are added directly without needing to create a new account — one email, multiple organisations.
 
 ---
 
-## 13. Role & Permission Reference
+## 4. Roles & Permissions
 
-Steward uses a **permission-based** model. Roles are groupings of permissions. This means a user can have exactly the access they need — no more, no less.
+### Role Hierarchy
 
-### Permissions
+Steward uses **permission-based access control**. Roles are collections of permissions, not hardcoded behaviours. This makes it easy to adjust what each role can do without touching every page.
 
-| Permission | Description |
-|------------|-------------|
-| `budget.create` | Create a new budget |
-| `budget.edit_own` | Edit your own draft budget |
-| `budget.submit` | Submit a draft budget for review |
-| `budget.review` | View budgets in the review queue |
-| `budget.approve_finance` | Approve at the finance stage |
-| `budget.approve_chair` | Give final chairperson approval |
-| `expenditure.create` | Create an expenditure report |
-| `expenditure.review` | Review submitted expenditure reports |
-| `receipt.upload` | Upload receipts to an expenditure report |
-| `income.record` | Record income transactions |
-| `account.manage` | Manage financial accounts and balances |
-| `disbursement.create` | Request a disbursement |
-| `disbursement.approve` | Approve and release a disbursement |
-| `analytics.view` | Access the Analytics page |
-| `organization.manage` | Edit organization settings |
-| `users.manage` | Invite and manage users |
+| Role | Typical Person |
+|------|----------------|
+| `admin` | IT or platform administrator — full access |
+| `chairperson` | Board chair or committee lead — final approvals and oversight |
+| `finance` | Finance officer or treasurer — reviews, accounts, disbursements |
+| `department_head` | Ministry or department leader — creates budgets, submits reports |
+| `member` | Volunteer or team member — limited to uploading receipts |
 
-### Role → Permission Mapping
+### Permission Matrix
 
 | Permission | Member | Dept Head | Finance | Chairperson | Admin |
 |------------|:------:|:---------:|:-------:|:-----------:|:-----:|
@@ -508,39 +153,361 @@ Steward uses a **permission-based** model. Roles are groupings of permissions. T
 | `organization.manage` | | | | ✓ | ✓ |
 | `users.manage` | | | | ✓ | ✓ |
 
----
+### UI Enforcement
 
-## 14. Multi-Organisation Support
-
-Steward is built as a multi-tenant SaaS platform from day one, even if only one organization uses it initially.
-
-### Isolation Guarantee
-
-Every database query includes `organizationId` as a required filter. It is impossible for data from one organization to appear in another organization's context. The `requireSession()` function always injects the current user's `organizationId` into every service call.
-
-### Organization Switching
-
-A user can be a member of multiple organizations (e.g. a consultant who manages finances for several churches). Switching organizations is done through the organization selector in the sidebar.
-
-### Inviting Users
-
-The admin or chairperson sends an invitation by email. The invite contains a unique token with an expiry. The recipient clicks the link, creates their account (or signs in), and joins the organization with the pre-assigned role.
+The `PermissionGuard` component (`src/components/shared/permission-guard.tsx`) conditionally renders UI elements based on the active role. The nav items shown in the sidebar also vary by role — the Admin section only appears for `admin` users.
 
 ---
 
-## 15. Developer Setup
+## 5. Core Domain: Budgets
+
+The budget is the central unit of financial planning in Steward. Every expense should trace back to an approved budget line item.
+
+### Budget States
+
+```
+DRAFT
+  ↓  (dept head submits)
+SUBMITTED
+  ↓  (finance approves)          ↓  (finance requests changes)
+FINANCE_APPROVED               NEEDS_CHANGES
+  ↓  (chair approves)            ↓  (back to dept head to edit and resubmit)
+CHAIR_APPROVED ✓
+  ↓  (either reviewer rejects at any point)
+REJECTED ✗  (terminal — a new budget must be created)
+```
+
+### Budget Line Items
+
+Each budget contains one or more line items:
+
+| Field | Description |
+|-------|-------------|
+| Description | What is being purchased/paid for |
+| Category | Transport, Accommodation, Catering, Equipment, etc. |
+| Quantity | Number of units |
+| Unit Cost | Cost per unit in KES |
+| Total Cost | Quantity × Unit Cost (auto-calculated) |
+| Notes | Optional justification or detail |
+
+### Budget Revisions
+
+Every time a budget is edited after a `NEEDS_CHANGES` decision, a `BudgetRevision` record is created with a JSON snapshot of the previous state. This means the full history of a budget's changes is always available in the audit trail.
+
+### Budget Categories
+
+Budget categories are configurable per organisation. They can be hierarchical (a parent category with children). Out of the box, Steward seeds these defaults: Transport, Accommodation, Catering, Equipment, Printing & Stationery, Communication, Speaker Fees, Contingency.
+
+---
+
+## 6. Core Domain: Approvals
+
+### Two-Stage Workflow
+
+Every submitted budget requires two independent approvals:
+
+1. **Finance Approval** — The finance officer checks that the budget is financially sound, correctly categorised, and within the department's allocation.
+2. **Chairperson Approval** — The chairperson gives final governance sign-off.
+
+Finance approval automatically creates the chairperson approval record. The chairperson cannot approve a budget that has not yet passed finance review.
+
+### Approval Records
+
+Each approval tracks:
+- `type` — FINANCE or CHAIRPERSON
+- `status` — PENDING, APPROVED, REJECTED, NEEDS_CHANGES
+- `reviewerId` — who acted on it
+- `comment` — free-text feedback
+- `reviewedAt` — timestamp
+
+### Comments
+
+Each approval can have multiple comments attached (`ApprovalComment`). Department heads and reviewers can converse within the budget's comment thread without leaving Steward. This avoids the common problem of approval decisions being made over WhatsApp or email and never being recorded.
+
+---
+
+## 7. Core Domain: Disbursements
+
+A disbursement is a formal, auditable release of funds from a specific account to a department, against a specific approved budget.
+
+### Disbursement States
+
+```
+PENDING → APPROVED → RELEASED
+                ↓
+           CANCELLED  (before release)
+```
+
+### Partial Disbursements
+
+An approved budget does not need to be disbursed in a single transaction. Multiple disbursements can be raised against the same budget as spending phases progress:
+
+```
+Budget: Youth Annual Camp 2025  (KES 480,000 approved)
+  ↓
+Disbursement 1: KES 190,000  (deposits — transport + accommodation)
+Disbursement 2: KES 249,000  (remaining — catering, speakers, equipment, t-shirts)
+Total disbursed: KES 439,000  (KES 41,000 contingency not needed)
+```
+
+### Account Impact
+
+When a disbursement is released:
+1. The `FinancialAccount.balance` is decremented
+2. An `AccountTransaction` debit record is created with the balance after
+
+---
+
+## 8. Core Domain: Expenditure Reports & Receipts
+
+Expenditure reports are the accountability layer — proof that approved, disbursed funds were spent correctly.
+
+### Receipt Allocation Model
+
+Steward uses a **many-to-many** relationship between receipts and budget line items via `ReceiptAllocation`:
+
+```
+One receipt → allocated to → many budget line items
+  (e.g. a single catering invoice covering "Breakfast Day 1" and "Breakfast Day 2")
+
+One budget line item → supported by → many receipts
+  (e.g. "Transport" supported by multiple taxi receipts)
+```
+
+This mirrors real-world spending and avoids the common problem of "this receipt doesn't match exactly one line item."
+
+### Expenditure Report States
+
+| Status | Meaning |
+|--------|---------|
+| `DRAFT` | Being prepared — receipts being uploaded |
+| `SUBMITTED` | Sent to finance for review |
+| `APPROVED` | Finance verified all receipts — budget is closed out |
+| `REJECTED` | Finance rejected — department must revise and resubmit |
+
+### File Storage
+
+Receipt files (PDF, JPEG, PNG) are stored in Cloudflare R2 — not in the database. The database holds only the metadata: `storageKey`, `fileName`, `mimeType`, `size`, `amount`, `vendor`, `receiptDate`. The `storageKey` is used to generate a short-lived signed URL when a reviewer needs to view the file.
+
+### Outstanding Accountability
+
+A budget is considered "outstanding" for accountability purposes when:
+- It has been fully approved and at least one disbursement has been released
+- No expenditure report with status `APPROVED` exists for it
+
+The "Outstanding Accountability" stat on the dashboard counts these and is one of the key governance indicators.
+
+---
+
+## 9. Core Domain: Income
+
+### Income Categories
+
+| Category | Example |
+|----------|---------|
+| `TITHE` | Monthly tithe collections |
+| `OFFERING` | Sunday service offering |
+| `DONATION` | One-off donor gifts |
+| `REGISTRATION` | Event registration fees |
+| `FUNDRAISING` | Fundraiser proceeds |
+| `GRANT` | External funding or grants |
+| `OTHER` | Miscellaneous |
+
+### Recording Income
+
+Every income record is linked to:
+- A specific financial account (where the money landed)
+- A category
+- Optional: a department or event
+
+Recording income immediately increments the account balance and creates a credit `AccountTransaction`.
+
+---
+
+## 10. Core Domain: Financial Accounts
+
+### Account Types
+
+| Type | Example |
+|------|---------|
+| `BANK` | KCB Bank — Main Operating Account |
+| `MPESA` | Safaricom M-Pesa Till |
+| `CASH` | Petty cash float |
+| `SAVINGS` | Equity Bank — Youth Ministry Fund |
+| `PROJECT` | Dedicated project ring-fenced account |
+
+### Transaction Ledger
+
+Every balance change — credit or debit — creates an `AccountTransaction` record with:
+- Type (credit / debit)
+- Amount
+- Description
+- Balance after the transaction
+- Who recorded it
+
+This gives a complete, chronological ledger for every account.
+
+---
+
+## 11. Events & Templates
+
+### Events
+
+Events represent planned activities. They sit at the intersection of planning (budgets) and accountability (income + expenditure reports). An event can be:
+- Linked to one or more budgets
+- Linked to income records (e.g. registration fees)
+- Linked to expenditure reports (post-event accountability)
+
+This gives a complete financial picture of any single activity.
+
+### Recurring Events & Templates
+
+Common recurring events (Annual Camp, Easter Conference, Sunday School Supplies) can be saved as **Event Templates** with:
+- Default budget categories
+- Standard line items with suggested quantities and unit costs
+
+When creating a new event from a template, all line items are pre-populated. The department head adjusts numbers for the current year rather than rebuilding from scratch. Templates significantly reduce the time-to-submit for well-understood annual activities.
+
+---
+
+## 12. Departments & Allocations
+
+### Department Structure
+
+Each department has:
+- A name and optional description
+- A designated head (a `Membership` record with role `department_head`)
+- An optional annual budget allocation (`DepartmentAllocation`)
+
+### Soft Limits
+
+The allocation is a **soft limit** — the system shows a warning if a proposed budget would exceed the department's remaining allocation, but does not block submission. The finance officer decides during review whether to approve an over-allocation.
+
+This is intentional: hard limits prevent urgent needs from being met. Soft limits create visibility without creating bureaucratic obstacles.
+
+---
+
+## 13. Analytics & Dashboards
+
+### Server-Side Only
+
+All analytics are computed in `src/features/analytics/services/` using Prisma queries, then cached with Next.js `unstable_cache()`. Analytics are never computed in React components. This keeps the UI fast and ensures numbers are consistent regardless of when a component renders.
+
+### Dashboard Views by Role
+
+**Finance Officer**
+- Pending Reviews — budgets in the finance queue
+- Pending Disbursements — disbursement requests awaiting approval
+- Pending Accountability — submitted expenditure reports to review
+- Account Balances — real-time balances across all accounts
+
+**Chairperson**
+- Organisation Income — total income year-to-date
+- Organisation Expenses — total expenditure year-to-date
+- Outstanding Accountability — departments with no submitted expenditure reports
+- Upcoming Events — events with approved budgets
+- Department Utilisation — spend vs. allocation per department
+- Budget Variance — approved vs. actual across all budgets
+
+**Department Head**
+- My Draft Budgets — budgets in progress
+- My Pending Approvals — submitted budgets awaiting review
+- My Approved Budgets — active budgets
+- My Outstanding Reports — expenditure reports not yet submitted
+
+### Charts
+
+| Chart | Type | Data |
+|-------|------|------|
+| Department Budget vs Spend | Grouped bar | Allocated vs. spent per department |
+| Income Trend | Line | Monthly income by category |
+| Budget Allocation | Donut | Budget share by department |
+| Budget Variance Report | Table | Allocated, spent, variance, utilisation per budget |
+
+---
+
+## 14. Notifications
+
+### In-App Notifications
+
+Steward maintains a `Notification` table per user. The notification bell in the topbar shows unread count. The Notifications page lists all notifications with read/unread state.
+
+### Email Notifications (via Resend)
+
+After Auth.js and Resend are configured, email notifications fire for:
+
+| Event | Recipient |
+|-------|-----------|
+| Budget submitted | All Finance Officers in the organisation |
+| Finance approved | Department Head + Chairperson |
+| Budget needs changes | Department Head |
+| Budget finally approved | Department Head + Finance Officers |
+| Budget rejected | Department Head |
+| Disbursement requested | Finance Officers |
+| Disbursement released | Department Head |
+| Expenditure report submitted | Finance Officers |
+| Expenditure report approved | Department Head |
+| Expenditure report needs info | Department Head |
+| New user invited | Invitee (email only) |
+| Outstanding report reminder | Department heads with overdue reports (weekly) |
+
+---
+
+## 15. Audit Trail
+
+The `AuditLog` table is **append-only**. No update or delete operations are ever run against it. Every meaningful state change in the system writes a record containing:
+
+| Field | Description |
+|-------|-------------|
+| `actorId` | Who performed the action |
+| `entityType` | What kind of record changed (Budget, Income, Receipt…) |
+| `entityId` | The specific record |
+| `action` | What happened (created, submitted, approved, uploaded…) |
+| `before` | JSON snapshot of state before the change |
+| `after` | JSON snapshot of state after the change |
+| `ipAddress` | Request IP (for security auditing) |
+| `createdAt` | Exact timestamp |
+
+The Audit Log page lets admins and finance officers search by entity type, actor, date range, and action. It is read-only by design — there is no mechanism to edit or delete audit records, even for admins.
+
+---
+
+## 16. Admin Panel
+
+The Admin Panel (`/admin/*`) is only accessible to users with the `admin` role.
+
+### User Management (`/admin/users`)
+
+- View all users and their organisation memberships in one place
+- Expand any user to see every organisation they belong to with their role and department
+- Edit a user's role or department within any organisation
+- Remove a user from an organisation
+- Invite new users via a two-step modal:
+  1. Enter name and email
+  2. Assign to one or more organisations with independent role + department per org
+
+### Organisation Management (`/admin/organisations`)
+
+- View all organisations with key stats (member count, approved budgets, liquid assets)
+- Create a new organisation with name, slug, and currency
+- Access organisation-level settings
+
+---
+
+## 17. Developer Setup
 
 ### Prerequisites
 
-- **Node.js** ≥ 20
-- **pnpm** ≥ 9 — `npm install -g pnpm`
-- **PostgreSQL** database (local, [Neon](https://neon.tech), [Supabase](https://supabase.com))
+- Node.js ≥ 20
+- pnpm ≥ 9 — `npm install -g pnpm`
+- PostgreSQL database (local, Neon, Supabase, Railway)
 
 ### Install
 
 ```bash
+tar -xzf steward-v3.tar.gz && cd steward
 pnpm install
-# postinstall automatically runs `prisma generate`
+# postinstall runs `prisma generate` automatically
 ```
 
 ### Environment
@@ -549,7 +516,7 @@ pnpm install
 cp .env.example .env.local
 ```
 
-Minimum required variables:
+Minimum required:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/steward"
@@ -557,172 +524,180 @@ NEXTAUTH_SECRET="run: openssl rand -base64 32"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
+For Neon, add:
+
+```env
+DATABASE_URL="postgresql://...?pgbouncer=true&sslmode=require"
+DIRECT_URL="postgresql://...?sslmode=require"
+```
+
+And uncomment `directUrl` in `prisma/schema.prisma`.
+
 ### Database
 
 ```bash
-# Apply the schema
-pnpm db:migrate
-
-# Seed with Grace Community Church sample data
-pnpm db:seed
-
-# Or do both in one:
-pnpm db:setup
+pnpm db:migrate    # apply schema
+pnpm db:seed       # seed two organisations + sample data
+pnpm dev           # start dev server at localhost:3000
 ```
 
-### Dev server
+### All Scripts
 
-```bash
-pnpm dev
-# → http://localhost:3000
-```
-
-### Scripts
-
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Dev server (Turbopack) |
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Dev server with Turbopack |
 | `pnpm build` | Production build |
-| `pnpm lint` | ESLint |
 | `pnpm typecheck` | TypeScript check only |
 | `pnpm db:generate` | Regenerate Prisma client after schema changes |
-| `pnpm db:migrate` | Run pending migrations (dev) |
-| `pnpm db:migrate:prod` | Run pending migrations (production, safe) |
-| `pnpm db:seed` | Seed sample data |
+| `pnpm db:migrate` | Apply pending migrations (dev) |
+| `pnpm db:migrate:prod` | Apply pending migrations (production) |
+| `pnpm db:seed` | Seed sample organisations and data |
 | `pnpm db:setup` | generate + migrate + seed |
-| `pnpm db:studio` | Prisma Studio (visual DB browser) |
-| `pnpm db:reset` | ⚠️ Reset database (drops all data) |
+| `pnpm db:studio` | Prisma Studio visual database browser |
+| `pnpm db:reset` | ⚠️ Drop and recreate database |
 
-### Adding Auth.js
+### Enabling Auth.js
 
 ```bash
 pnpm add next-auth@beta @auth/prisma-adapter
 ```
 
-Uncomment the code in `src/lib/auth/auth.ts` and configure providers.
+Uncomment and configure `src/lib/auth/auth.ts`.
 
-### Adding File Uploads (Cloudflare R2)
+### Enabling File Uploads (R2)
 
 ```bash
 pnpm add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
 ```
 
-Follow the setup comments in `src/lib/storage/r2.ts`.
+Configure `src/lib/storage/r2.ts` with your Cloudflare R2 credentials.
 
-### Adding Email (Resend)
+### Enabling Email (Resend)
 
 ```bash
 pnpm add resend
 ```
 
-Follow the setup comments in `src/lib/email/resend.ts`.
+Configure `src/lib/email/resend.ts` with your Resend API key.
 
 ---
 
-## 16. Architecture Reference
+## 18. Architecture Reference
 
 ### Request Flow
 
 ```
-Browser request
-    ↓
-Next.js Server Component   ← reads data directly, no client round-trip
-    ↓ (mutation)
-Server Action              ← validates session, calls service
-    ↓
-Service Layer              ← business logic, status transitions, notifications
-    ↓
-Repository Layer           ← Prisma queries (always scoped to organizationId)
-    ↓
-PostgreSQL (Neon)
+Browser
+  ↓  HTTP request
+Next.js Server Component  ← fetches data directly, no client-side round trip
+  ↓  mutation (form submit / button click)
+Server Action              ← validates session, checks permissions, calls service
+  ↓
+Service Layer              ← business logic, state transitions, notifications, audit
+  ↓
+Repository Layer           ← Prisma queries, always filtered by organizationId
+  ↓
+PostgreSQL
 ```
 
-Never call Prisma directly from a React component or page.
+**Rule:** Never call Prisma directly from a React component or Next.js page. Always go through the service → repository chain.
 
-### Directory Map
+### Directory Structure
 
 ```
 src/
 ├── app/
-│   ├── (auth)/                  # Unauthenticated pages
-│   │   ├── login/
+│   ├── (auth)/
+│   │   ├── login/            # Sign in
+│   │   ├── org-picker/       # Organisation selection after login
 │   │   ├── forgot-password/
-│   │   └── invite/
-│   └── (dashboard)/             # Authenticated app shell
-│       ├── layout.tsx           # Sidebar + Topbar wrapper
-│       ├── dashboard/
-│       ├── budgets/
-│       │   ├── page.tsx         # Budget list
-│       │   ├── new/             # Budget creation form
-│       │   └── [budgetId]/      # Budget detail + edit
-│       ├── approvals/
-│       ├── accounts/
-│       ├── income/
-│       ├── expenditures/
-│       ├── events/
-│       ├── departments/
-│       ├── analytics/
-│       ├── audit/
-│       ├── notifications/
-│       └── settings/
+│   │   └── invite/           # Accept org invitation
+│   ├── (dashboard)/          # Authenticated app — all data pages
+│   │   ├── layout.tsx        # Sidebar + Topbar + org guard
+│   │   ├── dashboard/
+│   │   ├── budgets/
+│   │   │   ├── page.tsx      # Budget list with filters
+│   │   │   ├── new/          # Budget creation form
+│   │   │   └── [budgetId]/   # Budget detail + comments + approval flow
+│   │   ├── approvals/
+│   │   ├── accounts/
+│   │   ├── income/
+│   │   ├── expenditures/
+│   │   ├── events/
+│   │   ├── departments/
+│   │   ├── analytics/
+│   │   ├── audit/
+│   │   ├── notifications/
+│   │   ├── settings/
+│   │   └── admin/
+│   │       ├── users/        # Admin: all users + membership management
+│   │       └── organisations/# Admin: all orgs overview
+│   ├── splash/[orgId]/       # Branded org-loading transition screen
+│   └── api/
+│       ├── webhooks/         # M-Pesa + external callbacks
+│       └── internal/revalidate/
 │
 ├── components/
-│   ├── ui/                      # Primitives: Button, Card, Badge, Input…
-│   ├── shared/                  # App-level: Sidebar, Topbar, DataTable…
-│   └── charts/                  # Recharts wrappers: CustomTooltip…
+│   ├── ui/                   # Button, Card, Badge, Input, Progress, Skeleton
+│   ├── shared/               # Sidebar, Topbar, DataTable, PageHeader, EmptyState
+│   └── charts/               # CustomTooltip for Recharts v3
 │
-├── features/                    # Domain logic, co-located by feature
+├── features/                 # Domain logic, co-located by feature
 │   ├── budgets/
-│   │   ├── actions/index.ts     # Server Actions (called from UI)
-│   │   ├── services/index.ts    # Business logic
-│   │   ├── repositories/index.ts# Prisma queries
-│   │   ├── schemas/index.ts     # Zod validation schemas
-│   │   └── components/          # Feature-specific UI components
-│   ├── approvals/
-│   ├── income/
-│   ├── analytics/               # Server-side aggregations + caching
-│   ├── audit/
-│   └── notifications/
+│   │   ├── actions/          # Server Actions (submitBudgetAction, reviewBudgetAction)
+│   │   ├── services/         # Business logic (createBudget, submitBudget, reviewBudget)
+│   │   ├── repositories/     # Prisma queries
+│   │   ├── schemas/          # Zod validation
+│   │   └── components/       # BudgetCard, BudgetStatusFlow
+│   ├── income/               # actions · services · schemas
+│   ├── analytics/            # Server-side aggregations with unstable_cache()
+│   ├── audit/                # createAuditLog()
+│   └── notifications/        # createNotification(), markRead()
 │
 ├── lib/
-│   ├── prisma/client.ts         # PrismaClient singleton
+│   ├── org/context.tsx       # OrgProvider + useOrg() hook
+│   ├── prisma/client.ts      # PrismaClient singleton
 │   ├── auth/
-│   │   ├── auth.ts              # Auth.js v5 config
-│   │   ├── session.ts           # requireSession() helper
-│   │   └── permissions.ts       # hasPermission(), can()
-│   ├── storage/r2.ts            # Cloudflare R2 client
-│   ├── email/resend.ts          # Transactional email
-│   ├── mock/data.ts             # Dev data (replace with DB queries)
-│   └── utils.ts                 # formatCurrency, formatDate…
+│   │   ├── auth.ts           # Auth.js v5 config (commented — configure to activate)
+│   │   ├── session.ts        # requireSession() — injects org context into actions
+│   │   └── permissions.ts    # hasPermission(), can()
+│   ├── storage/r2.ts         # Cloudflare R2 (commented — configure to activate)
+│   ├── email/resend.ts       # Transactional email templates (commented)
+│   ├── mock/data.ts          # Dev data: 2 orgs, 6 users, cross-org memberships
+│   └── utils.ts              # formatCurrency, formatDate, formatRelative, pct
 │
-├── types/index.ts               # Shared TypeScript types
-└── proxy.ts                     # Route protection (Next.js 16)
+├── types/index.ts             # Shared TypeScript types
+└── proxy.ts                   # Route protection (Next.js 16 proxy/middleware)
 ```
 
-### Technology Stack
+---
 
-| Layer | Technology | Why |
-|-------|------------|-----|
-| Framework | Next.js 16 (App Router) | Server Components, Server Actions, streaming |
-| Language | TypeScript | Type safety across the full stack |
-| Styling | Tailwind CSS v4 | Utility-first, no runtime overhead |
-| Database | PostgreSQL (Neon) | Reliable, serverless-friendly |
-| ORM | Prisma 6 | Type-safe queries, migrations, studio |
-| Auth | Auth.js v5 | Email, magic links, Google OAuth |
-| Storage | Cloudflare R2 | S3-compatible, no egress fees |
-| Email | Resend | Transactional email, great deliverability |
-| Charts | Recharts v3 | Composable, React-native charts |
-| Package manager | pnpm | Fast, strict, workspace-aware |
+## 19. Database Schema Reference
 
-### Key Design Decisions
+### Key Models
 
-**Server Components by default.** Pages fetch their own data using Prisma on the server. There are no client-side data fetching libraries (no SWR, no React Query). Mutations go through Server Actions.
-
-**Feature-based, not layer-based.** Everything for budgets lives in `src/features/budgets/`. Not split across `src/services/`, `src/repositories/`, `src/actions/`. This makes features easy to find and delete without hunting across the codebase.
-
-**Analytics never in React.** All aggregations (department spend, budget variance, income totals) are computed in `src/features/analytics/services/` using Prisma, cached server-side with `unstable_cache()`, and passed as plain data to components. Components just render numbers.
-
-**Permissions, not just roles.** The permissions layer in `src/lib/auth/permissions.ts` means access control is explicit and auditable. Adding a new permission doesn't require changing role definitions everywhere — you add it to the relevant roles in one place.
-
-**Immutable audit log.** The `AuditLog` table is append-only. No update or delete operations are ever run on it. It records the `before` and `after` JSON state for every meaningful change, giving a complete reconstruction of any record's history.
-
+| Model | Purpose |
+|-------|---------|
+| `Organization` | Top-level tenant. All data belongs to one. |
+| `User` | Global identity. One user, multiple org memberships. |
+| `Membership` | Joins User ↔ Organization with role + department. |
+| `Invite` | Time-limited invitation token for new members. |
+| `Department` | Sub-unit of an org. Has a head and optional annual allocation. |
+| `Event` | Planned activity. Links to budgets, income, and expenditure reports. |
+| `EventTemplate` | Reusable template with default budget line items. |
+| `Budget` | Spending plan with status lifecycle and line items. |
+| `BudgetItem` | Single line in a budget (description, qty, unit cost, total). |
+| `BudgetRevision` | JSON snapshot saved on every edit after NEEDS_CHANGES. |
+| `BudgetCategory` | Configurable categories, hierarchical, per org. |
+| `Approval` | Finance or Chairperson review record on a budget. |
+| `ApprovalComment` | Threaded comment on an approval. |
+| `FinancialAccount` | Bank, M-Pesa, cash, savings, or project account. |
+| `AccountTransaction` | Ledger entry (credit/debit) with balance after. |
+| `Income` | A recorded income event linked to an account. |
+| `Disbursement` | Formal fund release from account to department. |
+| `DisbursementItem` | Line items within a disbursement request. |
+| `ExpenditureReport` | Post-event accountability report with status lifecycle. |
+| `Receipt` | Uploaded receipt file metadata (file lives in R2). |
+| `ReceiptAllocation` | Many-to-many join: Receipt ↔ BudgetItem with amount. |
+| `Notification` | In-app notification per user. |
+| `AuditLog` | Append-only record of every state-changing action. |

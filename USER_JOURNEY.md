@@ -1,70 +1,50 @@
 # Steward — User Journey Guide
+### Version 3 · June 2025
 
-> A practical walkthrough of how each role uses Steward, from first login through to a fully accounted event.
-
----
-
-## Overview: The Cast
-
-This guide follows four people at **Grace Community Church** as they manage the **Youth Annual Camp 2025**.
-
-| Person | Role | Responsibility |
-|--------|------|----------------|
-| **Sarah Kamau** | Department Head — Youth | Plans the camp, creates and submits the budget, requests disbursements, submits receipts |
-| **James Mwangi** | Finance Officer | Reviews budgets, manages accounts, approves disbursements, reconciles receipts |
-| **Daniel Njoroge** | Chairperson | Gives final budget approval, monitors overall finances |
-| **Grace Wanjiku** | Finance Officer | Records weekly income, assists James |
+> A practical end-to-end walkthrough of how every role uses Steward, from first login through to a fully accounted event. Follows four real people across two organisations.
 
 ---
 
-## Journey 1 — Getting Started (Admin Onboarding)
+## The Cast
 
-*This journey happens once when the organization first uses Steward.*
+### Grace Community Church
+| Person | Role | What they do |
+|--------|------|-------------|
+| **James Mwangi** | Finance Officer | Reviews budgets, manages accounts, approves disbursements |
+| **Sarah Kamau** | Department Head — Youth | Plans, budgets, and accounts for Youth Ministry |
+| **Peter Odhiambo** | Department Head — Outreach | Plans and accounts for Outreach work |
+| **Daniel Njoroge** | Chairperson | Final budget approvals, overall financial oversight |
+| **Grace Wanjiku** | Finance Officer | Records income, assists James |
 
-### 1.1 Admin creates the organization
+### Hope Foundation Kenya
+| Person | Role | What they do |
+|--------|------|-------------|
+| **James Mwangi** | Admin | Manages the platform, users, and org settings |
+| **Daniel Njoroge** | Chairperson | Same person — chairs both organisations |
+| **Ruth Achieng** | Finance Officer | Foundation finance |
 
-The admin visits the Steward signup page, creates an account, and sets up the organization:
+> James and Daniel are members of **both** organisations with **different roles in each**. They use a single email to access both.
+
+---
+
+## Journey 0 — Platform Setup (Admin)
+
+*This happens once when a new Steward instance is provisioned.*
+
+### 0.1 Admin creates the first organisation
+
+The system administrator logs in and opens **Admin → Organisations → New Organisation**:
 
 - Name: **Grace Community Church**
+- Slug: `grace-community` (used in URLs)
 - Currency: **KES**
 - Fiscal year start: **January 1**
 
-### 1.2 Admin invites the team
+### 0.2 Admin creates departments
 
-From **Settings → Users → Invite**, the admin sends invitations:
+From **Departments → Add Department**, the admin creates:
 
-```
-james@gracecommunity.org   → Finance Officer
-grace@gracecommunity.org   → Finance Officer
-daniel@gracecommunity.org  → Chairperson
-sarah@gracecommunity.org   → Department Head (Youth Ministry)
-peter@gracecommunity.org   → Department Head (Outreach)
-```
-
-Each person receives an email with a unique invitation link.
-
-### 1.3 Team members accept invitations
-
-Sarah clicks her invite link and sees the invitation screen:
-
-> *"James Mwangi has invited you to join Grace Community Church on Steward as a Department Head."*
-
-She enters her name, confirms her email, sets a password, and is taken straight to her dashboard.
-
-### 1.4 Admin creates departments
-
-From **Settings → Departments**, the admin creates:
-
-- Youth Ministry (head: Sarah Kamau)
-- Worship & Arts
-- Outreach (head: Peter Odhiambo)
-- Administration
-- Missions
-- Children's Ministry
-
-Annual allocations are set for each:
-
-| Department | FY2025 Allocation |
+| Department | Annual Allocation |
 |------------|-------------------|
 | Youth Ministry | KES 600,000 |
 | Worship & Arts | KES 420,000 |
@@ -73,146 +53,269 @@ Annual allocations are set for each:
 | Missions | KES 400,000 |
 | Children's Ministry | KES 150,000 |
 
-### 1.5 Finance adds accounts
+### 0.3 Admin invites users — the multi-org invite flow
 
-James opens **Accounts → Add Account** and adds the organization's real accounts:
+The admin opens **Admin → Users → Invite User**. The two-step modal appears.
 
-- **KCB Bank — Main Operating Account** (BANK) — opening balance KES 1,240,500
-- **Safaricom M-Pesa Till** (MPESA) — opening balance KES 342,150
-- **Equity Bank — Youth Ministry Fund** (SAVINGS) — opening balance KES 68,400
+**Step 1 — User details:**
+- Name: James Mwangi
+- Email: james@steward.app
 
-The dashboard now shows **KES 1,651,050** total liquid assets.
+**Step 2 — Organisation roles:**
+James is assigned to two organisations in a single invite:
+
+| Organisation | Role | Department |
+|--------------|------|------------|
+| Grace Community Church | Finance Officer | None |
+| Hope Foundation Kenya | Admin | None |
+
+The admin clicks **"+ Add to another organisation"** before sending — one email, two org assignments.
+
+James receives a single invitation email. He clicks the link, sets his password, and is immediately a member of both organisations.
+
+The admin repeats this for all users:
+
+| User | Grace Community Church | Hope Foundation Kenya |
+|------|----------------------|----------------------|
+| Sarah Kamau | Department Head — Youth Ministry | Department Head — Education |
+| Peter Odhiambo | Department Head — Outreach | Department Head — Health |
+| Daniel Njoroge | Chairperson | Chairperson |
+| Grace Wanjiku | Finance Officer | — |
+| Ruth Achieng | — | Finance Officer |
+
+### 0.4 Finance adds accounts
+
+James opens **Accounts → Add Account** and registers the real-world accounts:
+
+**Grace Community Church:**
+- KCB Bank — Main Operating Account (BANK) · balance KES 1,240,500
+- Safaricom M-Pesa Till (MPESA) · balance KES 342,150
+- Equity Bank — Youth Ministry Fund (SAVINGS) · balance KES 68,400
+
+**Hope Foundation Kenya** (after switching org):
+- Absa Bank — Foundation Main Account (BANK) · balance KES 2,150,000
+- Safaricom — Donor Collections Till (MPESA) · balance KES 185,000
+
+---
+
+## Journey 1 — First Login (Any User)
+
+*James logs in for the first time after receiving the invitation.*
+
+### 1.1 Accept invitation
+
+James clicks his email link and sees the invitation acceptance screen:
+
+> *"James Mwangi — you've been invited to join Grace Community Church as Finance Officer and Hope Foundation Kenya as Admin."*
+
+He enters his password and clicks **Accept & Create Account**.
+
+### 1.2 Login on return visits
+
+James visits `/login` and enters his email and password. After authentication, Steward detects he belongs to two organisations and redirects to `/org-picker`.
+
+### 1.3 Organisation Picker
+
+James sees two organisation cards:
+
+```
+┌─────────────────────────────────┐
+│  GC  Grace Community Church     │
+│      Finance Officer             │  →
+└─────────────────────────────────┘
+
+┌─────────────────────────────────┐
+│  HF  Hope Foundation Kenya      │
+│      Administrator               │  →
+└─────────────────────────────────┘
+```
+
+Each card shows the organisation's colour, initials, his role, and any department. He clicks **Grace Community Church**.
+
+### 1.4 Splash screen
+
+A full-screen transition in Grace Community Church's deep blue fills the display. The "GC" initials show briefly, then a checkmark appears as the workspace loads. After about 2 seconds, James lands on the dashboard.
+
+The sidebar shows:
+- "GC" colour badge with "Grace Community Church" as the active org
+- His name and role ("Finance Officer") in the footer
+- Nav items appropriate for his role
+
+### 1.5 Switching to Hope Foundation
+
+Later, James clicks the org selector in the sidebar. A dropdown shows both organisations. He selects Hope Foundation Kenya. The splash screen plays in green, then loads the Foundation's dashboard. All data — budgets, accounts, analytics — is now scoped to Hope Foundation.
 
 ---
 
 ## Journey 2 — Planning the Camp (Department Head)
 
-*Sarah plans the Youth Annual Camp 2025, scheduled for 14–18 June.*
+*Sarah plans Youth Annual Camp 2025, scheduled 14–18 June.*
 
-### 2.1 Create the event
+### 2.1 Sarah logs in and picks her org
+
+Sarah logs in and sees one organisation card (she's only in Grace Community Church). She clicks it and goes straight through the splash screen to the dashboard.
+
+Her dashboard shows the **Department Head** view:
+- Her draft budgets
+- Her submitted budgets awaiting review
+- Her outstanding expenditure reports
+
+### 2.2 Create the event
 
 Sarah opens **Events → New Event**:
 
 - Name: Youth Annual Camp 2025
 - Department: Youth Ministry
 - Start: 14 June 2025 · End: 18 June 2025
+- Status: Planning
 
-The event is saved in `PLANNING` status.
+### 2.3 Create the budget
 
-### 2.2 Create the budget
-
-Sarah opens **Budgets → New Budget**. She fills in:
+Sarah opens **Budgets → New Budget**. The form shows fields she has permission to fill:
 
 - **Title:** Youth Annual Camp 2025
-- **Department:** Youth Ministry
+- **Department:** Youth Ministry *(pre-selected — her department)*
 - **Link to Event:** Youth Annual Camp 2025
 - **Period:** 1 June 2025 – 31 July 2025
 
-Then she adds her line items:
+She adds seven line items. The total calculates live as she types:
 
 | Description | Category | Qty | Unit Cost | Total |
-|-------------|----------|-----|-----------|-------|
-| Bus hire — 2 buses return | Transport | 2 | KES 45,000 | KES 90,000 |
-| Camp site accommodation (3 nights) | Accommodation | 80 | KES 1,500 | KES 120,000 |
-| Full board meals | Catering | 80 | KES 1,200 | KES 96,000 |
-| Guest speaker honorarium | Speaker Fees | 2 | KES 25,000 | KES 50,000 |
-| Sound system rental | Equipment | 1 | KES 35,000 | KES 35,000 |
-| T-shirts & camp materials | Printing | 80 | KES 600 | KES 48,000 |
-| Contingency (10%) | Contingency | 1 | KES 41,000 | KES 41,000 |
+|-------------|----------|----:|----------:|------:|
+| Bus hire — 2 buses return | Transport | 2 | 45,000 | 90,000 |
+| Camp site accommodation (3 nights) | Accommodation | 80 | 1,500 | 120,000 |
+| Full board meals | Catering | 80 | 1,200 | 96,000 |
+| Guest speaker honorarium | Speaker Fees | 2 | 25,000 | 50,000 |
+| Sound system rental | Equipment | 1 | 35,000 | 35,000 |
+| T-shirts & camp materials | Printing | 80 | 600 | 48,000 |
+| Contingency (10%) | Contingency | 1 | 41,000 | 41,000 |
+| | | | **Total** | **480,000** |
 
-The form shows a live total: **KES 480,000**.
+The sidebar summary updates in real time. Sarah uploads a PDF venue quote as an attachment.
 
-The sidebar also shows that Youth's annual allocation is KES 600,000 and they have KES 120,000 of other approved budgets, so this budget fits within the remaining KES 480,000.
+She clicks **Save as Draft** to preserve her work.
 
-Sarah uploads a PDF quote from the camp venue as an attachment.
+### 2.4 Submit for review
 
-She clicks **Save as Draft** and reviews everything once more.
+Sarah reviews the budget once more, then clicks **Submit for Review**.
 
-### 2.3 Submit for review
+Status changes: `DRAFT` → `SUBMITTED`
 
-Satisfied with the numbers, Sarah clicks **Submit for Review**.
+James and Grace receive an in-app notification and email:
+> *Budget submitted for review: Youth Annual Camp 2025 — KES 480,000*
 
-The budget status changes from `DRAFT` to `SUBMITTED`.
-
-Sarah sees a confirmation:
-> *"Budget submitted. James Mwangi and Grace Wanjiku will be notified to review it."*
-
-Sarah can no longer edit the budget. She can only add comments.
+Sarah can no longer edit line items. She can add comments.
 
 ---
 
 ## Journey 3 — Finance Review (Finance Officer)
 
-*James receives a notification and reviews Sarah's budget.*
+*James reviews Sarah's budget.*
 
-### 3.1 James gets notified
+### 3.1 James finds the budget
 
-James's notification bell shows a new alert:
+James's dashboard shows "3 Pending Reviews" in his Finance queue. He also receives the notification. He opens the budget detail page.
 
-> **Budget submitted for review**
-> Sarah Kamau submitted Youth Annual Camp 2025 — KES 480,000
+He can see:
+- All seven line items
+- The venue quote attachment
+- The approval workflow indicator (Finance Review is the active step)
 
-He also sees it in his **Approvals** page under "Finance Review Queue".
+### 3.2 James adds a comment
 
-### 3.2 James opens the budget
+James has a question about the accommodation line:
 
-James opens the budget detail page. He sees:
-- All line items with categories, quantities, and unit costs
-- The venue quote attachment Sarah uploaded
-- The approval workflow showing this is at the Finance Review stage
+> *"Hi Sarah — does the KES 1,500 per person for accommodation include meals, or is it bed-only? Need clarity to confirm this doesn't overlap with the catering line."*
 
-He has a question about accommodation.
+### 3.3 Sarah replies
 
-### 3.3 James adds a comment
+Sarah receives a notification. She opens the comment thread and replies:
 
-James types in the comments section:
+> *"Hi James — bed-only. The catering is a separate contract with a different supplier. I can attach the catering quote if it helps."*
 
-> *"Hi Sarah — the KES 1,500 per person for accommodation: does this include meals or is it accommodation only? Needs to be clear to avoid double-counting with the catering line."*
-
-Sarah receives a notification. She replies:
-
-> *"Hi James — accommodation is bed only. The KES 1,200 per person for meals is a separate contract with a catering company."*
+She uploads the catering quote. James reviews it.
 
 ### 3.4 James approves
 
-Satisfied with the clarification and the overall budget, James clicks **Approve**.
+Satisfied, James clicks **Approve**. He may add an optional note: *"Approved. Both quotes verified."*
 
-The status moves to `FINANCE_APPROVED`.
+Status changes: `SUBMITTED` → `FINANCE_APPROVED`
 
 Daniel (Chairperson) receives a notification:
-> **Budget ready for final approval**
-> Youth Annual Camp 2025 — KES 480,000 — Finance Approved
+> *Budget ready for final approval: Youth Annual Camp 2025 — Finance Approved*
 
 ---
 
-## Journey 4 — Final Approval (Chairperson)
+## Journey 4 — Chairperson Approval
 
-*Daniel gives final sign-off.*
+*Daniel gives final sign-off — from whichever org he's currently in.*
 
-### 4.1 Daniel reviews
+### 4.1 Daniel is in Hope Foundation
 
-Daniel opens his **Approvals** page. He sees the budget under "Chairperson Approvals". He reviews:
-- The line items
-- James's comment and Sarah's clarification
-- The department allocation status
+Daniel is currently working in Hope Foundation Kenya when he receives the notification about the Grace Community Church budget. He clicks the notification link.
+
+Steward detects the notification is for a different organisation. It triggers the splash screen transition to Grace Community Church, then opens the budget detail directly.
+
+*(Note: this cross-org deep-link behaviour is a planned feature — see the Incomplete Items list.)*
+
+### 4.2 Daniel reviews
+
+Daniel opens the Approvals page and sees the budget in his Chairperson queue. He reviews:
+- Line items and totals
+- James's approval note
+- Sarah's catering quote
 
 He's satisfied. He clicks **Final Approve**.
 
-The budget status moves to `CHAIR_APPROVED`.
+Status changes: `FINANCE_APPROVED` → `CHAIR_APPROVED`
 
 Both Sarah and James receive notifications:
-> **Budget approved ✓**
-> Youth Annual Camp 2025 has been fully approved. KES 480,000.
+> *Budget fully approved ✓ — Youth Annual Camp 2025, KES 480,000*
 
-The event status is updated to `ACTIVE`.
+The event status updates to `ACTIVE`.
 
 ---
 
-## Journey 5 — Releasing Funds (Finance)
+## Journey 5 — A Budget That Needs Changes
 
-*With the budget approved, Sarah requests the money she needs to pay deposits.*
+*Not every budget goes through cleanly. Peter's Outreach budget gets kicked back.*
 
-### 5.1 Sarah requests a disbursement
+### 5.1 Peter submits
+
+Peter submits "Community Outreach Q2" with a transport line: "Vehicles — KES 80,000" — no further detail.
+
+### 5.2 James approves at finance
+
+James approves but leaves a comment: *"Finance approved. Flagging for chair: transport line needs more detail for audit compliance."*
+
+### 5.3 Daniel requests changes
+
+Daniel reads James's note and clicks **Request Changes**:
+> *"Please itemise transport. How many vehicles? What type? Fixed rate or per-day? Need this to satisfy our audit requirements."*
+
+Status changes: → `NEEDS_CHANGES`
+
+### 5.4 Peter revises and resubmits
+
+Peter receives a notification. He opens the budget, reads the comment, and edits the transport section, splitting it into three specific lines:
+
+| Description | Category | Qty | Unit Cost | Total |
+|-------------|----------|----:|----------:|------:|
+| 4WD hire × 2 days | Transport | 2 | 15,000 | 30,000 |
+| Matatu hire for volunteers (3 trips) | Transport | 3 | 5,000 | 15,000 |
+| Driver allowances | Transport | 2 | 2,500 | 5,000 |
+
+Total transport: unchanged at KES 50,000. Peter resubmits.
+
+A `BudgetRevision` snapshot is saved recording the previous state. The budget returns to Finance Review. James approves in minutes (total unchanged), and Daniel gives final approval.
+
+---
+
+## Journey 6 — Releasing Funds (Disbursement)
+
+*Sarah needs funds to pay the camp deposits.*
+
+### 6.1 Request first disbursement
 
 Sarah opens the approved budget and clicks **Request Disbursement**:
 
@@ -220,172 +323,132 @@ Sarah opens the approved budget and clicks **Request Disbursement**:
 - **Amount:** KES 190,000
 - **Description:** Camp deposits — transport (KES 90,000) + accommodation deposit (KES 100,000)
 
-The request goes to James with status `PENDING`.
+The request appears in James's Approvals queue as `PENDING`.
 
-### 5.2 James approves the disbursement
+### 6.2 James releases
 
-James sees the disbursement in his Approvals queue. He reviews it:
-- Is there enough in the account? ✓ (KES 1,240,500 balance)
-- Does it match the budget? ✓ (Transport + Accommodation = KES 210,000 — deposit is partial)
+James reviews the request. The account has KES 1,240,500 — sufficient. He clicks **Release Funds**.
 
-James clicks **Release Funds**.
+- Status changes: `PENDING` → `RELEASED`
+- KCB account balance: KES 1,240,500 → **KES 1,050,500**
+- A debit `AccountTransaction` is recorded
 
-The KCB account balance decreases from KES 1,240,500 to **KES 1,050,500**.
+Sarah receives a notification: *"Disbursement of KES 190,000 released from KCB Bank."*
 
-A debit transaction is recorded:
-```
-Date: 28 May 2025
-Account: KCB Bank — Main Operating Account
-Type: Debit
-Amount: KES 190,000
-Description: Camp deposits — transport + accommodation
-Balance after: KES 1,050,500
-```
+### 6.3 Second disbursement pre-camp
 
-Sarah receives a notification:
-> **Disbursement released**
-> KES 190,000 has been released from KCB Bank for Youth Annual Camp 2025.
-
-### 5.3 Second disbursement after the event
-
-A week before the camp, Sarah requests a second disbursement for remaining costs:
-- Remaining accommodation: KES 20,000
-- Catering: KES 96,000
-- Speaker fees: KES 50,000
-- Sound system: KES 35,000
-- T-shirts: KES 48,000
-
-Total: KES 249,000
-
-James reviews and releases this too. Total disbursed: KES 439,000 (out of KES 480,000 approved).
+A week before camp, Sarah requests a second disbursement of KES 249,000 for remaining costs. James reviews and releases. Total disbursed: KES 439,000.
 
 ---
 
-## Journey 6 — Recording Income (Finance)
+## Journey 7 — Recording Income (Finance Officer)
 
-*While the camp preparations are happening, Grace records the regular income.*
+*Grace records weekly income throughout the camp planning period.*
 
-### 6.1 Weekly offering
+### 7.1 Sunday offerings
 
 Every Sunday, Grace opens **Income → Record Income**:
 
-- **Account:** Safaricom M-Pesa Till
+- **Account:** M-Pesa Till
 - **Category:** Offering
 - **Amount:** KES 85,000
 - **Description:** Sunday Tithe & Offering — 1 Jun 2025
 - **Date:** 1 June 2025
 
-The M-Pesa balance updates from KES 342,150 to **KES 427,150**.
+The M-Pesa balance updates immediately. An income record is created and an audit log entry written.
 
-### 6.2 Camp registrations
+### 7.2 Camp registrations
 
-Grace also records the camp registration fees as they come in:
+Grace records the registration fees as they come in:
 
 - **Account:** M-Pesa Till
 - **Category:** Registration
-- **Amount:** KES 30,000 (80 participants × KES 375 each)
-- **Description:** Youth Camp 2025 registrations
-- **Linked event:** Youth Annual Camp 2025
+- **Amount:** KES 30,000 (80 participants × KES 375)
+- **Linked Event:** Youth Annual Camp 2025
 
-### 6.3 Income analytics
-
-Daniel checks the Analytics page after the Sunday collection. He sees:
-- KES 342,000 income this month
-- +14% versus last month
-- Offerings still the dominant category at 67%
+Linking the registration fees to the event means the Event financial summary will show income of KES 30,000 alongside the KES 480,000 budget — giving a net cost picture.
 
 ---
 
-## Journey 7 — Post-Camp Accountability (Department Head)
+## Journey 8 — Post-Camp Accountability (Department Head)
 
-*The camp happens. 80 youth attend. It's a success. Now Sarah needs to account for every shilling.*
+*The camp runs successfully. Now Sarah must account for every shilling.*
 
-### 7.1 Collect all receipts
+### 8.1 Collect receipts
 
-Sarah has collected physical receipts and also received digital invoices:
-
+Sarah has:
 - Bus company invoice: KES 90,000 (PDF)
 - Camp site invoice: KES 120,000 (PDF)
-- Catering company invoice: KES 96,000 (PDF)
-- Speaker 1 receipt: KES 25,000 (JPEG photo)
-- Speaker 2 receipt: KES 25,000 (JPEG photo)
+- Catering invoice: KES 96,000 (PDF)
+- Speaker 1 receipt: KES 25,000 (JPEG)
+- Speaker 2 receipt: KES 25,000 (JPEG)
 - Sound system invoice: KES 35,000 (PDF)
-- T-shirts supplier receipt: KES 45,600 (KES 570 × 80 — slightly less than budgeted)
+- T-shirts receipt: KES 45,600 (KES 570 × 80 — slight saving vs. KES 600 budgeted)
 
-**Total receipts: KES 436,600** (vs KES 439,000 disbursed — KES 2,400 returned to petty cash)
+**Total receipts: KES 436,600** (KES 43,400 less than disbursed — unspent funds returned)
 
-### 7.2 Create the expenditure report
+### 8.2 Create expenditure report
 
 Sarah opens **Expenditures → New Report**:
 
 - **Budget:** Youth Annual Camp 2025
-- **Title:** Youth Annual Camp 2025 — Post-Event Accountability
+- **Title:** Youth Annual Camp 2025 — Post-Event Report
 
-### 7.3 Upload and allocate receipts
+### 8.3 Upload and allocate receipts
 
 For each receipt, Sarah:
-1. Uploads the file (PDF or photo)
-2. Enters the amount, vendor, and date
-3. Allocates it to the matching budget line item(s)
+1. Uploads the file
+2. Enters amount, vendor, and receipt date
+3. Allocates to the matching budget line item
 
-One case is slightly complex: the catering invoice covers both a camp day and a pre-camp meeting:
+One receipt requires a split allocation. The catering invoice covers both the main camp meals and a pre-camp leaders' briefing:
 
 ```
-Receipt: Catering invoice — KES 96,000
-  → Allocated to "Full board meals (youth)" KES 84,000
-  → Allocated to "Pre-camp leadership dinner" KES 12,000
-    (this was charged to a different line item)
+Catering invoice — KES 96,000
+  → "Full board meals" budget line: KES 84,000
+  → "Pre-camp leaders' dinner" budget line: KES 12,000
 ```
 
-Steward's many-to-many allocation handles this cleanly.
+Steward's many-to-many allocation handles this without workarounds.
 
-### 7.4 Submit the report
+### 8.4 Submit the report
 
-Once all receipts are uploaded and allocated, Sarah clicks **Submit Report**.
+Sarah clicks **Submit Report**.
 
-James receives a notification:
-> **Expenditure report submitted**
-> Youth Annual Camp 2025 — KES 436,600 claimed, 7 receipts attached
+James receives a notification: *"Expenditure report submitted — Youth Annual Camp 2025, KES 436,600 claimed, 7 receipts."*
 
 ---
 
-## Journey 8 — Finance Reconciliation (Finance Officer)
+## Journey 9 — Finance Reconciliation (Finance Officer)
 
-*James reviews the report and closes the books on the camp.*
+*James reviews the report and closes the books.*
 
-### 8.1 James reviews the report
+### 9.1 James reviews
 
-James opens the expenditure report. He can see:
+James opens the expenditure report. He sees each receipt mapped to budget lines:
 
-| Budget Line | Budgeted | Claimed | Difference |
-|-------------|----------|---------|------------|
-| Transport | KES 90,000 | KES 90,000 | — |
-| Accommodation | KES 120,000 | KES 120,000 | — |
-| Catering | KES 96,000 | KES 96,000 | — |
-| Speaker Fees | KES 50,000 | KES 50,000 | — |
-| Equipment | KES 35,000 | KES 35,000 | — |
-| T-shirts | KES 48,000 | KES 45,600 | -KES 2,400 |
-| Contingency | KES 41,000 | KES 0 | -KES 41,000 |
+| Budget Line | Budgeted | Claimed | Variance |
+|-------------|--------:|--------:|---------:|
+| Transport | 90,000 | 90,000 | — |
+| Accommodation | 120,000 | 120,000 | — |
+| Catering | 96,000 | 96,000 | — |
+| Speaker Fees | 50,000 | 50,000 | — |
+| Equipment | 35,000 | 35,000 | — |
+| T-shirts | 48,000 | 45,600 | -2,400 |
+| Contingency | 41,000 | 0 | -41,000 |
+| **Total** | **480,000** | **436,600** | **-43,400** |
 
-Total variance: **KES 43,400 underspent** (good news — the contingency wasn't needed and the t-shirts came in cheaper).
+James clicks each receipt file to verify. Everything matches.
 
-James clicks on each receipt to view the file. Everything checks out.
+### 9.2 Approve
 
-### 8.2 James approves the report
+James clicks **Approve Report**. Status changes to `APPROVED`.
 
-James clicks **Approve Report**.
+Sarah receives notification: *"Expenditure report approved ✓ — Youth Annual Camp 2025."*
 
-The expenditure report is marked `APPROVED`.
+### 9.3 Return unspent funds
 
-Sarah receives a notification:
-> **Expenditure report approved ✓**
-> Youth Annual Camp 2025 accountability has been reviewed and approved.
-
-The "Outstanding Accountability" count on the dashboard decreases.
-
-### 8.3 James reconciles the unspent balance
-
-The KES 43,400 unspent was part of the disbursed funds. James records a deposit back to the main account:
+James records a KES 43,400 credit back to the KCB account:
 
 - **Account:** KCB Bank — Main Operating Account
 - **Category:** Other
@@ -394,125 +457,95 @@ The KES 43,400 unspent was part of the disbursed funds. James records a deposit 
 
 ---
 
-## Journey 9 — Chairperson Reviews the Month
+## Journey 10 — Chairperson Monthly Review
 
-*At the end of June, Daniel reviews the organization's financial health.*
+*At the end of June, Daniel reviews both organisations.*
 
-### 9.1 Dashboard overview
+### 10.1 Grace Community Church dashboard
 
-Daniel opens Steward. His dashboard shows:
+Daniel's dashboard shows:
 
 ```
 Approved Budget     KES 3.24M     +12% vs last quarter
 Total Income        KES 1.87M     +8% year to date
 Total Expenditure   KES 1.42M     76% of approved budget
-Outstanding Reports     2          ↑1 from last month
+Outstanding Reports     2         ↑1 from last month
 ```
 
-### 9.2 Drill into analytics
+### 10.2 Analytics drill-down
 
-Daniel opens **Analytics**. He sees:
+Daniel opens **Analytics**:
 
-**Department Budget vs Spend:**
-- Youth has spent 68% of their approved budgets — on track
-- Outreach is at 91% — a warning flag, James has already flagged it as needing changes
+- **Department Budget vs Spend:** Youth at 68% — healthy. Outreach at 91% — flagged in orange.
+- **Income Trend:** Consistent growth. Camp registrations created a June spike.
+- **Budget Variance Report:** Youth Camp: +KES 43,400 surplus (good). Outreach: KES 19,350 remaining — monitoring.
 
-**Income Trend:**
-- Consistent growth in offerings over the past 6 months
-- Camp registrations gave a spike in June
+### 10.3 Switch to Hope Foundation
 
-**Budget Variance:**
-- Youth Annual Camp: +KES 43,400 surplus
-- Easter Conference: +KES 185,600 surplus (ended early)
-- Community Outreach: only KES 19,350 remaining — needs monitoring
+Daniel clicks the org selector and switches to Hope Foundation Kenya. The splash screen transitions in green. His dashboard now shows Foundation data:
 
-### 9.3 Review outstanding reports
+```
+Approved Budget     KES 920,000
+Total Income        KES 2,150,000   +18% year to date
+Total Expenditure   KES 312,000
+Outstanding Reports     2
+```
 
-Daniel sees 2 outstanding expenditure reports. He sends James a message noting the Outreach report is now 2 weeks overdue.
-
----
-
-## Journey 10 — Inviting a New Team Member
-
-*Sarah brings on a new youth worker, Kevin, who needs to upload receipts.*
-
-### 10.1 Chairperson sends an invite
-
-Daniel opens **Settings → Users → Invite**:
-
-- Email: kevin@gracecommunity.org
-- Role: Member
-- Department: Youth Ministry
-
-Kevin receives an invitation email.
-
-### 10.2 Kevin creates his account
-
-Kevin clicks the invite link, sets his name and password, and is taken to the dashboard. His view is minimal — he sees only the areas relevant to a Member:
-- Notifications
-- The ability to upload receipts to expenditure reports
-
-He can't see financial accounts, approve budgets, or view analytics. Steward shows him exactly what he needs — nothing more.
+He reviews the Mobile Health Clinic budget (Finance Approved, waiting for his final approval) and approves it.
 
 ---
 
-## Journey 11 — A Budget That Needs Changes
+## Journey 11 — Cross-Org User (Admin Hat)
 
-*Not every budget goes through cleanly. Here's what happens when the chairperson asks for revisions.*
+*James, wearing his Hope Foundation Admin hat, needs to add a new finance volunteer.*
 
-### 11.1 Outreach submits a budget
+### 11.1 Switch to Hope Foundation
 
-Peter (Outreach Department Head) submits "Community Medical Camp" with a transport line item of KES 80,000 for "vehicles" — no further detail.
+James switches to Hope Foundation via the org dropdown in the sidebar.
 
-### 11.2 Finance approves with a note
+### 11.2 Invite a new user
 
-James approves at the finance stage but adds a comment:
-> *"Finance approved. Note for chair: transport line needs more detail before final approval."*
+James opens **Admin → Users → Invite User**:
 
-### 11.3 Chairperson requests changes
+**Step 1:**
+- Name: Kevin Otieno
+- Email: kevin@hopefoundation.org
 
-Daniel reviews it and clicks **Request Changes**, with the comment:
-> *"Please itemise transport costs: how many vehicles, what type, per day or fixed rate? Need this for audit purposes."*
+**Step 2:**
+James assigns Kevin to **Hope Foundation Kenya** as **Member** (no department). This gives Kevin the ability to upload receipts to expenditure reports but no financial access.
 
-The budget status changes to `NEEDS_CHANGES`.
-
-### 11.4 Peter is notified
-
-Peter receives a notification:
-> **Budget needs changes**
-> Community Medical Camp — changes requested by Chairperson. See comments.
-
-Peter opens the budget and reads Daniel's comment. He edits the transport line item:
-- Splits it into "Hired 4WD × 2 days @ KES 15,000/day" (KES 30,000)
-- And "Matatu hire for volunteers × 3 trips @ KES 5,000" (KES 15,000)
-- Adds "Driver allowances × 2 @ KES 2,500" (KES 5,000)
-
-He re-submits. It goes back through finance (fast — James approves in minutes since the total hasn't changed) and then back to Daniel, who approves.
+Kevin receives the email, clicks the link, creates his account, and lands on the Hope Foundation dashboard with his limited view.
 
 ---
 
 ## Common Flows at a Glance
 
-### "I need to plan an event budget"
-`Budgets → New Budget → fill line items → Save Draft → Submit for Review`
+### "I need to budget for an event"
+`Events → New Event` → `Budgets → New Budget` → link to event → add line items → `Submit for Review`
 
 ### "I need to approve a budget"
-`Approvals → Finance Review Queue (or Chairperson Approvals) → Review → Approve or Request Changes`
+`Approvals` → Finance Review Queue or Chairperson Queue → open budget → `Approve` or `Request Changes`
 
-### "I need to release money for an approved budget"
-`Budgets → [open budget] → Request Disbursement → Finance approves → funds released`
+### "I need to release money"
+`Budgets` → open approved budget → `Request Disbursement` → Finance approves → `Release Funds`
 
 ### "We received a donation"
-`Income → Record Income → select account → enter amount and category → Save`
+`Income → Record Income` → select account → enter amount and category → `Save`
 
-### "I need to account for money I spent"
-`Expenditures → New Report → link to budget → upload receipts → allocate each → Submit`
+### "I need to account for what I spent"
+`Expenditures → New Report` → link to budget → upload receipts → allocate each → `Submit`
 
-### "Where did last month's money go?"
-`Analytics → Budget Variance Report` or `Accounts → [account] → Transactions`
+### "I want to see overall financial health"
+`Analytics` → Department Budget vs Spend + Income Trend + Budget Variance Table
 
 ### "Something looks wrong — who changed this?"
-`Audit Log → filter by entity type or actor → find the record`
+`Audit Log` → filter by entity type, actor, or date
+
+### "I need to add a user to a second organisation"
+`Admin → Users` → find user → expand → `+ Add to organisation`
+
+### "I want to switch to a different organisation"
+Sidebar org selector → click dropdown → choose organisation → splash screen loads
 
 ---
 
@@ -520,18 +553,19 @@ He re-submits. It goes back through finance (fast — James approves in minutes 
 
 | Event | Who gets notified |
 |-------|------------------|
-| Budget submitted | All Finance Officers |
-| Budget approved by Finance | Dept Head + Chairperson |
+| Budget submitted | All Finance Officers in the org |
+| Budget finance-approved | Dept Head + Chairperson |
 | Budget needs changes | Dept Head |
-| Budget finally approved | Dept Head + Finance |
+| Budget fully approved | Dept Head + all Finance Officers |
 | Budget rejected | Dept Head |
 | Disbursement requested | Finance Officers |
-| Disbursement released | Dept Head |
+| Disbursement released | Dept Head who requested it |
 | Expenditure report submitted | Finance Officers |
 | Expenditure report approved | Dept Head |
 | Expenditure report needs info | Dept Head |
 | Weekly overdue report reminder | Dept Heads with outstanding reports |
-| New user invited | Invitee (email) |
+| New user invited | Invitee (email only) |
+| Added to new organisation | User (email + in-app) |
 
 ---
 
@@ -539,15 +573,17 @@ He re-submits. It goes back through finance (fast — James approves in minutes 
 
 | Term | Definition |
 |------|------------|
-| **Budget** | A formal proposal to spend a specific amount on a set of line items, requiring approval before any money is spent |
-| **Budget Item** | A single line within a budget (e.g. "Transport — Bus hire × 2 @ KES 45,000") |
-| **Disbursement** | A formal release of funds from an account to a department against an approved budget |
-| **Expenditure Report** | The accountability document submitted after spending, containing receipts mapped to budget items |
-| **Receipt Allocation** | The mapping of a receipt to one or more budget line items (many-to-many) |
-| **Approval** | A formal review record — either Finance or Chairperson — on a budget |
-| **Audit Log** | An immutable record of every state-changing action in the system |
-| **Event Template** | A reusable set of default budget items for recurring events |
-| **Outstanding Accountability** | Budgets that have been fully disbursed but have no approved expenditure report yet |
-| **Soft Limit** | A department allocation that warns when exceeded but does not block submission |
-| **Fiscal Year** | The 12-month financial reporting period configured per organization |
-
+| **Organisation** | A top-level tenant. All financial data belongs to one organisation and is invisible to others. |
+| **Membership** | A user's relationship to an organisation — carries their role and optional department. |
+| **Budget** | A formal spending proposal with line items, requiring two-stage approval before funds can be released. |
+| **Budget Item** | A single line in a budget: description, category, quantity, unit cost. |
+| **Approval** | A formal review decision (Finance or Chairperson) on a budget — approved, rejected, or needs changes. |
+| **Disbursement** | A formal, auditable release of funds from an account against an approved budget. |
+| **Expenditure Report** | Post-spending accountability document containing receipts mapped to budget lines. |
+| **Receipt Allocation** | The mapping of a receipt to one or more budget line items (many-to-many). |
+| **Outstanding Accountability** | An approved, disbursed budget with no approved expenditure report. |
+| **Event Template** | A reusable set of default budget categories and line items for recurring events. |
+| **Soft Limit** | A department allocation that warns when exceeded but does not block budget submission. |
+| **Audit Log** | Append-only record of every state-changing action with before/after snapshots. |
+| **Org Picker** | The screen shown after login where a multi-org user chooses which organisation to work in. |
+| **Splash Screen** | The branded transition animation that plays when loading an organisation's workspace. |
