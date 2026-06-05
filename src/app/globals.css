@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+:root {
+  --font-geist-sans: "Geist", system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", monospace;
+
+  /* Brand */
+  --primary: #1F4B99;
+  --primary-light: #EEF3FF;
+  --primary-mid: #4F7FE6;
+  --gold: #C8A04D;
+  --gold-light: #FDF6E7;
+
+  /* Semantic */
+  --success: #15803D;
+  --success-bg: #F0FDF4;
+  --warning: #D97706;
+  --warning-bg: #FFFBEB;
+  --danger: #DC2626;
+  --danger-bg: #FEF2F2;
+  --draft: #64748B;
+  --draft-bg: #F8FAFC;
+  --info: #2563EB;
+  --info-bg: #EFF6FF;
+
+  /* Neutral */
+  --bg: #FAFBFC;
+  --surface: #FFFFFF;
+  --border: #E6EAF0;
+  --text: #111827;
+  --muted: #6B7280;
+
+  /* Radii */
+  --r-btn: 10px;
+  --r-card: 14px;
+  --r-input: 10px;
+  --r-dialog: 20px;
+}
+
+.dark {
+  --bg: #0B1220;
+  --surface: #111827;
+  --border: #1F2937;
+  --text: #F9FAFB;
+  --muted: #9CA3AF;
+  --primary: #4F7FE6;
+  --primary-light: #1a2a4a;
+  --gold: #D7B46A;
+  --gold-light: #1c1505;
+  --success-bg: #052e16;
+  --warning-bg: #1c1001;
+  --danger-bg: #1c0505;
+  --draft-bg: #0f172a;
+  --info-bg: #0d1e3a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }

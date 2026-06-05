@@ -1,0 +1,76 @@
+/**
+ * Prisma type stubs — mirrors what `prisma generate` produces.
+ *
+ * These let the app compile before running `pnpm db:generate`.
+ * After generate, you may import directly from "@prisma/client" if preferred.
+ */
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+export enum BudgetStatus {
+  DRAFT = "DRAFT",
+  SUBMITTED = "SUBMITTED",
+  NEEDS_CHANGES = "NEEDS_CHANGES",
+  FINANCE_APPROVED = "FINANCE_APPROVED",
+  CHAIR_APPROVED = "CHAIR_APPROVED",
+  REJECTED = "REJECTED",
+}
+
+export enum ApprovalType {
+  FINANCE = "FINANCE",
+  CHAIRPERSON = "CHAIRPERSON",
+}
+
+export enum ApprovalStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  NEEDS_CHANGES = "NEEDS_CHANGES",
+}
+
+export enum DisbursementStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  RELEASED = "RELEASED",
+  CANCELLED = "CANCELLED",
+}
+
+export enum ExpenditureStatus {
+  DRAFT = "DRAFT",
+  SUBMITTED = "SUBMITTED",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
+export enum AccountType {
+  BANK = "BANK",
+  MPESA = "MPESA",
+  CASH = "CASH",
+  SAVINGS = "SAVINGS",
+  PROJECT = "PROJECT",
+}
+
+export enum IncomeCategory {
+  TITHE = "TITHE",
+  OFFERING = "OFFERING",
+  DONATION = "DONATION",
+  REGISTRATION = "REGISTRATION",
+  FUNDRAISING = "FUNDRAISING",
+  GRANT = "GRANT",
+  OTHER = "OTHER",
+}
+
+export enum PrismaMemberRole {
+  ADMIN = "ADMIN",
+  FINANCE = "FINANCE",
+  CHAIRPERSON = "CHAIRPERSON",
+  DEPARTMENT_HEAD = "DEPARTMENT_HEAD",
+  MEMBER = "MEMBER",
+}
+
+export enum EventStatus {
+  PLANNING = "PLANNING",
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
