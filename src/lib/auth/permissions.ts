@@ -17,9 +17,11 @@ type Permission =
   | "analytics.view"
   | "organization.manage"
   | "users.manage"
+  | "platform.manage"
   | "*";
 
 const rolePermissions: Record<MemberRole, Permission[]> = {
+  platform_admin: ["*"],
   admin: ["*"],
   chairperson: [
     "budget.approve_chair",

@@ -20,8 +20,11 @@ const pageTitles: Record<string, string> = {
   "/audit":              "Audit Log",
   "/notifications":      "Notifications",
   "/settings":           "Settings",
-  "/admin/users":        "User Management",
-  "/admin/organisations":"Organisations",
+  "/admin/users":               "User Management",
+  "/admin/organisations":       "Organisations",
+  "/platform-admin":            "Platform Overview",
+  "/platform-admin/organisations": "Organisations",
+  "/platform-admin/users":      "All Users",
 };
 
 export function Topbar() {
