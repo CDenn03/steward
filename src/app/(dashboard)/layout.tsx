@@ -1,48 +1,52 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useOrg } from "@/lib/org/context";
+import { requireOrgSession } from "@/lib/auth/session";
+import { OrgProvider, type ActiveOrg } from "@/lib/org/context";
 import { Sidebar } from "@/components/shared/sidebar";
 import { Topbar } from "@/components/shared/topbar";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const { active } = useOrg();
+function initials(name: string) {
+  return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+}
 
-  useEffect(() => {
-    if (active === null) {
-      // Only redirect if we've had a chance to rehydrate (brief timeout)
-      const t = setTimeout(() => {
-        if (!sessionStorage.getItem("steward_active_org")) {
-          router.replace("/org-picker");
-        }
-      }, 200);
-      return () => clearTimeout(t);
-    }
-  }, [active, router]);
+// Deterministic colour from org name
+const ORG_COLORS = ["#1F4B99", "#15803D", "#7C3AED", "#B45309", "#0F766E"];
+function orgColor(name: string) {
+  let n = 0;
+  for (const c of name) n += c.charCodeAt(0);
+  return ORG_COLORS[n % ORG_COLORS.length];
+}
 
-  if (!active) {
-    return (
-      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
-        <div className="flex items-center gap-2.5 text-[var(--muted)] text-[13px]">
-          <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-          </svg>
-          Loading workspace…
-        </div>
-      </div>
-    );
-  }
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await requireOrgSession();
+
+  const color = orgColor(session.organization.name);
+
+  const initialOrg: ActiveOrg = {
+    orgId: session.organizationId,
+    orgName: session.organization.name,
+    orgSlug: session.organization.slug,
+    orgInitials: initials(session.organization.name),
+    orgColor: color,
+    orgDescription: session.organization.slug,
+    currency: session.organization.currency,
+    userId: session.userId,
+    userName: session.user.name,
+    userInitials: initials(session.user.name),
+    userEmail: session.user.email,
+    role: session.role,
+    departmentId: session.departmentId,
+    departmentName: null,
+    membershipId: session.membershipId,
+  };
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="ml-[224px] flex-1 flex flex-col min-w-0">
-        <Topbar />
-        <main className="flex-1 p-7">{children}</main>
+    <OrgProvider initialOrg={initialOrg}>
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <div className="ml-[224px] flex-1 flex flex-col min-w-0">
+          <Topbar />
+          <main className="flex-1 p-7">{children}</main>
+        </div>
       </div>
-    </div>
+    </OrgProvider>
   );
 }

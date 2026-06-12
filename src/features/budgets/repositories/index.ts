@@ -22,7 +22,8 @@ export async function getBudgetsByOrg(
 }
 
 export async function getBudgetById(id: string, organizationId: string) {
-  return prisma.budget.findFirst({
+  const [budget, attachments] = await Promise.all([
+    prisma.budget.findFirst({
     where: { id, organizationId },
     include: {
       department: true,
@@ -41,7 +42,14 @@ export async function getBudgetById(id: string, organizationId: string) {
         orderBy: { createdAt: "desc" },
       },
     },
-  });
+    }),
+    prisma.attachment.findMany({
+      where: { entityType: "Budget", entityId: id },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  return budget ? { ...budget, attachments } : null;
 }
 
 export async function createBudget(data: {
@@ -90,8 +98,22 @@ export async function getPendingApprovals(organizationId: string) {
       budget: { organizationId },
     },
     include: {
-      budget: { include: { department: true, event: true } },
+      budget: { include: { department: true, event: true, items: true } },
     },
     orderBy: { createdAt: "asc" },
+  });
+}
+
+export async function getDashboardBudgets(organizationId: string) {
+  return prisma.budget.findMany({
+    where: { organizationId },
+    include: {
+      department: true,
+      event: true,
+      items: { select: { totalCost: true } },
+      expenditures: { select: { totalClaimed: true } },
+    },
+    orderBy: { updatedAt: "desc" },
+    take: 6,
   });
 }

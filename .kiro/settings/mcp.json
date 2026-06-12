@@ -1,7 +1,12 @@
 {
   "mcpServers": {
     "neon": {
-      "url": "https://mcp.neon.tech/sse"
+      "url": "https://mcp.neon.tech/sse",
+      "disabledTools": [
+        "delete_project",
+        "list_organizations",
+        "list_shared_projects"
+      ]
     },
     "github": {
       "command": "npx",
@@ -11,7 +16,8 @@
       ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
-      }
+      },
+      "disabled": true
     },
     "context7": {
       "command": "npx",

@@ -6,11 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
+import { startFirstLogin } from "@/features/auth/actions/first-login";
 
 type Mode = "password" | "magic";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [mode, setMode]           = useState<Mode>("password");
   const [email, setEmail]         = useState("");
   const [password, setPassword]   = useState("");
@@ -26,12 +29,29 @@ export default function LoginPage() {
     setLoading(true);
 
     if (mode === "password") {
-      if (!password) { setError("Password is required."); setLoading(false); return; }
+      if (!password) {
+        const firstLogin = await startFirstLogin(email);
+        setLoading(false);
+        if (firstLogin.ok) {
+          if (firstLogin.otp) toast(`Development OTP: ${firstLogin.otp}`, "info");
+          router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+        } else {
+          setError(firstLogin.code === "password_required" ? "Password is required." : firstLogin.message);
+        }
+        return;
+      }
       const res = await signIn("credentials", { email, password, redirect: false });
-      setLoading(false);
       if (res?.error) {
-        setError("Invalid email or password.");
+        const firstLogin = await startFirstLogin(email);
+        setLoading(false);
+        if (firstLogin.ok) {
+          if (firstLogin.otp) toast(`Development OTP: ${firstLogin.otp}`, "info");
+          router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+        } else {
+          setError("Invalid email or password.");
+        }
       } else {
+        setLoading(false);
         router.push("/org-picker");
       }
     } else {

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 import { X } from "lucide-react";
 
 interface Toast { id: number; message: string; type?: "info" | "success" | "error" }

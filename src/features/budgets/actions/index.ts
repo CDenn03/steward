@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { CreateBudgetSchema, ReviewBudgetSchema } from "../schemas";
 import { createBudgetService, submitBudgetService, reviewBudgetService } from "../services";
 import { requireSession } from "@/lib/auth/session";
+import { prisma } from "@/lib/prisma/client";
 
 export async function createBudgetAction(formData: unknown) {
   const session = await requireSession();
@@ -30,6 +32,7 @@ export async function submitBudgetAction(budgetId: string) {
       organizationId: session.organizationId,
     });
     revalidatePath("/budgets");
+    revalidatePath(`/budgets/${budgetId}`);
     revalidatePath("/approvals");
     return { success: true };
   } catch (err) {
@@ -48,10 +51,31 @@ export async function reviewBudgetAction(formData: unknown) {
       organizationId: session.organizationId,
     });
     revalidatePath("/budgets");
+    revalidatePath(`/budgets/${parsed.data.budgetId}`);
     revalidatePath("/approvals");
     revalidatePath("/dashboard");
     return { success: true };
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Unknown error" };
   }
+}
+
+export async function addApprovalCommentAction(approvalId: string, body: string) {
+  const session = await requireSession();
+
+  const trimmed = body.trim();
+  if (!trimmed) return { error: "Comment cannot be empty" };
+
+  // Verify the approval belongs to this org
+  const approval = await prisma.approval.findFirst({
+    where: { id: approvalId, budget: { organizationId: session.organizationId } },
+  });
+  if (!approval) return { error: "Approval not found" };
+
+  const comment = await prisma.approvalComment.create({
+    data: { approvalId, authorId: session.userId, body: trimmed },
+  });
+
+  revalidatePath("/budgets/[budgetId]", "page");
+  return { data: comment };
 }

@@ -1,7 +1,10 @@
+import { requirePlatformAdmin } from "@/lib/auth/session";
 import { PlatformSidebar } from "@/components/shared/platform-sidebar";
 import { PlatformTopbar } from "@/components/shared/platform-topbar";
 
-export default function PlatformAdminLayout({ children }: { children: React.ReactNode }) {
+export default async function PlatformAdminLayout({ children }: { children: React.ReactNode }) {
+  await requirePlatformAdmin();
+
   return (
     <div className="flex min-h-screen">
       <PlatformSidebar />

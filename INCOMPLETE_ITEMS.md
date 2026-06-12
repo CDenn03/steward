@@ -68,7 +68,7 @@
 
 ---
 
-## SECTION 2 — Data Layer (🔴 Blockers)
+## SECTION 2 — Data Layer ( Blockers)
 
 ### 2.1 All pages use mock data, not the database
 **Status:** Every dashboard page imports from `src/lib/mock/data.ts`. No page fetches real data from PostgreSQL.

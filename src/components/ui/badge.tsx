@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import type { BudgetStatus } from "@/types";
 
 const statusConfig: Record<
-  BudgetStatus | "under_review",
+  BudgetStatus | "under_review" | "approved",
   { label: string; className: string }
 > = {
   draft: { label: "Draft", className: "bg-draft-bg text-draft" },
@@ -12,10 +12,11 @@ const statusConfig: Record<
   chair_approved: { label: "Approved", className: "bg-success-bg text-success" },
   rejected: { label: "Rejected", className: "bg-danger-bg text-danger" },
   under_review: { label: "Under Review", className: "bg-info-bg text-info" },
+  approved: { label: "Approved", className: "bg-success-bg text-success" },
 };
 
 interface StatusBadgeProps {
-  status: BudgetStatus | "under_review";
+  status: BudgetStatus | "under_review" | "approved";
   className?: string;
 }
 
