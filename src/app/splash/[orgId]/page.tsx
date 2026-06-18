@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { requireOrgSession } from "@/lib/auth/session";
+import { prisma } from "@/lib/prisma/client";
 import { SplashClient } from "./splash-client";
 
 function initials(name: string) {
@@ -12,9 +14,25 @@ function orgColor(name: string) {
   return ORG_COLORS[n % ORG_COLORS.length];
 }
 
-export default async function SplashPage(props: { searchParams?: Promise<{ redirect?: string }> }) {
-  const session = await requireOrgSession();
+export default async function SplashPage(props: {
+  params: Promise<{ orgId: string }>;
+  searchParams?: Promise<{ redirect?: string }>;
+}) {
+  const { orgId } = await props.params;
   const searchParams = await props.searchParams;
+
+  // Resolve slug from orgId and set cookie so requireOrgSession picks the right org
+  const org = await prisma.organization.findUnique({ where: { id: orgId }, select: { slug: true } });
+  let slug = org?.slug;
+  if (!slug) {
+    // Fallback: try cookie or find any membership
+    try { slug = (await cookies()).get("org_slug")?.value; } catch { /* ignore */ }
+  }
+  if (slug) {
+    try { (await cookies()).set("org_slug", slug, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax", httpOnly: true, secure: process.env.NODE_ENV === "production" }); } catch { /* ignore */ }
+  }
+
+  const session = await requireOrgSession(slug);
 
   return (
     <SplashClient

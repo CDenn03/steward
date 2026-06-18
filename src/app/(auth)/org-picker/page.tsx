@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma/client";
 import { OrgPickerClient } from "./org-picker-client";
@@ -24,6 +25,20 @@ export default async function OrgPickerPage() {
 
   if (memberships.some((m: (typeof memberships)[number]) => m.role === "PLATFORM_ADMIN")) {
     redirect("/platform-admin");
+  }
+
+  // If user has a last-used org cookie, redirect straight to its splash screen
+  try {
+    const cookieStore = await cookies();
+    const orgSlug = cookieStore.get("org_slug")?.value;
+    if (orgSlug) {
+      const match = memberships.find((m: (typeof memberships)[number]) => m.organization.slug === orgSlug);
+      if (match) {
+        redirect(`/splash/${match.organizationId}`);
+      }
+    }
+  } catch {
+    // cookies() unavailable outside request context
   }
 
   const data = memberships.map((m: (typeof memberships)[number]) => ({

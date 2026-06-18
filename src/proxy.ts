@@ -17,6 +17,11 @@ const PROTECTED_PATHS = [
   "/platform-admin",
 ];
 
+const ALLOWED_ORIGINS_ENV = process.env.ALLOWED_ORIGINS;
+const allowedOrigins = ALLOWED_ORIGINS_ENV
+  ? ALLOWED_ORIGINS_ENV.split(",").map((o) => o.trim())
+  : [];
+
 function getSessionCookie(request: NextRequest) {
   return (
     request.cookies.get("next-auth.session-token") ??
@@ -26,17 +31,47 @@ function getSessionCookie(request: NextRequest) {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const response = NextResponse.next();
 
+  // ── Dark mode (15.3) ─────────────────────────────────────────────────────
+  const theme = request.cookies.get("theme")?.value;
+  if (theme === "dark") {
+    response.headers.set("x-theme", "dark");
+  }
+
+  // ── CSRF protection (14.1) ───────────────────────────────────────────────
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method)) {
+    const origin = request.headers.get("origin");
+    const host = request.headers.get("host");
+
+    if (origin) {
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      const normalizedAuthUrl = process.env.NEXTAUTH_URL?.replace(/\/$/, "");
+      const allowed = [
+        normalizedAuthUrl,
+        `https://${host}`,
+        `http://${host}`,
+        ...allowedOrigins.map((o) => o.replace(/\/$/, "")),
+      ].filter(Boolean);
+
+      const isAllowed = allowed.some((a) => a && normalizedOrigin === a);
+      if (!isAllowed) {
+        return new NextResponse("CSRF check failed", { status: 403 });
+      }
+    }
+  }
+
+  // ── Auth route protection ─────────────────────────────────────────────────
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon")
   ) {
-    return NextResponse.next();
+    return response;
   }
 
   const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
-  if (!isProtected) return NextResponse.next();
+  if (!isProtected) return response;
 
   if (!getSessionCookie(request)) {
     const loginUrl = new URL("/login", request.url);
@@ -44,7 +79,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

@@ -3,22 +3,37 @@
 import { revalidatePath } from "next/cache";
 import { requirePlatformAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
+import {
+  UpdateMembershipSchema,
+  CreateOrganizationSchema,
+} from "../schemas";
 
-export async function updateMembershipAction(membershipId: string, data: { role?: string; departmentId?: string | null }) {
+export async function updateMembershipAction(
+  membershipId: string,
+  formData: unknown
+) {
   const session = await requirePlatformAdmin();
+  const parsed = UpdateMembershipSchema.safeParse(formData);
+  if (!parsed.success) return { error: "Invalid input" };
 
   const membership = await prisma.membership.findFirst({
     where: { id: membershipId, organizationId: session.organizationId },
   });
   if (!membership) return { error: "Membership not found" };
 
-  await prisma.membership.update({
-    where: { id: membershipId },
-    data: {
-      ...(data.role ? { role: data.role as never } : {}),
-      ...(data.departmentId !== undefined ? { departmentId: data.departmentId } : {}),
-    },
-  });
+  try {
+    await prisma.membership.update({
+      where: { id: membershipId },
+      data: {
+        ...(parsed.data.role ? { role: parsed.data.role as never } : {}),
+        ...(parsed.data.departmentId !== undefined
+          ? { departmentId: parsed.data.departmentId }
+          : {}),
+      },
+    });
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Update failed" };
+  }
 
   revalidatePath("/admin/users");
   return { success: true };
@@ -32,36 +47,47 @@ export async function removeMembershipAction(membershipId: string) {
   });
   if (!membership) return { error: "Membership not found" };
 
-  await prisma.membership.update({
-    where: { id: membershipId },
-    data: { isActive: false },
-  });
+  try {
+    await prisma.membership.update({
+      where: { id: membershipId },
+      data: { isActive: false },
+    });
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Remove failed" };
+  }
 
   revalidatePath("/admin/users");
   return { success: true };
 }
 
-export async function createOrganizationAction(data: {
-  name: string;
-  slug: string;
-  currency?: string;
-  fiscalYearStart?: string;
-}) {
+export async function createOrganizationAction(formData: unknown) {
   const session = await requirePlatformAdmin();
+  const parsed = CreateOrganizationSchema.safeParse(formData);
+  if (!parsed.success) return { error: { message: "Invalid input" } };
 
-  const existing = await prisma.organization.findUnique({ where: { slug: data.slug } });
-  if (existing) return { error: { message: "An organisation with this slug already exists" } };
+  const { name, slug, currency, fiscalYearStart } = parsed.data;
 
-  const org = await prisma.organization.create({
-    data: {
-      name: data.name,
-      slug: data.slug,
-      currency: data.currency ?? "KES",
-      fiscalYearStart: data.fiscalYearStart ?? "01-01",
-    },
-  });
+  try {
+    const existing = await prisma.organization.findUnique({
+      where: { slug },
+    });
+    if (existing)
+      return {
+        error: { message: "An organisation with this slug already exists" },
+      };
 
-  revalidatePath("/platform-admin/organisations");
-  revalidatePath("/admin/organisations");
-  return { data: org };
+    const org = await prisma.organization.create({
+      data: { name, slug, currency, fiscalYearStart },
+    });
+
+    revalidatePath("/platform-admin/organisations");
+    revalidatePath("/admin/organisations");
+    return { data: org };
+  } catch (err) {
+    return {
+      error: {
+        message: err instanceof Error ? err.message : "Creation failed",
+      },
+    };
+  }
 }

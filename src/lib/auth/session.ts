@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { auth } from "./auth";
 import { prisma } from "@/lib/prisma/client";
 import { can, isPlatformAdmin, isOrgRole, type Permission } from "./permissions";
@@ -21,6 +22,16 @@ export interface SessionContext {
 export async function requireSession(organizationSlug?: string): Promise<SessionContext> {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+
+  // Try cookie-based org slug as default if none provided explicitly
+  if (!organizationSlug) {
+    try {
+      const cookieStore = await cookies();
+      organizationSlug = cookieStore.get("org_slug")?.value;
+    } catch {
+      // cookies() may be unavailable outside request context
+    }
+  }
 
   const membership = await prisma.membership.findFirst({
     where: {

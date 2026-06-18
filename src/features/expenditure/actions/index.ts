@@ -15,6 +15,7 @@ import {
 } from "../services";
 import { requireSession } from "@/lib/auth/session";
 import { generateStorageKey, getSignedUploadUrl } from "@/lib/storage/r2";
+import { validateFileMeta } from "@/lib/storage/validation";
 
 export async function createExpenditureReportAction(formData: unknown) {
   const session = await requireSession();
@@ -36,6 +37,10 @@ export async function createExpenditureReportAction(formData: unknown) {
 
 export async function getUploadUrlAction(fileName: string, mimeType: string) {
   const session = await requireSession();
+
+  const validationError = validateFileMeta(fileName, mimeType);
+  if (validationError) return { error: { message: validationError } };
+
   try {
     const storageKey = generateStorageKey(
       session.organizationId,

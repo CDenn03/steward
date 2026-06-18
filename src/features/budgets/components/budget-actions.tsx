@@ -151,7 +151,7 @@ export function BudgetActions({
         )}
 
         {confirmDecision && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" role="dialog" aria-modal="true" aria-label="Budget decision confirmation">
             <div ref={dialogRef} className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-xl w-full max-w-sm p-5 space-y-4">
               <div>
                 <p className="text-[14px] font-semibold">

@@ -5,6 +5,17 @@
  *  - Before generate: logs a warning, exports a no-op stub
  *  - After generate:  exports the real PrismaClient singleton
  *
+ * ── Connection pooling (14.5) ───────────────────────────────────────────────
+ * For serverless deployments (Vercel, Neon, etc.), use PgBouncer-compatible
+ * connection pooling by setting DATABASE_URL to a pooled connection string
+ * (e.g. ?pgbouncer=true for Neon, or use the PgBouncer host for Supabase).
+ * Then enable the "pgbouncer" option below:
+ *
+ *   new PrismaClient({ datasources: { db: { url: process.env.DATABASE_URL } } })
+ *
+ * The `connectionLimit` for PgBouncer should match your plan's pool size.
+ * ────────────────────────────────────────────────────────────────────────────
+ *
  * Setup order:
  *   pnpm install          # installs deps + runs postinstall (prisma generate)
  *   pnpm db:migrate       # applies schema to your database

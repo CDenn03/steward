@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { setActiveOrgCookie } from "@/lib/org/actions/set-active-org";
 
 const roleLabels: Record<string, string> = {
   PLATFORM_ADMIN:  "Platform Admin",
@@ -33,6 +34,7 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
   // Auto-select if only one membership
   useEffect(() => {
     if (memberships.length === 1) {
+      setActiveOrgCookie(memberships[0].orgDescription);
       router.replace(`/splash/${memberships[0].orgId}`);
     }
   }, [memberships, router]);
@@ -41,6 +43,8 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
     if (loading) return;
     setSelected(orgId);
     setLoading(true);
+    const org = memberships.find((m) => m.orgId === orgId);
+    if (org) await setActiveOrgCookie(org.orgDescription);
     await new Promise((r) => setTimeout(r, 180));
     router.push(`/splash/${orgId}`);
   };

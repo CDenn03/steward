@@ -2,6 +2,7 @@ import { requireOrgSession } from "@/lib/auth/session";
 import { OrgProvider, type ActiveOrg } from "@/lib/org/context";
 import { Sidebar } from "@/components/shared/sidebar";
 import { Topbar } from "@/components/shared/topbar";
+import { MobileSidebar } from "@/components/shared/mobile-sidebar";
 
 function initials(name: string) {
   return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
@@ -41,10 +42,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <OrgProvider initialOrg={initialOrg}>
       <div className="flex min-h-screen">
-        <Sidebar />
-        <div className="ml-[224px] flex-1 flex flex-col min-w-0">
+        <div className="hidden md:block">
+          <Sidebar />
+        </div>
+        <MobileSidebar />
+        <div className="md:ml-[224px] flex-1 flex flex-col min-w-0">
           <Topbar />
-          <main className="flex-1 p-7">{children}</main>
+          <main className="flex-1 p-4 md:p-7 pt-14 md:pt-4">{children}</main>
         </div>
       </div>
     </OrgProvider>

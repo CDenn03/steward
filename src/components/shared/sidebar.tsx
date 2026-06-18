@@ -189,6 +189,8 @@ export function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-label={item.label}
+                  aria-current={active_link ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-2.5 mx-2 px-3 py-1.5 rounded-lg text-[13.5px] transition-all duration-150",
                     active_link
