@@ -1,11 +1,12 @@
-import { Building2, Plus } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
+import { prisma } from "@/lib/prisma/client";
 import { getDepartmentBudgetSummaries } from "@/features/budgets/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress";
 import { formatCurrency, pct } from "@/lib/utils";
+import { AddDepartmentButton } from "./add-department-button";
 
 type DepartmentRow = {
   id: string;
@@ -18,15 +19,24 @@ type DepartmentRow = {
 
 export default async function DepartmentsPage() {
   const session = await requireSession();
-  const departments = await getDepartmentBudgetSummaries(session.organizationId) as DepartmentRow[];
+  const [departments, members] = await Promise.all([
+    getDepartmentBudgetSummaries(session.organizationId),
+    prisma.membership.findMany({
+      where: { organizationId: session.organizationId, isActive: true },
+      include: { user: { select: { id: true, name: true } } },
+      orderBy: { joinedAt: "asc" },
+    }),
+  ]);
+  const deptRows = departments as DepartmentRow[];
+  const memberOptions = members.map((m: { userId: string; user: { id: string; name: string } }) => ({ id: m.userId, name: m.user.name }));
 
   return (
     <>
       <PageHeader title="Departments" subtitle="Manage departments, heads, and budget allocations">
-        <Button variant="ghost" size="sm"><Plus size={13} /> Add Department</Button>
+        <AddDepartmentButton members={memberOptions} />
       </PageHeader>
       <div className="grid grid-cols-3 gap-4">
-        {departments.map((dept) => {
+        {deptRows.map((dept: DepartmentRow) => {
           const totalAllocated = dept.budgets.reduce(
             (sum, budget) => sum + budget.items.reduce((itemSum, item) => itemSum + item.totalCost, 0),
             0

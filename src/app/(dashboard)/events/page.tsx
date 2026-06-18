@@ -1,11 +1,12 @@
-import { Plus, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
-import { getEventsWithBudgets } from "@/features/budgets/repositories";
+import { getEventsWithBudgets, getBudgetFormOptions } from "@/features/budgets/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/badge";
 import { formatDate, formatCurrency } from "@/lib/utils";
+import { NewEventButton } from "./new-event-button";
 import type { BudgetStatus } from "@/types";
 
 type EventRow = {
@@ -19,17 +20,21 @@ type EventRow = {
 
 export default async function EventsPage() {
   const session = await requireSession();
-  const events = await getEventsWithBudgets(session.organizationId) as EventRow[];
+  const [events, formOptions] = await Promise.all([
+    getEventsWithBudgets(session.organizationId),
+    getBudgetFormOptions(session.organizationId),
+  ]);
+  const allEvents = events as EventRow[];
 
   return (
     <>
       <PageHeader title="Events" subtitle="Manage recurring and one-time events with budget templates">
         <Button variant="ghost" size="sm"><Calendar size={13} /> Templates</Button>
-        <Button size="sm"><Plus size={13} /> New Event</Button>
+        <NewEventButton departments={formOptions.departments} />
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4">
-        {events.map((event) => {
+        {allEvents.map((event: EventRow) => {
           const budget = event.budgets[0];
           const total = budget?.items.reduce((sum, item) => sum + item.totalCost, 0) ?? 0;
           return (

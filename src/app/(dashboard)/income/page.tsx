@@ -4,7 +4,9 @@ import {
   getIncomeMonthlyBreakdown,
   getIncomeRecordsByOrg,
   getIncomeSummary,
+  getFinancialAccountsByOrg,
 } from "@/features/finance/repositories";
+import { getBudgetFormOptions } from "@/features/budgets/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +14,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { IncomeTable, type IncomeRecord } from "./income-table";
 import { formatCurrency } from "@/lib/utils";
 import { IncomeBreakdownChart } from "@/features/income/components/income-breakdown-chart";
+import { RecordIncomeActionButton } from "./record-income-button";
 
 type RawIncomeRecord = {
   id: string;
@@ -24,10 +27,12 @@ type RawIncomeRecord = {
 
 export default async function IncomePage() {
   const session = await requireSession();
-  const [summary, monthly, rawRecords] = await Promise.all([
+  const [summary, monthly, rawRecords, accounts, formOptions] = await Promise.all([
     getIncomeSummary(session.organizationId),
     getIncomeMonthlyBreakdown(session.organizationId),
     getIncomeRecordsByOrg(session.organizationId),
+    getFinancialAccountsByOrg(session.organizationId),
+    getBudgetFormOptions(session.organizationId),
   ]);
 
   const records: IncomeRecord[] = (rawRecords as RawIncomeRecord[]).map((record: RawIncomeRecord) => ({
@@ -52,7 +57,7 @@ export default async function IncomePage() {
     <>
       <PageHeader title="Income" subtitle="Track all income sources — offerings, donations, registrations, grants">
         <Button variant="ghost" size="sm"><TrendingUp size={13} /> Reports</Button>
-        <Button size="sm"><Plus size={13} /> Record Income</Button>
+        <RecordIncomeActionButton accounts={accounts} departments={formOptions.departments} events={formOptions.events} />
       </PageHeader>
 
       <div className="grid grid-cols-4 gap-3.5 mb-6">

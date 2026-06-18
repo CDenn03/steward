@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Plus, Trash2, Send, Save, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, pct } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import {
   createBudgetAction,
@@ -34,14 +34,23 @@ const newItem = (): LineItem => ({
   unitCost: 0,
 });
 
+type DeptAllocation = {
+  id: string;
+  amount: number;
+  fiscalYear: number;
+  department: { id: string; name: string; softLimit: number | null };
+};
+
 export function NewBudgetForm({
   departments,
   events,
   categories,
+  departmentAllocations = [],
 }: {
   departments: FormOption[];
   events: FormOption[];
   categories: FormOption[];
+  departmentAllocations?: DeptAllocation[];
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -56,6 +65,16 @@ export function NewBudgetForm({
   const [formError, setFormError] = useState("");
 
   const total = items.reduce((s, i) => s + i.quantity * i.unitCost, 0);
+
+  const selectedAllocation = departmentId
+    ? departmentAllocations.find((a) => a.department.id === departmentId)
+    : null;
+
+  const deptInfo = selectedAllocation?.department;
+  const overAllocation =
+    selectedAllocation && total > 0 && total > selectedAllocation.amount;
+  const overSoftLimit =
+    deptInfo?.softLimit && total > 0 && total > deptInfo.softLimit;
 
   const updateItem = useCallback((id: string, field: keyof LineItem, value: string | number) => {
     setItems((prev) => prev.map((item) => item.id === id ? { ...item, [field]: value } : item));
@@ -202,6 +221,25 @@ export function NewBudgetForm({
                     ))}
                   </select>
                   {errors.departmentId && <p className="text-[11px] text-danger mt-1">{errors.departmentId}</p>}
+                  {departmentId && total > 0 && (
+                    <>
+                      {overAllocation && selectedAllocation && (
+                        <p className="text-[11px] text-danger mt-1.5">
+                          Total ({formatCurrency(total)}) exceeds {formatCurrency(selectedAllocation.amount)} allocation for this department
+                        </p>
+                      )}
+                      {!overAllocation && overSoftLimit && deptInfo?.softLimit && (
+                        <p className="text-[11px] text-amber-600 mt-1.5">
+                          Total ({formatCurrency(total)}) exceeds {formatCurrency(deptInfo.softLimit)} soft limit for this department
+                        </p>
+                      )}
+                      {selectedAllocation && total <= selectedAllocation.amount && total > selectedAllocation.amount * 0.8 && (
+                        <p className="text-[11px] text-amber-600 mt-1.5">
+                          Approaching allocation limit — {formatCurrency(total)} of {formatCurrency(selectedAllocation.amount)} used ({pct(total, selectedAllocation.amount)}%)
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
                 <div>
                   <label className="block text-[12px] font-medium mb-1.5">

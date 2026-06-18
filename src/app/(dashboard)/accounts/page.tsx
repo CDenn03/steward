@@ -1,4 +1,4 @@
-import { Plus, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import {
   getFinancialAccountsByOrg,
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/ui/stat-card";
 import { TransactionsTable, type TransactionRow } from "./transactions-table";
 import { formatCurrency } from "@/lib/utils";
+import { AddAccountButton } from "./add-account-button";
 
 type AccountRow = {
   id: string;
@@ -60,7 +61,7 @@ export default async function AccountsPage() {
   return (
     <>
       <PageHeader title="Accounts" subtitle="All financial accounts and transaction history">
-        <Button variant="ghost" size="sm"><Plus size={13} /> Add Account</Button>
+        <AddAccountButton />
       </PageHeader>
 
       <div className="grid grid-cols-4 gap-3.5 mb-6">
