@@ -133,7 +133,7 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>
               <p className="text-[14px] font-medium">Budget Overview</p>
-              <p className="text-[12px] text-[var(--muted)]">Latest budgets from the database</p>
+              <p className="text-[12px] text-(--muted)">Latest budgets from the database</p>
             </CardTitle>
             <Link href="/budgets"><Button variant="ghost" size="sm">View all</Button></Link>
           </CardHeader>
@@ -145,13 +145,13 @@ export default async function DashboardPage() {
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Pending Approvals</p>
-                <p className="text-[12px] text-[var(--muted)]">Awaiting action</p>
+                <p className="text-[12px] text-(--muted)">Awaiting action</p>
               </CardTitle>
               <span className="text-[11px] font-medium bg-warning-bg text-warning px-2 py-0.5 rounded-md">
                 {approvalRows.length} items
               </span>
             </CardHeader>
-            <CardBody className="p-0 divide-y divide-[var(--border)]">
+            <CardBody className="p-0 divide-y divide-(--border)">
               {approvalRows.slice(0, 3).map((approval: ApprovalRow) => {
                 const total = approval.budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
                 return (
@@ -159,9 +159,9 @@ export default async function DashboardPage() {
                     <div className="w-8 h-8 rounded-lg bg-[var(--primary-light)] flex items-center justify-center text-[13px] flex-shrink-0">KES</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium truncate">{approval.budget.title}</p>
-                      <p className="text-[11px] text-[var(--muted)]">{formatCurrency(total)} · Pending {approval.type.toLowerCase()} review</p>
+                      <p className="text-[11px] text-(--muted)">{formatCurrency(total)} · Pending {approval.type.toLowerCase()} review</p>
                     </div>
-                    <span className="text-[10px] font-medium bg-[var(--primary-light)] text-[var(--primary)] px-1.5 py-0.5 rounded flex-shrink-0 capitalize">{approval.type.toLowerCase()}</span>
+                    <span className="text-[10px] font-medium bg-[var(--primary-light)] text-(--primary) px-1.5 py-0.5 rounded flex-shrink-0 capitalize">{approval.type.toLowerCase()}</span>
                   </Link>
                 );
               })}
@@ -172,11 +172,11 @@ export default async function DashboardPage() {
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Account Balances</p>
-                <p className="text-[12px] text-[var(--muted)]">Current stored balances</p>
+                <p className="text-[12px] text-(--muted)">Current stored balances</p>
               </CardTitle>
               <Link href="/accounts"><Button variant="ghost" size="sm">Manage</Button></Link>
             </CardHeader>
-            <div className="divide-y divide-[var(--border)]">
+            <div className="divide-y divide-(--border)">
               {accounts.map((account: AccountRow) => (
                 <div key={account.id} className="flex items-center gap-3 px-4 py-3">
                   <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold flex-shrink-0">
@@ -184,14 +184,14 @@ export default async function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-medium truncate">{account.name}</p>
-                    <p className="text-[11px] text-[var(--muted)]">{account.provider ?? account.accountNumber ?? "Account"}</p>
+                    <p className="text-[11px] text-(--muted)">{account.provider ?? account.accountNumber ?? "Account"}</p>
                   </div>
                   <p className="font-mono text-[13px] font-medium">{formatCurrency(account.balance, account.currency, true)}</p>
                 </div>
               ))}
             </div>
-            <div className="px-4 py-3 border-t border-[var(--border)] flex justify-between items-center">
-              <span className="text-[12px] text-[var(--muted)]">Total liquid assets</span>
+            <div className="px-4 py-3 border-t border-(--border) flex justify-between items-center">
+              <span className="text-[12px] text-(--muted)">Total liquid assets</span>
               <span className="font-mono font-semibold text-[13px]">{formatCurrency(totalBalance, "KES", true)}</span>
             </div>
           </Card>
@@ -203,22 +203,22 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>
               <p className="text-[14px] font-medium">Upcoming Events</p>
-              <p className="text-[12px] text-[var(--muted)]">Events with active budgets</p>
+              <p className="text-[12px] text-(--muted)">Events with active budgets</p>
             </CardTitle>
           </CardHeader>
-          <CardBody className="p-0 divide-y divide-[var(--border)]">
+          <CardBody className="p-0 divide-y divide-(--border)">
             {eventRows.map((event: EventRow) => {
               const budget = event.budgets[0];
               const total = budget?.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0) ?? 0;
               return (
                 <div key={event.id} className="flex items-center gap-4 px-5 py-3.5">
                   <div className="text-center w-9 flex-shrink-0">
-                    <p className="text-[18px] font-semibold leading-none text-[var(--primary)]">{event.startDate.getDate()}</p>
-                    <p className="text-[10px] text-[var(--muted)] tracking-wide">{event.startDate.toLocaleString("en", { month: "short" }).toUpperCase()}</p>
+                    <p className="text-[18px] font-semibold leading-none text-(--primary)">{event.startDate.getDate()}</p>
+                    <p className="text-[10px] text-(--muted) tracking-wide">{event.startDate.toLocaleString("en", { month: "short" }).toUpperCase()}</p>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-medium truncate">{event.name}</p>
-                    <p className="text-[11px] text-[var(--muted)]">
+                    <p className="text-[11px] text-(--muted)">
                       {budget ? `Budget ${formatCurrency(total, "KES", true)}` : "Budget not started"}
                     </p>
                   </div>
@@ -233,20 +233,20 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>
               <p className="text-[14px] font-medium">Recent Activity</p>
-              <p className="text-[12px] text-[var(--muted)]">Audit trail</p>
+              <p className="text-[12px] text-(--muted)">Audit trail</p>
             </CardTitle>
           </CardHeader>
           <CardBody className="pt-3">
             {auditRows.map((log: AuditRow, index: number) => (
               <div key={log.id} className="flex gap-3.5 pb-4 relative">
                 <div className="flex flex-col items-center flex-shrink-0">
-                  <div className={`w-2 h-2 rounded-full mt-1.5 z-10 ${index < 2 ? "bg-[var(--primary)]" : "bg-[var(--border)]"}`} />
+                  <div className={`w-2 h-2 rounded-full mt-1.5 z-10 ${index < 2 ? "bg-(--primary)" : "bg-(--border)"}`} />
                 </div>
                 <div className="flex-1 min-w-0 pb-1">
                   <p className="text-[13px] leading-snug">
                     <span className="font-medium">{log.entityType}</span> {log.action}
                   </p>
-                  <p className="text-[11px] text-[var(--muted)] mt-0.5">{formatRelative(log.createdAt)}</p>
+                  <p className="text-[11px] text-(--muted) mt-0.5">{formatRelative(log.createdAt)}</p>
                 </div>
               </div>
             ))}

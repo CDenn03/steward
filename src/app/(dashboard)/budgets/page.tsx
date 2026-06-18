@@ -54,14 +54,14 @@ export default async function BudgetsPage() {
           { label: "Pending Review",   value: summary.pending,         sub: "In review queue" },
           { label: "Total Allocated",  value: summary.totalAllocated,  sub: "All budgets combined", isCurrency: true },
         ].map((s) => (
-          <div key={s.label} className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] px-4 py-3.5">
-            <p className="text-[11px] text-[var(--muted)] uppercase tracking-[0.5px] font-medium">{s.label}</p>
+          <div key={s.label} className="bg-(--surface) border border-(--border) rounded-(--r-card) px-4 py-3.5">
+            <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px] font-medium">{s.label}</p>
             <p className="text-[20px] font-semibold tracking-tight mt-1">
               {s.isCurrency
                 ? new Intl.NumberFormat("en-KE", { notation: "compact", maximumFractionDigits: 1 }).format(s.value as number)
                 : s.value}
             </p>
-            <p className="text-[11px] text-[var(--muted)] mt-0.5">{s.sub}</p>
+            <p className="text-[11px] text-(--muted) mt-0.5">{s.sub}</p>
           </div>
         ))}
       </div>

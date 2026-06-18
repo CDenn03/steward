@@ -3,27 +3,38 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Send, Save, Calculator } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  Trash2,
+  Send,
+  Save,
+  Calculator,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
 import {
-  createBudgetAction,
+  updateBudgetAction,
   submitBudgetAction,
 } from "@/features/budgets/actions";
 
 interface LineItem {
   id: string;
+  dbId?: string;
   description: string;
   categoryId: string;
   quantity: number;
   unitCost: number;
 }
 
-type FormOption = {
+type FormOption = { id: string; name: string };
+type BudgetItem = {
   id: string;
-  name: string;
+  description: string;
+  quantity: number;
+  unitCost: number;
+  category: { id: string; name: string } | null;
 };
 
 const newItem = (): LineItem => ({
@@ -34,32 +45,64 @@ const newItem = (): LineItem => ({
   unitCost: 0,
 });
 
-export function NewBudgetForm({
+export function EditBudgetForm({
+  budget,
   departments,
   events,
   categories,
-}: {
+}: Readonly<{
+  budget: {
+    id: string;
+    title: string;
+    description: string | null;
+    departmentId: string | null;
+    eventId: string | null;
+    periodStart: Date | null;
+    periodEnd: Date | null;
+    items: BudgetItem[];
+    status: string;
+  };
   departments: FormOption[];
   events: FormOption[];
   categories: FormOption[];
-}) {
+}>) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [title, setTitle] = useState("");
-  const [departmentId, setDepartmentId] = useState("");
-  const [eventId, setEventId] = useState("");
-  const [periodStart, setPeriodStart] = useState("");
-  const [periodEnd, setPeriodEnd] = useState("");
-  const [notes, setNotes] = useState("");
-  const [items, setItems] = useState<LineItem[]>([newItem()]);
+  const [title, setTitle] = useState(budget.title);
+  const [departmentId, setDepartmentId] = useState(budget.departmentId ?? "");
+  const [eventId, setEventId] = useState(budget.eventId ?? "");
+  const [periodStart, setPeriodStart] = useState(
+    budget.periodStart ? budget.periodStart.toISOString().split("T")[0] : ""
+  );
+  const [periodEnd, setPeriodEnd] = useState(
+    budget.periodEnd ? budget.periodEnd.toISOString().split("T")[0] : ""
+  );
+  const [notes, setNotes] = useState(budget.description ?? "");
+  const [items, setItems] = useState<LineItem[]>(() =>
+    budget.items.map((item) => ({
+      id: `item-${item.id}`,
+      dbId: item.id,
+      description: item.description,
+      categoryId: item.category?.id ?? "",
+      quantity: item.quantity,
+      unitCost: item.unitCost,
+    }))
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState("");
 
   const total = items.reduce((s, i) => s + i.quantity * i.unitCost, 0);
 
-  const updateItem = useCallback((id: string, field: keyof LineItem, value: string | number) => {
-    setItems((prev) => prev.map((item) => item.id === id ? { ...item, [field]: value } : item));
-  }, []);
+  const updateItem = useCallback(
+    (id: string, field: keyof LineItem, value: string | number) => {
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, [field]: value } : item
+        )
+      );
+    },
+    []
+  );
 
   const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
@@ -88,7 +131,7 @@ export function NewBudgetForm({
     if (!validate()) return;
 
     setSaving(true);
-    const res = await createBudgetAction({
+    const res = await updateBudgetAction(budget.id, {
       title: title.trim(),
       description: notes.trim() || undefined,
       departmentId,
@@ -96,6 +139,7 @@ export function NewBudgetForm({
       periodStart: periodStart || undefined,
       periodEnd: periodEnd || undefined,
       items: items.map((item) => ({
+        id: item.dbId,
         categoryId: item.categoryId || undefined,
         description: item.description.trim(),
         quantity: item.quantity,
@@ -103,51 +147,70 @@ export function NewBudgetForm({
       })),
     });
 
-    const createError = "error" in res ? res.error : null;
-    if (createError) {
+    const updateError = "error" in res ? res.error : null;
+    if (updateError) {
       setSaving(false);
       setFormError(
-        typeof createError === "string"
-          ? createError
-          : typeof createError === "object" && "message" in createError
-            ? String(createError.message)
-            : "Unable to create budget"
+        typeof updateError === "string"
+          ? updateError
+          : typeof updateError === "object" && "message" in updateError
+            ? String(updateError.message)
+            : "Unable to update budget"
       );
       return;
     }
 
-    const budgetId = (res.data as { id: string }).id;
     if (submit) {
-      const submitRes = await submitBudgetAction(budgetId);
+      const submitRes = await submitBudgetAction(budget.id);
       if ("error" in submitRes && submitRes.error) {
         setSaving(false);
-        setFormError(typeof submitRes.error === "string" ? submitRes.error : "Unable to submit budget");
-        router.push(`/budgets/${budgetId}`);
+        setFormError(
+          typeof submitRes.error === "string"
+            ? submitRes.error
+            : "Unable to submit budget"
+        );
+        router.push(`/budgets/${budget.id}`);
         return;
       }
     }
 
     setSaving(false);
-    router.push(submit ? `/budgets/${budgetId}` : "/budgets");
+    router.push(submit ? `/budgets/${budget.id}` : `/budgets/${budget.id}`);
     router.refresh();
   };
 
   return (
     <div className="max-w-[900px]">
-      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors mb-5">
-        <ArrowLeft size={13} /> Back to Budgets
+      <Link
+        href={`/budgets/${budget.id}`}
+        className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors mb-5"
+      >
+        <ArrowLeft size={13} /> Back to Budget
       </Link>
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-tight">New Budget</h1>
-          <p className="text-[13px] text-(--muted) mt-0.5">Create a new budget for a department or event</p>
+          <h1 className="text-[20px] font-semibold tracking-tight">
+            Edit Budget
+          </h1>
+          <p className="text-[13px] text-(--muted) mt-0.5">
+            Update budget details and line items
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => handleSave(false)} loading={saving}>
-            <Save size={13} /> Save Draft
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleSave(false)}
+            loading={saving}
+          >
+            <Save size={13} /> Save Changes
           </Button>
-          <Button size="sm" onClick={() => handleSave(true)} loading={saving}>
+          <Button
+            size="sm"
+            onClick={() => handleSave(true)}
+            loading={saving}
+          >
             <Send size={13} /> Submit for Review
           </Button>
         </div>
@@ -163,7 +226,9 @@ export function NewBudgetForm({
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle><p className="text-[14px] font-medium">Budget Details</p></CardTitle>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Budget Details</p>
+              </CardTitle>
             </CardHeader>
             <CardBody className="space-y-4">
               <div>
@@ -180,7 +245,11 @@ export function NewBudgetForm({
                     errors.title ? "border-danger" : "border-(--border)"
                   )}
                 />
-                {errors.title && <p className="text-[11px] text-danger mt-1">{errors.title}</p>}
+                {errors.title && (
+                  <p className="text-[11px] text-danger mt-1">
+                    {errors.title}
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -193,19 +262,30 @@ export function NewBudgetForm({
                     onChange={(e) => setDepartmentId(e.target.value)}
                     className={cn(
                       "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors",
-                      errors.departmentId ? "border-danger" : "border-(--border)"
+                      errors.departmentId
+                        ? "border-danger"
+                        : "border-(--border)"
                     )}
                   >
                     <option value="">Select department</option>
                     {departments.map((d) => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
                     ))}
                   </select>
-                  {errors.departmentId && <p className="text-[11px] text-danger mt-1">{errors.departmentId}</p>}
+                  {errors.departmentId && (
+                    <p className="text-[11px] text-danger mt-1">
+                      {errors.departmentId}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-[12px] font-medium mb-1.5">
-                    Link to Event <span className="text-(--muted) font-normal">(optional)</span>
+                    Link to Event{" "}
+                    <span className="text-(--muted) font-normal">
+                      (optional)
+                    </span>
                   </label>
                   <select
                     value={eventId}
@@ -214,7 +294,9 @@ export function NewBudgetForm({
                   >
                     <option value="">None</option>
                     {events.map((ev) => (
-                      <option key={ev.id} value={ev.id}>{ev.name}</option>
+                      <option key={ev.id} value={ev.id}>
+                        {ev.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -222,7 +304,9 @@ export function NewBudgetForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-medium mb-1.5">Period Start</label>
+                  <label className="block text-[12px] font-medium mb-1.5">
+                    Period Start
+                  </label>
                   <input
                     type="date"
                     value={periodStart}
@@ -231,7 +315,9 @@ export function NewBudgetForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium mb-1.5">Period End</label>
+                  <label className="block text-[12px] font-medium mb-1.5">
+                    Period End
+                  </label>
                   <input
                     type="date"
                     value={periodEnd}
@@ -243,7 +329,10 @@ export function NewBudgetForm({
 
               <div>
                 <label className="block text-[12px] font-medium mb-1.5">
-                  Notes <span className="text-(--muted) font-normal">(optional)</span>
+                  Notes{" "}
+                  <span className="text-(--muted) font-normal">
+                    (optional)
+                  </span>
                 </label>
                 <textarea
                   value={notes}
@@ -260,7 +349,9 @@ export function NewBudgetForm({
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Budget Line Items</p>
-                <p className="text-[12px] text-(--muted)">{items.length} item{items.length !== 1 ? "s" : ""}</p>
+                <p className="text-[12px] text-(--muted)">
+                  {items.length} item{items.length !== 1 ? "s" : ""}
+                </p>
               </CardTitle>
               <Button variant="ghost" size="sm" onClick={addItem}>
                 <Plus size={13} /> Add Item
@@ -268,35 +359,53 @@ export function NewBudgetForm({
             </CardHeader>
 
             <div className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-2.5 border-b border-(--border) bg-[var(--bg)]">
-              {["Description", "Category", "Qty", "Unit Cost (KES)", "Total", ""].map((h) => (
-                <span key={h} className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px]">{h}</span>
-              ))}
+              {["Description", "Category", "Qty", "Unit Cost (KES)", "Total", ""].map(
+                (h) => (
+                  <span
+                    key={h}
+                    className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px]"
+                  >
+                    {h}
+                  </span>
+                )
+              )}
             </div>
 
             <div className="divide-y divide-(--border)">
               {items.map((item, idx) => (
-                <div key={item.id} className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-3 items-center hover:bg-[var(--bg)] transition-colors">
+                <div
+                  key={item.id}
+                  className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-3 items-center hover:bg-[var(--bg)] transition-colors"
+                >
                   <div>
                     <input
                       type="text"
                       value={item.description}
-                      onChange={(e) => updateItem(item.id, "description", e.target.value)}
+                      onChange={(e) =>
+                        updateItem(item.id, "description", e.target.value)
+                      }
                       placeholder={`Item ${idx + 1} description`}
                       className={cn(
                         "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors",
-                        errors[`item-${idx}-desc`] ? "border-danger" : "border-(--border)"
+                        errors[`item-${idx}-desc`]
+                          ? "border-danger"
+                          : "border-(--border)"
                       )}
                     />
                   </div>
                   <div>
                     <select
                       value={item.categoryId}
-                      onChange={(e) => updateItem(item.id, "categoryId", e.target.value)}
+                      onChange={(e) =>
+                        updateItem(item.id, "categoryId", e.target.value)
+                      }
                       className="w-full px-2 py-1.5 text-[12.5px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
                     >
                       <option value="">Category</option>
                       {categories.map((category) => (
-                        <option key={category.id} value={category.id}>{category.name}</option>
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -305,10 +414,18 @@ export function NewBudgetForm({
                       type="number"
                       min={1}
                       value={item.quantity}
-                      onChange={(e) => updateItem(item.id, "quantity", parseFloat(e.target.value) || 0)}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "quantity",
+                          parseFloat(e.target.value) || 0
+                        )
+                      }
                       className={cn(
                         "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] transition-colors text-right font-mono",
-                        errors[`item-${idx}-qty`] ? "border-danger" : "border-(--border)"
+                        errors[`item-${idx}-qty`]
+                          ? "border-danger"
+                          : "border-(--border)"
                       )}
                     />
                   </div>
@@ -317,18 +434,29 @@ export function NewBudgetForm({
                       type="number"
                       min={0}
                       value={item.unitCost || ""}
-                      onChange={(e) => updateItem(item.id, "unitCost", parseFloat(e.target.value) || 0)}
+                      onChange={(e) =>
+                        updateItem(
+                          item.id,
+                          "unitCost",
+                          parseFloat(e.target.value) || 0
+                        )
+                      }
                       placeholder="0"
                       className={cn(
                         "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors text-right font-mono",
-                        errors[`item-${idx}-cost`] ? "border-danger" : "border-(--border)"
+                        errors[`item-${idx}-cost`]
+                          ? "border-danger"
+                          : "border-(--border)"
                       )}
                     />
                   </div>
                   <div className="text-right">
                     <span className="text-[12.5px] font-mono font-medium">
                       {item.unitCost > 0
-                        ? formatCurrency(item.quantity * item.unitCost).replace("KES ", "")
+                        ? formatCurrency(item.quantity * item.unitCost).replace(
+                            "KES ",
+                            ""
+                          )
                         : "-"}
                     </span>
                   </div>
@@ -351,8 +479,12 @@ export function NewBudgetForm({
                 {items.length} line item{items.length !== 1 ? "s" : ""}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[12px] text-(--muted)">Total Budget</span>
-                <span className="text-[16px] font-semibold font-mono">{formatCurrency(total)}</span>
+                <span className="text-[12px] text-(--muted)">
+                  Total Budget
+                </span>
+                <span className="text-[16px] font-semibold font-mono">
+                  {formatCurrency(total)}
+                </span>
               </div>
             </div>
 
@@ -370,67 +502,69 @@ export function NewBudgetForm({
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle><p className="text-[14px] font-medium">Budget Summary</p></CardTitle>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Budget Summary</p>
+              </CardTitle>
             </CardHeader>
             <CardBody className="space-y-3">
               <div className="bg-[var(--primary-light)] rounded-[10px] p-3.5 text-center">
-                <p className="text-[11px] text-(--primary) font-medium uppercase tracking-[0.5px] mb-1">Total Amount</p>
+                <p className="text-[11px] text-(--primary) font-medium uppercase tracking-[0.5px] mb-1">
+                  Total Amount
+                </p>
                 <p className="text-[22px] font-semibold tracking-tight font-mono text-(--primary)">
                   {formatCurrency(total)}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                {items.filter((i) => i.unitCost > 0).map((item) => (
-                  <div key={item.id} className="flex justify-between text-[12px]">
-                    <span className="text-(--muted) truncate pr-2">{item.description || "Item"}</span>
-                    <span className="font-mono flex-shrink-0">
-                      {formatCurrency(item.quantity * item.unitCost).replace("KES ", "")}
-                    </span>
-                  </div>
-                ))}
+                {items
+                  .filter((i) => i.unitCost > 0)
+                  .map((item) => (
+                    <div key={item.id} className="flex justify-between text-[12px]">
+                      <span className="text-(--muted) truncate pr-2">
+                        {item.description || "Item"}
+                      </span>
+                      <span className="font-mono flex-shrink-0">
+                        {formatCurrency(item.quantity * item.unitCost).replace(
+                          "KES ",
+                          ""
+                        )}
+                      </span>
+                    </div>
+                  ))}
               </div>
 
               {items.filter((i) => i.unitCost > 0).length > 0 && (
                 <div className="border-t border-(--border) pt-2 flex justify-between text-[12px] font-semibold">
                   <span>Total</span>
-                  <span className="font-mono">{formatCurrency(total).replace("KES ", "")}</span>
+                  <span className="font-mono">
+                    {formatCurrency(total).replace("KES ", "")}
+                  </span>
                 </div>
               )}
             </CardBody>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle><p className="text-[14px] font-medium">After Submission</p></CardTitle>
-            </CardHeader>
-            <CardBody>
-              <div className="space-y-3">
-                {[
-                  { step: "1", label: "Finance Review", desc: "Finance officer reviews the budget" },
-                  { step: "2", label: "Chairperson", desc: "Final approval by chairperson" },
-                  { step: "3", label: "Approved", desc: "Budget is activated for use" },
-                ].map((s) => (
-                  <div key={s.step} className="flex gap-3">
-                    <div className="w-5 h-5 rounded-full bg-(--border) flex items-center justify-center text-[10px] font-semibold text-(--muted) flex-shrink-0 mt-0.5">{s.step}</div>
-                    <div>
-                      <p className="text-[12px] font-medium">{s.label}</p>
-                      <p className="text-[11px] text-(--muted)">{s.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-
           <div className="space-y-2">
-            <Button className="w-full justify-center" onClick={() => handleSave(true)} loading={saving}>
+            <Button
+              className="w-full justify-center"
+              onClick={() => handleSave(true)}
+              loading={saving}
+            >
               <Send size={13} /> Submit for Review
             </Button>
-            <Button variant="ghost" className="w-full justify-center" onClick={() => handleSave(false)} loading={saving}>
-              <Save size={13} /> Save as Draft
+            <Button
+              variant="ghost"
+              className="w-full justify-center"
+              onClick={() => handleSave(false)}
+              loading={saving}
+            >
+              <Save size={13} /> Save Changes
             </Button>
-            <Link href="/budgets" className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors">
+            <Link
+              href={`/budgets/${budget.id}`}
+              className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors"
+            >
               Cancel
             </Link>
           </div>

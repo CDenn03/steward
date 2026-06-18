@@ -52,7 +52,7 @@ export function BudgetsTable({ budgets }: { budgets: BudgetRow[] }) {
       render: (b: BudgetRow) => (
         <div>
           <p className="font-medium">{b.title}</p>
-          {b.department && <p className="text-[11px] text-[var(--muted)]">{b.department.name}</p>}
+          {b.department && <p className="text-[11px] text-(--muted)">{b.department.name}</p>}
         </div>
       ),
     },
@@ -60,10 +60,10 @@ export function BudgetsTable({ budgets }: { budgets: BudgetRow[] }) {
       key: "period", header: "Period",
       render: (b: BudgetRow) =>
         b.periodStart ? (
-          <span className="text-[var(--muted)]">
+          <span className="text-(--muted)">
             {formatDate(b.periodStart)}{b.periodEnd ? ` – ${formatDate(b.periodEnd)}` : ""}
           </span>
-        ) : <span className="text-[var(--muted)]">—</span>,
+        ) : <span className="text-(--muted)">—</span>,
     },
     {
       key: "amount", header: "Allocated",
@@ -94,17 +94,17 @@ export function BudgetsTable({ budgets }: { budgets: BudgetRow[] }) {
             className={cn(
               "px-3 py-1.5 text-[12px] font-medium rounded-[var(--r-btn)] border transition-all",
               filter === f.value
-                ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                : "bg-transparent text-[var(--muted)] border-[var(--border)] hover:bg-[var(--bg)] hover:text-[var(--text)]"
+                ? "bg-(--primary) text-white border-(--primary)"
+                : "bg-transparent text-(--muted) border-(--border) hover:bg-[var(--bg)] hover:text-[var(--text)]"
             )}>
             {f.label}
           </button>
         ))}
         <div className="ml-auto relative">
-          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
+          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--muted)" />
           <input type="text" placeholder="Search budgets…" value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-7 pr-3 py-1.5 text-[12px] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-input)] outline-none w-48 focus:border-[var(--primary)] text-[var(--text)] placeholder:text-[var(--muted)] transition-colors" />
+            className="pl-7 pr-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-48 focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors" />
         </div>
       </div>
       <Card>

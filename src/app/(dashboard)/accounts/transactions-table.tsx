@@ -31,19 +31,19 @@ const columns = [
     render: (t: TransactionRow) => (
       <div>
         <p className="font-medium">{t.description}</p>
-        <p className="text-[11px] text-[var(--muted)]">{t.account}</p>
+        <p className="text-[11px] text-(--muted)">{t.account}</p>
       </div>
     ),
   },
   {
     key: "cat",
     header: "Category",
-    render: (t: TransactionRow) => <span className="text-[var(--muted)]">{t.category}</span>,
+    render: (t: TransactionRow) => <span className="text-(--muted)">{t.category}</span>,
   },
   {
     key: "date",
     header: "Date",
-    render: (t: TransactionRow) => <span className="text-[var(--muted)]">{formatDate(t.date)}</span>,
+    render: (t: TransactionRow) => <span className="text-(--muted)">{formatDate(t.date)}</span>,
   },
   {
     key: "amount",

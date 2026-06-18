@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { CreateBudgetSchema, ReviewBudgetSchema } from "../schemas";
-import { createBudgetService, submitBudgetService, reviewBudgetService } from "../services";
+import { CreateBudgetSchema, ReviewBudgetSchema, EditBudgetSchema } from "../schemas";
+import { createBudgetService, submitBudgetService, reviewBudgetService, updateBudgetService } from "../services";
 import { requireSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
 
@@ -80,4 +80,33 @@ export async function addApprovalCommentAction(approvalId: string, body: string)
 
   revalidatePath("/budgets/[budgetId]", "page");
   return { data: comment };
+}
+
+export async function updateBudgetAction(budgetId: string, formData: unknown) {
+  const session = await requireSession();
+  const parsed = EditBudgetSchema.safeParse(formData);
+  if (!parsed.success) return { error: parsed.error.flatten() };
+
+  try {
+    const budget = await updateBudgetService(
+      budgetId,
+      {
+        ...parsed.data,
+        items: parsed.data.items.map((item) => ({
+          ...item,
+          totalCost: item.quantity * item.unitCost,
+        })),
+      },
+      {
+        userId: session.userId,
+        organizationId: session.organizationId,
+      }
+    );
+    revalidatePath("/budgets");
+    revalidatePath(`/budgets/${budgetId}`);
+    revalidatePath("/dashboard");
+    return { data: budget };
+  } catch (err) {
+    return { error: { message: err instanceof Error ? err.message : "Unknown error" } };
+  }
 }

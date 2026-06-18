@@ -25,7 +25,7 @@ interface Membership {
   departmentName: string | null;
 }
 
-export function OrgPickerClient({ memberships }: { memberships: Membership[] }) {
+export function OrgPickerClient({ memberships }: Readonly<{ memberships: Membership[] }>) {
   const router = useRouter();
   const [selected, setSelected] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ export function OrgPickerClient({ memberships }: { memberships: Membership[] }) 
   return (
     <div className="w-full max-w-[480px]">
       <div className="flex items-center justify-center gap-2.5 mb-10">
-        <div className="w-10 h-10 bg-[var(--primary)] rounded-[10px] flex items-center justify-center">
+        <div className="w-10 h-10 bg-(--primary) rounded-[10px] flex items-center justify-center">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/>
             <polyline points="9 12 11 14 15 10"/>
@@ -56,13 +56,13 @@ export function OrgPickerClient({ memberships }: { memberships: Membership[] }) 
         </div>
         <div>
           <p className="text-[18px] font-semibold tracking-tight">Steward</p>
-          <p className="text-[10px] text-[var(--muted)] uppercase tracking-[0.5px]">Financial Governance</p>
+          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Financial Governance</p>
         </div>
       </div>
 
       <div className="mb-6 text-center">
         <h1 className="text-[22px] font-semibold tracking-tight mb-1">Choose an organisation</h1>
-        <p className="text-[13px] text-[var(--muted)]">
+        <p className="text-[13px] text-(--muted)">
           You are a member of {memberships.length} organisation{memberships.length !== 1 ? "s" : ""}. Select one to continue.
         </p>
       </div>
@@ -76,12 +76,12 @@ export function OrgPickerClient({ memberships }: { memberships: Membership[] }) 
               onClick={() => handleSelect(m.orgId)}
               disabled={loading}
               className={cn(
-                "w-full text-left bg-[var(--surface)] border rounded-[var(--r-card)] p-4",
-                "hover:border-[var(--primary)] hover:shadow-card-hover transition-all duration-150",
+                "w-full text-left bg-(--surface) border rounded-(--r-card) p-4",
+                "hover:border-(--primary) hover:shadow-card-hover transition-all duration-150",
                 "disabled:cursor-not-allowed group",
                 isSelected
-                  ? "border-[var(--primary)] ring-2 ring-[var(--primary)] ring-opacity-20"
-                  : "border-[var(--border)]"
+                  ? "border-(--primary) ring-2 ring-(--primary) ring-opacity-20"
+                  : "border-(--border)"
               )}
             >
               <div className="flex items-center gap-3.5">
@@ -93,7 +93,7 @@ export function OrgPickerClient({ memberships }: { memberships: Membership[] }) 
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold truncate mb-0.5">{m.orgName}</p>
-                  <p className="text-[12px] text-[var(--muted)]">{m.orgDescription}</p>
+                  <p className="text-[12px] text-(--muted)">{m.orgDescription}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium"
@@ -102,18 +102,18 @@ export function OrgPickerClient({ memberships }: { memberships: Membership[] }) 
                       {roleLabels[m.role] ?? m.role}
                     </span>
                     {m.departmentName && (
-                      <span className="text-[11px] text-[var(--muted)]">· {m.departmentName}</span>
+                      <span className="text-[11px] text-(--muted)">· {m.departmentName}</span>
                     )}
                   </div>
                 </div>
                 <div className="flex-shrink-0">
                   {isSelected && loading ? (
-                    <svg className="animate-spin w-5 h-5 text-[var(--primary)]" viewBox="0 0 24 24" fill="none">
+                    <svg className="animate-spin w-5 h-5 text-(--primary)" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                     </svg>
                   ) : (
-                    <ChevronRight size={18} className={cn("transition-colors", isSelected ? "text-[var(--primary)]" : "text-[var(--border)] group-hover:text-[var(--muted)]")} />
+                    <ChevronRight size={18} className={cn("transition-colors", isSelected ? "text-(--primary)" : "text-(--border) group-hover:text-(--muted)")} />
                   )}
                 </div>
               </div>
@@ -123,7 +123,7 @@ export function OrgPickerClient({ memberships }: { memberships: Membership[] }) 
       </div>
 
       <button
-        className="w-full mt-6 flex items-center justify-center gap-2 text-[12px] text-[var(--muted)] hover:text-[var(--text)] transition-colors py-2"
+        className="w-full mt-6 flex items-center justify-center gap-2 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors py-2"
         onClick={() => signOut({ callbackUrl: "/login" })}
       >
         <LogOut size={13} />

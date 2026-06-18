@@ -104,7 +104,7 @@ export function AnalyticsClient({
               <div key={department.name} className="flex items-center gap-2 text-[12px]">
                 <div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="flex-1">{department.name}</span>
-                <span className="font-mono text-[var(--muted)]">{formatCurrency(department.value, currency, true)}</span>
+                <span className="font-mono text-(--muted)">{formatCurrency(department.value, currency, true)}</span>
               </div>
             ))}
           </div>
@@ -116,9 +116,9 @@ export function AnalyticsClient({
           </CardHeader>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-[var(--border)] bg-[var(--bg)]">
+              <tr className="border-b border-(--border) bg-[var(--bg)]">
                 {["Department", "Allocated", "Spent", "Variance", "Util."].map((h) => (
-                  <th key={h} className="text-left text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.5px] px-4 py-2.5">{h}</th>
+                  <th key={h} className="text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -126,22 +126,22 @@ export function AnalyticsClient({
               {departmentSpend.map((department) => {
                 const percent = pct(department.spent, department.allocated);
                 return (
-                  <tr key={department.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] transition-colors">
+                  <tr key={department.id} className="border-b border-(--border) last:border-0 hover:bg-[var(--bg)] transition-colors">
                     <td className="px-4 py-3 text-[13px] font-medium">{department.name}</td>
-                    <td className="px-4 py-3 text-[13px] font-mono text-[var(--muted)]">{formatCurrency(department.allocated, currency, true)}</td>
+                    <td className="px-4 py-3 text-[13px] font-mono text-(--muted)">{formatCurrency(department.allocated, currency, true)}</td>
                     <td className="px-4 py-3 text-[13px] font-mono">{department.spent > 0 ? formatCurrency(department.spent, currency, true) : "-"}</td>
                     <td className={`px-4 py-3 text-[13px] font-mono ${department.variance >= 0 ? "text-success" : "text-danger"}`}>
                       {department.spent > 0 ? `${department.variance >= 0 ? "+" : ""}${formatCurrency(department.variance, currency, true)}` : "-"}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+                        <div className="flex-1 h-1.5 bg-(--border) rounded-full overflow-hidden">
                           <div
-                            className={`h-full rounded-full ${percent >= 95 ? "bg-danger" : percent >= 80 ? "bg-warning" : "bg-[var(--primary)]"}`}
+                            className={`h-full rounded-full ${percent >= 95 ? "bg-danger" : percent >= 80 ? "bg-warning" : "bg-(--primary)"}`}
                             style={{ width: `${percent}%` }}
                           />
                         </div>
-                        <span className="text-[11px] text-[var(--muted)] w-8 text-right">{percent}%</span>
+                        <span className="text-[11px] text-(--muted) w-8 text-right">{percent}%</span>
                       </div>
                     </td>
                   </tr>

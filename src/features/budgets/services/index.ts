@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma/client";
 import { createAuditLog } from "@/features/audit/services";
 import { createNotification } from "@/features/notifications/services";
+import { updateBudget } from "../repositories";
 import type { CreateBudgetInput, ReviewBudgetInput } from "../schemas";
 
 export async function createBudgetService(
@@ -164,4 +165,48 @@ export async function reviewBudgetService(
     before: { status: budget.status },
     after: { status: newStatus, comment: input.comment },
   });
+}
+
+export async function updateBudgetService(
+  budgetId: string,
+  input: {
+    title?: string;
+    description?: string;
+    departmentId?: string;
+    eventId?: string;
+    periodStart?: Date;
+    periodEnd?: Date;
+    items?: Array<{
+      id?: string;
+      categoryId?: string;
+      description: string;
+      quantity: number;
+      unitCost: number;
+      totalCost: number;
+      notes?: string;
+    }>;
+  },
+  context: { userId: string; organizationId: string }
+) {
+  const budget = await prisma.budget.findFirst({
+    where: { id: budgetId, organizationId: context.organizationId },
+  });
+  if (!budget) throw new Error("Budget not found");
+  if (budget.status !== "DRAFT" && budget.status !== "NEEDS_CHANGES") {
+    throw new Error("Only draft or needs-changes budgets can be edited");
+  }
+
+  const updated = await updateBudget(budgetId, input);
+
+  await createAuditLog({
+    organizationId: context.organizationId,
+    actorId: context.userId,
+    entityType: "Budget",
+    entityId: budgetId,
+    action: "updated",
+    before: { title: budget.title, status: budget.status },
+    after: { title: updated.title, status: updated.status },
+  });
+
+  return updated;
 }

@@ -21,11 +21,11 @@ export function PlatformTopbar() {
   const title = pageTitles[matchedKey ?? ""] ?? "Platform Console";
 
   return (
-    <header className="sticky top-0 z-40 h-14 bg-[var(--surface)] border-b border-[var(--border)] flex items-center gap-4 px-7">
+    <header className="sticky top-0 z-40 h-14 bg-(--surface) border-b border-(--border) flex items-center gap-4 px-7">
       <div className="flex items-center gap-2 text-[13px]">
-        <Shield size={13} className="text-[var(--primary)]" />
-        <span className="text-[var(--muted)]">Platform Console</span>
-        <span className="text-[var(--muted)]">›</span>
+        <Shield size={13} className="text-(--primary)" />
+        <span className="text-(--muted)">Platform Console</span>
+        <span className="text-(--muted)">›</span>
         <span className="font-medium text-[var(--text)]">{title}</span>
       </div>
       <div className="flex-1" />
@@ -35,9 +35,9 @@ export function PlatformTopbar() {
             type="text"
             placeholder="Search…"
             className={cn(
-              "w-full h-8 pl-3 pr-3 text-[12px] bg-[var(--surface)] border border-[var(--border)]",
-              "rounded-[var(--r-input)] outline-none text-[var(--text)] placeholder:text-[var(--muted)]",
-              "focus:border-[var(--primary)] transition-colors"
+              "w-full h-8 pl-3 pr-3 text-[12px] bg-(--surface) border border-(--border)",
+              "rounded-(--r-input) outline-none text-[var(--text)] placeholder:text-(--muted)",
+              "focus:border-(--primary) transition-colors"
             )}
           />
         </div>

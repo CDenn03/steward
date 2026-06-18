@@ -46,12 +46,12 @@ export default async function AuditPage() {
                 const name = log.actor?.name ?? "Unknown user";
                 return (
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-[var(--primary)]">
+                    <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary)">
                       {name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                     </div>
                     <div>
                       <p className="text-[13px] font-medium">{name}</p>
-                      <p className="text-[11px] text-[var(--muted)] capitalize">{(log.actor?.role ?? "member").replace("_", " ")}</p>
+                      <p className="text-[11px] text-(--muted) capitalize">{(log.actor?.role ?? "member").replace("_", " ")}</p>
                     </div>
                   </div>
                 );
@@ -63,7 +63,7 @@ export default async function AuditPage() {
               render: (log: AuditRow) => (
                 <div>
                   <p className="text-[13px]">{log.entityType}</p>
-                  <p className="text-[11px] text-[var(--muted)] font-mono">{log.entityId}</p>
+                  <p className="text-[11px] text-(--muted) font-mono">{log.entityId}</p>
                 </div>
               ),
             },
@@ -80,7 +80,7 @@ export default async function AuditPage() {
               key: "detail",
               header: "Detail",
               render: (log: AuditRow) => (
-                <span className="text-[12px] text-[var(--muted)] font-mono">
+                <span className="text-[12px] text-(--muted) font-mono">
                   {log.after ? JSON.stringify(log.after) : "-"}
                 </span>
               ),
@@ -89,7 +89,7 @@ export default async function AuditPage() {
               key: "time",
               header: "Time",
               render: (log: AuditRow) => (
-                <span className="text-[var(--muted)]">{formatRelative(log.createdAt)}</span>
+                <span className="text-(--muted)">{formatRelative(log.createdAt)}</span>
               ),
             },
           ]}

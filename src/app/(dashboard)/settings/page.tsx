@@ -30,12 +30,12 @@ export default function SettingsPage() {
                 { label: "Two-stage Approval",         desc: "Finance Officer then Chairperson must both approve" },
                 { label: "Expenditure Report Required",desc: "Reports must be submitted after each event" },
               ].map((s) => (
-                <div key={s.label} className="flex items-start justify-between gap-4 py-2 border-b border-[var(--border)] last:border-0">
+                <div key={s.label} className="flex items-start justify-between gap-4 py-2 border-b border-(--border) last:border-0">
                   <div>
                     <p className="text-[13px] font-medium">{s.label}</p>
-                    <p className="text-[12px] text-[var(--muted)]">{s.desc}</p>
+                    <p className="text-[12px] text-(--muted)">{s.desc}</p>
                   </div>
-                  <div className="w-9 h-5 bg-[var(--primary)] rounded-full flex items-center justify-end pr-0.5 flex-shrink-0 cursor-pointer">
+                  <div className="w-9 h-5 bg-(--primary) rounded-full flex items-center justify-end pr-0.5 flex-shrink-0 cursor-pointer">
                     <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
                   </div>
                 </div>
@@ -48,12 +48,12 @@ export default function SettingsPage() {
             <CardHeader><CardTitle><p className="text-[14px] font-medium">Your Profile</p></CardTitle></CardHeader>
             <CardBody className="space-y-4">
               <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[16px] font-semibold text-[var(--primary)]">
+                <div className="w-12 h-12 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[16px] font-semibold text-(--primary)">
                   {active?.userInitials ?? "?"}
                 </div>
                 <div>
                   <p className="text-[14px] font-medium">{active?.userName ?? "—"}</p>
-                  <p className="text-[12px] text-[var(--muted)]">{active?.userEmail ?? "—"}</p>
+                  <p className="text-[12px] text-(--muted)">{active?.userEmail ?? "—"}</p>
                 </div>
               </div>
               <Input label="Full Name"     defaultValue={active?.userName ?? ""} />
@@ -65,9 +65,9 @@ export default function SettingsPage() {
             <CardHeader><CardTitle><p className="text-[14px] font-medium">Notifications</p></CardTitle></CardHeader>
             <CardBody className="space-y-3">
               {["Budget submitted for review","Approval decisions","Outstanding reports reminder","Account balance alerts"].map((label) => (
-                <div key={label} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0">
+                <div key={label} className="flex items-center justify-between py-2 border-b border-(--border) last:border-0">
                   <p className="text-[13px]">{label}</p>
-                  <div className="w-9 h-5 bg-[var(--primary)] rounded-full flex items-center justify-end pr-0.5 cursor-pointer">
+                  <div className="w-9 h-5 bg-(--primary) rounded-full flex items-center justify-end pr-0.5 cursor-pointer">
                     <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
                   </div>
                 </div>

@@ -22,7 +22,7 @@ const columns = [
     render: (budget: BudgetRow) => (
       <div>
         <p className="font-medium">{budget.title}</p>
-        <p className="text-[11px] text-[var(--muted)]">{budget.department?.name ?? "General"}</p>
+        <p className="text-[11px] text-(--muted)">{budget.department?.name ?? "General"}</p>
       </div>
     ),
   },
@@ -37,11 +37,11 @@ const columns = [
     key: "utilisation",
     header: "Utilisation",
     render: (budget: BudgetRow) => {
-      if (!budget.spentAmount) return <span className="text-[var(--muted)] text-[12px]">-</span>;
+      if (!budget.spentAmount) return <span className="text-(--muted) text-[12px]">-</span>;
       const value = pct(budget.spentAmount, budget.totalAmount);
       return (
         <div className="w-24">
-          <span className="text-[12px] text-[var(--muted)]">{value}%</span>
+          <span className="text-[12px] text-(--muted)">{value}%</span>
           <ProgressBar value={value} className="mt-1" />
         </div>
       );

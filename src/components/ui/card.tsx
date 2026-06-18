@@ -8,7 +8,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] overflow-hidden",
+        "bg-(--surface) border border-(--border) rounded-(--r-card) overflow-hidden",
         className
       )}
       {...props}
@@ -26,7 +26,7 @@ export function CardHeader({
   return (
     <div
       className={cn(
-        "px-5 py-4 border-b border-[var(--border)] flex items-center justify-between gap-4",
+        "px-5 py-4 border-b border-(--border) flex items-center justify-between gap-4",
         className
       )}
       {...props}

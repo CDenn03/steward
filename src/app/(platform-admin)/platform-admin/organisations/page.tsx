@@ -29,7 +29,7 @@ export default async function PlatformOrgsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold truncate">{org.name}</p>
-                  <p className="text-[11px] text-[var(--muted)]">{org.description}</p>
+                  <p className="text-[11px] text-(--muted)">{org.description}</p>
                 </div>
               </div>
 
@@ -41,7 +41,7 @@ export default async function PlatformOrgsPage() {
                   { label: "Liquidity", value: formatCurrency(org.totalLiquidity, org.currency) },
                 ].map(({ label, value }) => (
                   <div key={label} className="bg-[var(--bg)] rounded-[8px] px-2 py-2">
-                    <p className="text-[11px] text-[var(--muted)] mb-0.5">{label}</p>
+                    <p className="text-[11px] text-(--muted) mb-0.5">{label}</p>
                     <p className="text-[13px] font-semibold">{value}</p>
                   </div>
                 ))}

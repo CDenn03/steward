@@ -111,7 +111,7 @@ export function BudgetActions({
               placeholder="Reason for requesting changes…"
               value={rejectComment}
               onChange={(e) => setRejectComment(e.target.value)}
-              className="flex-1 px-3 py-1.5 text-[12px] bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-input)] outline-none focus:border-[var(--primary)] text-[var(--text)] placeholder:text-[var(--muted)]"
+              className="flex-1 px-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted)"
             />
             <Button variant="ghost" size="sm" disabled={pending} onClick={() => setShowRejectForm(false)}>Cancel</Button>
             <Button variant="danger" size="sm" disabled={pending} onClick={() => handleReview("needs_changes", rejectComment)}>
@@ -130,20 +130,20 @@ export function BudgetActions({
       <CardHeader>
         <CardTitle>
           <p className="text-[14px] font-medium">Comments</p>
-          <p className="text-[12px] text-[var(--muted)]">{comments.length} comments</p>
+          <p className="text-[12px] text-(--muted)">{comments.length} comments</p>
         </CardTitle>
       </CardHeader>
       <CardBody className="space-y-4">
         {comments.map((c) => (
           <div key={c.id} className="flex gap-3">
-            <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-[var(--primary)] flex-shrink-0 mt-0.5">
+            <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) flex-shrink-0 mt-0.5">
               {c.authorId.slice(0, 2).toUpperCase()}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[11px] text-[var(--muted)] ml-auto">{formatRelative(c.createdAt)}</span>
+                <span className="text-[11px] text-(--muted) ml-auto">{formatRelative(c.createdAt)}</span>
               </div>
-              <p className="text-[13px] text-[var(--text)] leading-relaxed bg-[var(--bg)] border border-[var(--border)] rounded-[10px] px-3.5 py-2.5">
+              <p className="text-[13px] text-[var(--text)] leading-relaxed bg-[var(--bg)] border border-(--border) rounded-[10px] px-3.5 py-2.5">
                 {c.body}
               </p>
             </div>
@@ -151,7 +151,7 @@ export function BudgetActions({
         ))}
 
         <div className="flex gap-3 pt-2">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-[var(--primary)] flex-shrink-0 mt-0.5">
+          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) flex-shrink-0 mt-0.5">
             {currentUserInitials}
           </div>
           <div className="flex-1">
@@ -160,7 +160,7 @@ export function BudgetActions({
               rows={3}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[10px] px-3.5 py-2.5 text-[13px] text-[var(--text)] placeholder:text-[var(--muted)] outline-none focus:border-[var(--primary)] transition-colors resize-none"
+              className="w-full bg-(--surface) border border-(--border) rounded-[10px] px-3.5 py-2.5 text-[13px] text-[var(--text)] placeholder:text-(--muted) outline-none focus:border-(--primary) transition-colors resize-none"
             />
             {error && <p className="text-[12px] text-danger mt-1">{error}</p>}
             <div className="flex justify-end mt-2">
@@ -169,7 +169,7 @@ export function BudgetActions({
               </Button>
             </div>
             {!approvalId && (
-              <p className="text-[11px] text-[var(--muted)] mt-1">Comments require an active approval record.</p>
+              <p className="text-[11px] text-(--muted) mt-1">Comments require an active approval record.</p>
             )}
           </div>
         </div>

@@ -46,24 +46,24 @@ export default async function AdminUsersPage() {
           { label: "Organisations", value: stats.organizations },
           { label: "Total Memberships", value: stats.memberships },
         ].map((stat) => (
-          <div key={stat.label} className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] px-4 py-3.5">
-            <p className="text-[11px] text-[var(--muted)] uppercase tracking-[0.5px] font-medium mb-1">{stat.label}</p>
+          <div key={stat.label} className="bg-(--surface) border border-(--border) rounded-(--r-card) px-4 py-3.5">
+            <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px] font-medium mb-1">{stat.label}</p>
             <p className="text-[22px] font-semibold tracking-tight">{stat.value}</p>
           </div>
         ))}
       </div>
 
       <Card>
-        <div className="divide-y divide-[var(--border)]">
+        <div className="divide-y divide-(--border)">
           {users.map((user) => (
             <div key={user.id} className="px-5 py-4">
               <div className="flex items-center gap-4">
-                <div className="w-9 h-9 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[13px] font-semibold text-[var(--primary)] flex-shrink-0">
+                <div className="w-9 h-9 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[13px] font-semibold text-(--primary) flex-shrink-0">
                   {user.initials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-medium">{user.name}</p>
-                  <p className="text-[11px] text-[var(--muted)]">{user.email}</p>
+                  <p className="text-[11px] text-(--muted)">{user.email}</p>
                 </div>
               </div>
 
@@ -71,7 +71,7 @@ export default async function AdminUsersPage() {
                 {user.memberships.map((membership) => (
                   <div
                     key={membership.id}
-                    className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--border)] rounded-[10px] px-3.5 py-3"
+                    className="flex items-center gap-3 bg-[var(--bg)] border border-(--border) rounded-[10px] px-3.5 py-3"
                   >
                     <div
                       className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
@@ -81,7 +81,7 @@ export default async function AdminUsersPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium">{membership.org.name}</p>
-                      <p className="text-[11px] text-[var(--muted)]">
+                      <p className="text-[11px] text-(--muted)">
                         {membership.department ? `${membership.department.name} · ` : ""}
                         {roleLabels[membership.role] ?? membership.role}
                       </p>
@@ -90,10 +90,10 @@ export default async function AdminUsersPage() {
                       <Badge variant={roleVariants[membership.role] ?? "draft"}>
                         {roleLabels[membership.role] ?? membership.role}
                       </Badge>
-                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--bg)] transition-colors" title="Edit membership">
+                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-[var(--text)] hover:bg-[var(--bg)] transition-colors" title="Edit membership">
                         <Edit2 size={11} />
                       </button>
-                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-[var(--muted)] hover:text-danger hover:bg-danger-bg transition-colors" title="Remove from org">
+                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors" title="Remove from org">
                         <Trash2 size={11} />
                       </button>
                     </div>

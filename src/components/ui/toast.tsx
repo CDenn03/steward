@@ -29,7 +29,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             className={`flex items-center gap-3 px-4 py-3 rounded-[10px] shadow-lg text-[13px] font-medium min-w-[260px] max-w-[380px] border
               ${t.type === "error"   ? "bg-red-50 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-700 dark:text-red-300" :
                 t.type === "success" ? "bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-700 dark:text-green-300" :
-                "bg-[var(--surface)] border-[var(--border)] text-[var(--text)]"}`}
+                "bg-(--surface) border-(--border) text-[var(--text)]"}`}
           >
             <span className="flex-1">{t.message}</span>
             <button onClick={() => setToasts((p) => p.filter((x) => x.id !== t.id))}

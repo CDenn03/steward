@@ -33,11 +33,11 @@ export default async function AdminOrgsPage() {
                   </div>
                   <div>
                     <h3 className="text-[14px] font-semibold">{org.name}</h3>
-                    <p className="text-[12px] text-[var(--muted)]">{org.description}</p>
-                    <p className="text-[10px] text-[var(--muted)] font-mono mt-0.5">/{org.slug}</p>
+                    <p className="text-[12px] text-(--muted)">{org.description}</p>
+                    <p className="text-[10px] text-(--muted) font-mono mt-0.5">/{org.slug}</p>
                   </div>
                 </div>
-                <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] hover:bg-[var(--bg)] transition-colors">
+                <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-[var(--bg)] transition-colors">
                   <Settings size={13} />
                 </button>
               </div>
@@ -48,8 +48,8 @@ export default async function AdminOrgsPage() {
                   { icon: DollarSign, label: "Active Budgets", value: org.approvedBudgetCount },
                   { icon: Building2, label: "Liquid Assets", value: formatCurrency(org.totalLiquidity, org.currency, true) },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-[var(--bg)] border border-[var(--border)] rounded-[10px] px-2.5 py-2">
-                    <p className="text-[10px] text-[var(--muted)] mb-1">{stat.label}</p>
+                  <div key={stat.label} className="bg-[var(--bg)] border border-(--border) rounded-[10px] px-2.5 py-2">
+                    <p className="text-[10px] text-(--muted) mb-1">{stat.label}</p>
                     <p className="text-[13px] font-semibold">{stat.value}</p>
                   </div>
                 ))}
@@ -68,7 +68,7 @@ export default async function AdminOrgsPage() {
                     </div>
                   ))}
                   {org.members.length > 5 && (
-                    <div className="w-6 h-6 rounded-full border-2 border-[var(--surface)] bg-[var(--border)] flex items-center justify-center text-[9px] font-medium text-[var(--muted)]">
+                    <div className="w-6 h-6 rounded-full border-2 border-[var(--surface)] bg-(--border) flex items-center justify-center text-[9px] font-medium text-(--muted)">
                       +{org.members.length - 5}
                     </div>
                   )}

@@ -91,6 +91,85 @@ export async function updateBudgetStatus(
   });
 }
 
+export async function updateBudget(
+  id: string,
+  data: {
+    title?: string;
+    description?: string;
+    departmentId?: string;
+    eventId?: string;
+    periodStart?: Date;
+    periodEnd?: Date;
+    items?: Array<{
+      id?: string;
+      categoryId?: string;
+      description: string;
+      quantity: number;
+      unitCost: number;
+      totalCost: number;
+      notes?: string;
+    }>;
+  }
+) {
+  const { items, ...budgetData } = data;
+  if (!items) {
+    return prisma.budget.update({
+      where: { id },
+      data: { ...budgetData, updatedAt: new Date() },
+      include: { items: true, department: true },
+    });
+  }
+
+  const existingItems = await prisma.budgetItem.findMany({
+    where: { budgetId: id },
+    select: { id: true },
+  });
+  const existingIds = new Set<string>(existingItems.map((i: { id: string }) => i.id));
+  const incomingIds = new Set(items.map((i) => i.id).filter(Boolean) as string[]);
+
+  const toDelete = Array.from(existingIds).filter((eid) => !incomingIds.has(eid));
+
+  return prisma.$transaction(async (tx: typeof prisma) => {
+    if (toDelete.length > 0) {
+      await tx.budgetItem.deleteMany({ where: { id: { in: toDelete } } });
+    }
+
+    for (const item of items) {
+      if (item.id && existingIds.has(item.id)) {
+        await tx.budgetItem.update({
+          where: { id: item.id },
+          data: {
+            categoryId: item.categoryId,
+            description: item.description,
+            quantity: item.quantity,
+            unitCost: item.unitCost,
+            totalCost: item.totalCost,
+            notes: item.notes,
+          },
+        });
+      } else {
+        await tx.budgetItem.create({
+          data: {
+            budgetId: id,
+            categoryId: item.categoryId,
+            description: item.description,
+            quantity: item.quantity,
+            unitCost: item.unitCost,
+            totalCost: item.totalCost,
+            notes: item.notes,
+          },
+        });
+      }
+    }
+
+    return tx.budget.update({
+      where: { id },
+      data: { ...budgetData, updatedAt: new Date() },
+      include: { items: { include: { category: true } }, department: true },
+    });
+  });
+}
+
 export async function getPendingApprovals(organizationId: string) {
   return prisma.approval.findMany({
     where: {

@@ -19,7 +19,7 @@ type NotificationRow = {
 const typeStyles: Record<string, string> = {
   approval: "bg-success-bg text-success",
   warning: "bg-warning-bg text-warning",
-  info: "bg-[var(--primary-light)] text-[var(--primary)]",
+  info: "bg-[var(--primary-light)] text-(--primary)",
   success: "bg-success-bg text-success",
 };
 
@@ -37,9 +37,9 @@ export default async function NotificationsPage() {
         <Button variant="ghost" size="sm"><CheckCheck size={13} /> Mark all read</Button>
       </PageHeader>
       <Card>
-        <div className="divide-y divide-[var(--border)]">
+        <div className="divide-y divide-(--border)">
           {notifications.length === 0 ? (
-            <div className="px-5 py-12 text-center text-[13px] text-[var(--muted)]">No notifications</div>
+            <div className="px-5 py-12 text-center text-[13px] text-(--muted)">No notifications</div>
           ) : (
             notifications.map((notification) => (
               <div
@@ -57,11 +57,11 @@ export default async function NotificationsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={cn("text-[13px]", !notification.read ? "font-semibold" : "font-medium")}>{notification.title}</p>
-                  <p className="text-[12px] text-[var(--muted)] mt-0.5">{notification.message}</p>
+                  <p className="text-[12px] text-(--muted) mt-0.5">{notification.message}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[11px] text-[var(--muted)]">{formatRelative(notification.createdAt)}</span>
-                  {!notification.read && <span className="w-2 h-2 rounded-full bg-[var(--primary)]" />}
+                  <span className="text-[11px] text-(--muted)">{formatRelative(notification.createdAt)}</span>
+                  {!notification.read && <span className="w-2 h-2 rounded-full bg-(--primary)" />}
                 </div>
               </div>
             ))

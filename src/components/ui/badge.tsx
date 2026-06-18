@@ -43,7 +43,7 @@ interface BadgeProps {
 }
 
 const variantClasses = {
-  default: "bg-[var(--primary-light)] text-[var(--primary)]",
+  default: "bg-[var(--primary-light)] text-(--primary)",
   success: "bg-success-bg text-success",
   warning: "bg-warning-bg text-warning",
   danger: "bg-danger-bg text-danger",

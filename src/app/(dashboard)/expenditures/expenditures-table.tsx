@@ -18,7 +18,7 @@ const columns = [
   { key: "dept", header: "Department", render: (r: ReportRow) => <span className="font-medium">{r.department?.name ?? "General"}</span> },
   { key: "claimed", header: "Total Claimed", render: (r: ReportRow) => <span className="font-mono">{formatCurrency(r.totalClaimed)}</span> },
   { key: "status", header: "Status", render: (r: ReportRow) => <StatusBadge status={r.status} /> },
-  { key: "submitted", header: "Submitted", render: (r: ReportRow) => <span className="text-[var(--muted)]">{r.submittedAt ? formatRelative(r.submittedAt) : "-"}</span> },
+  { key: "submitted", header: "Submitted", render: (r: ReportRow) => <span className="text-(--muted)">{r.submittedAt ? formatRelative(r.submittedAt) : "-"}</span> },
   { key: "actions", header: "", render: () => <Button variant="ghost" size="sm">Review</Button> },
 ];
 

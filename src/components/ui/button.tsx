@@ -9,13 +9,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses = {
   primary:
-    "bg-[var(--primary)] text-white border border-[var(--primary)] hover:bg-[#1a3e85] active:scale-[0.98]",
+    "bg-(--primary) text-white border border-(--primary) hover:bg-[#1a3e85] active:scale-[0.98]",
   ghost:
-    "bg-transparent text-[var(--muted)] border border-[var(--border)] hover:bg-[var(--bg)] hover:text-[var(--text)] active:scale-[0.98]",
+    "bg-transparent text-(--muted) border border-(--border) hover:bg-[var(--bg)] hover:text-[var(--text)] active:scale-[0.98]",
   danger:
     "bg-transparent text-danger border border-danger hover:bg-danger-bg active:scale-[0.98]",
   outline:
-    "bg-transparent text-[var(--primary)] border border-[var(--primary)] hover:bg-[var(--primary-light)] active:scale-[0.98]",
+    "bg-transparent text-(--primary) border border-(--primary) hover:bg-[var(--primary-light)] active:scale-[0.98]",
 };
 
 const sizeClasses = {

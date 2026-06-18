@@ -18,10 +18,10 @@ export function PlatformSidebar() {
   const router   = useRouter();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[224px] bg-[var(--surface)] border-r border-[var(--border)] flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-[224px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
       {/* Wordmark */}
-      <div className="px-4 py-4 border-b border-[var(--border)] flex items-center gap-2.5">
-        <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center flex-shrink-0">
+      <div className="px-4 py-4 border-b border-(--border) flex items-center gap-2.5">
+        <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center flex-shrink-0">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/>
             <polyline points="9 12 11 14 15 10"/>
@@ -29,13 +29,13 @@ export function PlatformSidebar() {
         </div>
         <div>
           <p className="text-[15px] font-semibold tracking-tight text-[var(--text)]">Steward</p>
-          <p className="text-[10px] text-[var(--muted)] uppercase tracking-[0.5px]">Platform Console</p>
+          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Platform Console</p>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3">
-        <p className="px-4 pb-1.5 text-[10px] font-medium text-[var(--muted)] uppercase tracking-[0.8px]">
+        <p className="px-4 pb-1.5 text-[10px] font-medium text-(--muted) uppercase tracking-[0.8px]">
           Platform
         </p>
         {navItems.map(({ label, href, icon: Icon }) => {
@@ -47,8 +47,8 @@ export function PlatformSidebar() {
               className={cn(
                 "flex items-center gap-2.5 mx-2 px-3 py-1.5 rounded-lg text-[13.5px] transition-all duration-150",
                 active
-                  ? "bg-[var(--primary-light)] text-[var(--primary)] font-medium"
-                  : "text-[var(--muted)] hover:bg-[var(--bg)] hover:text-[var(--text)]"
+                  ? "bg-[var(--primary-light)] text-(--primary) font-medium"
+                  : "text-(--muted) hover:bg-[var(--bg)] hover:text-[var(--text)]"
               )}
             >
               <Icon size={15} className={cn("flex-shrink-0", active ? "opacity-100" : "opacity-60")} />
@@ -59,19 +59,19 @@ export function PlatformSidebar() {
       </nav>
 
       {/* User footer */}
-      <div className="border-t border-[var(--border)] p-3">
+      <div className="border-t border-(--border) p-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-[var(--primary)] flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) flex-shrink-0">
             PA
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[12px] font-medium text-[var(--text)] truncate">Platform Admin</p>
-            <p className="text-[10px] text-[var(--muted)] truncate">Super Administrator</p>
+            <p className="text-[10px] text-(--muted) truncate">Super Administrator</p>
           </div>
           <button
             title="Sign out"
             onClick={() => router.push("/login")}
-            className="w-6 h-6 flex items-center justify-center rounded-md text-[var(--muted)] hover:text-danger hover:bg-danger-bg transition-colors flex-shrink-0"
+            className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors flex-shrink-0"
           >
             <LogOut size={12} />
           </button>

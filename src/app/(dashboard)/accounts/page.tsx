@@ -83,9 +83,9 @@ export default async function AccountsPage() {
                 </span>
               </div>
               <p className="text-[14px] font-medium mb-0.5">{account.name}</p>
-              <p className="text-[11px] text-[var(--muted)] mb-4">{account.provider ?? "Provider"} · {account.accountNumber ?? "No account number"}</p>
-              <div className="border-t border-[var(--border)] pt-3">
-                <p className="text-[11px] text-[var(--muted)] uppercase tracking-[0.5px] font-medium mb-1">Balance</p>
+              <p className="text-[11px] text-(--muted) mb-4">{account.provider ?? "Provider"} · {account.accountNumber ?? "No account number"}</p>
+              <div className="border-t border-(--border) pt-3">
+                <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px] font-medium mb-1">Balance</p>
                 <p className="text-[20px] font-semibold tracking-tight font-mono">{formatCurrency(account.balance, account.currency)}</p>
               </div>
             </CardBody>
@@ -97,7 +97,7 @@ export default async function AccountsPage() {
         <CardHeader>
           <CardTitle>
             <p className="text-[14px] font-medium">Recent Transactions</p>
-            <p className="text-[12px] text-[var(--muted)]">Across all accounts</p>
+            <p className="text-[12px] text-(--muted)">Across all accounts</p>
           </CardTitle>
           <Button variant="ghost" size="sm"><TrendingUp size={13} /> View All</Button>
         </CardHeader>

@@ -44,20 +44,20 @@ export function BudgetStatusFlow({ status, className }: BudgetStatusFlowProps) {
                 className={cn(
                   "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-semibold transition-colors",
                   done && "bg-success text-white",
-                  active && "bg-[var(--primary)] text-white ring-4 ring-[var(--primary-light)]",
-                  !done && !active && "bg-[var(--border)] text-[var(--muted)]"
+                  active && "bg-(--primary) text-white ring-4 ring-[var(--primary-light)]",
+                  !done && !active && "bg-(--border) text-(--muted)"
                 )}
               >
                 {done ? "✓" : i + 1}
               </div>
               <span className={cn("text-[10px] font-medium whitespace-nowrap",
-                active ? "text-[var(--primary)]" : done ? "text-success" : "text-[var(--muted)]"
+                active ? "text-(--primary)" : done ? "text-success" : "text-(--muted)"
               )}>
                 {step.label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={cn("h-0.5 w-10 mx-1 mb-4 transition-colors", done ? "bg-success" : "bg-[var(--border)]")} />
+              <div className={cn("h-0.5 w-10 mx-1 mb-4 transition-colors", done ? "bg-success" : "bg-(--border)")} />
             )}
           </div>
         );

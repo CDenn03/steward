@@ -29,12 +29,12 @@ export function DataTable<T>({
     <div className={cn("overflow-x-auto", className)}>
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--bg)]">
+          <tr className="border-b border-(--border) bg-[var(--bg)]">
             {columns.map((col) => (
               <th
                 key={col.key}
                 className={cn(
-                  "text-left text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.5px] px-4 py-2.5",
+                  "text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5",
                   col.headerClassName
                 )}
               >
@@ -48,7 +48,7 @@ export function DataTable<T>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-12 text-center text-[13px] text-[var(--muted)]"
+                className="px-4 py-12 text-center text-[13px] text-(--muted)"
               >
                 {emptyMessage}
               </td>
@@ -59,7 +59,7 @@ export function DataTable<T>({
                 key={i}
                 onClick={() => onRowClick?.(row)}
                 className={cn(
-                  "border-b border-[var(--border)] last:border-0 transition-colors duration-100",
+                  "border-b border-(--border) last:border-0 transition-colors duration-100",
                   onRowClick && "cursor-pointer hover:bg-[var(--bg)]"
                 )}
               >

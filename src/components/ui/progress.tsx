@@ -13,12 +13,12 @@ export function ProgressBar({ value, className, size = "sm" }: ProgressBarProps)
       ? "bg-danger"
       : clamped >= 80
       ? "bg-warning"
-      : "bg-[var(--primary)]";
+      : "bg-(--primary)";
 
   return (
     <div
       className={cn(
-        "w-full bg-[var(--border)] rounded-full overflow-hidden",
+        "w-full bg-(--border) rounded-full overflow-hidden",
         size === "sm" ? "h-1.5" : "h-2",
         className
       )}

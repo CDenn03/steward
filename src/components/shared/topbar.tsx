@@ -40,14 +40,14 @@ export function Topbar() {
   const isRoot = matchedKey === "/dashboard";
 
   return (
-    <header className="sticky top-0 z-40 h-14 bg-[var(--surface)] border-b border-[var(--border)] flex items-center gap-4 px-7">
+    <header className="sticky top-0 z-40 h-14 bg-(--surface) border-b border-(--border) flex items-center gap-4 px-7">
       <div className="flex items-center gap-1.5 text-[13px]">
         {!isRoot && (
           <>
-            <Link href="/dashboard" className="text-[var(--muted)] hover:text-[var(--text)] transition-colors">
+            <Link href="/dashboard" className="text-(--muted) hover:text-[var(--text)] transition-colors">
               {active?.orgName ?? "Steward"}
             </Link>
-            <span className="text-[var(--muted)]">›</span>
+            <span className="text-(--muted)">›</span>
           </>
         )}
         <span className="font-medium text-[var(--text)]">{title}</span>
@@ -55,21 +55,21 @@ export function Topbar() {
       <div className="flex-1" />
       <div className="flex items-center gap-2">
         <div className="relative w-48">
-          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)]" />
+          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--muted)" />
           <input
             type="text"
             placeholder="Search…"
             className={cn(
-              "w-full h-8 pl-7 pr-3 text-[12px] bg-[var(--surface)] border border-[var(--border)]",
-              "rounded-[var(--r-input)] outline-none text-[var(--text)] placeholder:text-[var(--muted)]",
-              "focus:border-[var(--primary)] transition-colors"
+              "w-full h-8 pl-7 pr-3 text-[12px] bg-(--surface) border border-(--border)",
+              "rounded-(--r-input) outline-none text-[var(--text)] placeholder:text-(--muted)",
+              "focus:border-(--primary) transition-colors"
             )}
           />
         </div>
         <ThemeToggle />
         <Link
           href="/notifications"
-          className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] hover:bg-[var(--bg)] hover:text-[var(--text)] transition-colors"
+          className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-[var(--bg)] hover:text-[var(--text)] transition-colors"
         >
           <Bell size={14} />
           <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-danger rounded-full border border-[var(--surface)]" />

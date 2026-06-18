@@ -36,19 +36,19 @@ export default async function EventsPage() {
             <Card key={event.id} className="hover:shadow-card-hover transition-shadow cursor-pointer">
               <CardBody>
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary)]">
+                  <div className="w-10 h-10 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-(--primary)">
                     <Calendar size={18} />
                   </div>
                   <StatusBadge status={(budget?.status.toLowerCase() ?? "draft") as BudgetStatus} />
                 </div>
                 <h3 className="text-[15px] font-medium mb-1">{event.name}</h3>
-                <p className="text-[12px] text-[var(--muted)] mb-4">
+                <p className="text-[12px] text-(--muted) mb-4">
                   {event.department?.name ?? "No department"} · {formatDate(event.startDate)}
                   {event.endDate ? ` - ${formatDate(event.endDate)}` : ""}
                 </p>
-                <div className="border-t border-[var(--border)] pt-3 flex items-center justify-between">
+                <div className="border-t border-(--border) pt-3 flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] text-[var(--muted)] mb-0.5">Budget</p>
+                    <p className="text-[11px] text-(--muted) mb-0.5">Budget</p>
                     <p className="text-[13px] font-mono font-medium">
                       {budget ? formatCurrency(total, session.organization.currency) : "Not started"}
                     </p>

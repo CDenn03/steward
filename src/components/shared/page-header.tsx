@@ -12,7 +12,7 @@ export function PageHeader({ title, subtitle, children, className }: PageHeaderP
     <div className={cn("flex items-start justify-between mb-6", className)}>
       <div>
         <h1 className="text-[20px] font-semibold tracking-tight text-[var(--text)]">{title}</h1>
-        {subtitle && <p className="text-[13px] text-[var(--muted)] mt-0.5">{subtitle}</p>}
+        {subtitle && <p className="text-[13px] text-(--muted) mt-0.5">{subtitle}</p>}
       </div>
       {children && <div className="flex items-center gap-2 flex-shrink-0">{children}</div>}
     </div>

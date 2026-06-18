@@ -28,8 +28,8 @@ export default async function PlatformAdminPage() {
           <Card key={label}>
             <CardBody>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[12px] text-[var(--muted)]">{label}</span>
-                <Icon size={14} className="text-[var(--muted)]" />
+                <span className="text-[12px] text-(--muted)">{label}</span>
+                <Icon size={14} className="text-(--muted)" />
               </div>
               <p className="text-[22px] font-semibold tracking-tight">{value}</p>
             </CardBody>
@@ -39,7 +39,7 @@ export default async function PlatformAdminPage() {
 
       <Card>
         <CardBody>
-          <p className="text-[12px] font-medium text-[var(--muted)] uppercase tracking-[0.6px] mb-4">
+          <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.6px] mb-4">
             Organisations
           </p>
           <div className="space-y-3">
@@ -53,9 +53,9 @@ export default async function PlatformAdminPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-medium truncate">{org.name}</p>
-                  <p className="text-[11px] text-[var(--muted)]">{org.description}</p>
+                  <p className="text-[11px] text-(--muted)">{org.description}</p>
                 </div>
-                <span className="text-[11px] text-[var(--muted)]">{org.members.length} members</span>
+                <span className="text-[11px] text-(--muted)">{org.members.length} members</span>
               </div>
             ))}
           </div>

@@ -21,8 +21,8 @@ const catVariants: Record<string, "default" | "success" | "info" | "gold" | "war
 const columns = [
   { key: "desc", header: "Description", render: (r: IncomeRecord) => <span className="font-medium">{r.description}</span> },
   { key: "cat", header: "Category", render: (r: IncomeRecord) => <Badge variant={catVariants[r.category] ?? "default"}>{r.category}</Badge> },
-  { key: "date", header: "Date", render: (r: IncomeRecord) => <span className="text-[var(--muted)]">{formatDate(r.date)}</span> },
-  { key: "by", header: "Recorded By", render: (r: IncomeRecord) => <span className="text-[var(--muted)]">{r.recordedBy}</span> },
+  { key: "date", header: "Date", render: (r: IncomeRecord) => <span className="text-(--muted)">{formatDate(r.date)}</span> },
+  { key: "by", header: "Recorded By", render: (r: IncomeRecord) => <span className="text-(--muted)">{r.recordedBy}</span> },
   { key: "amount", header: "Amount", render: (r: IncomeRecord) => <span className="font-mono font-medium text-success">{formatCurrency(r.amount)}</span> },
 ];
 
