@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { OrgProvider } from "@/lib/org/context";
+import { SessionProvider } from "next-auth/react";
+import { ToastProvider } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "Steward — Financial Governance Platform",
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <OrgProvider>{children}</OrgProvider>
+        <SessionProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </SessionProvider>
       </body>
     </html>
   );

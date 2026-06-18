@@ -68,14 +68,14 @@
 
 ---
 
-## SECTION 2 — Data Layer (🔴 Blockers)
+## SECTION 2 — Data Layer ( Blockers)
 
 ### 2.1 All pages use mock data, not the database
 **Status:** Every dashboard page imports from `src/lib/mock/data.ts`. No page fetches real data from PostgreSQL.
 **Impact:** The entire product is a prototype. No data persists between sessions.
 **What needs to happen:** Every page needs to be rewritten to fetch from the database via repository functions. The repository layer (`src/features/*/repositories/`) is scaffolded — it needs to be called from pages and Server Actions rather than mock data.
 **Priority pages to migrate first:**
-1. Dashboard stats
+1. stats
 2. Budgets list + detail
 3. Approvals queue
 4. Accounts + balances

@@ -22,7 +22,7 @@ export function CustomTooltip({ active, payload, label, currency = true }: Custo
         <div key={i} className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-1.5">
             {entry.color && (
-              <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ background: entry.color }} />
+              <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: entry.color }} />
             )}
             <span className="text-[#6B7280]">{entry.name}</span>
           </div>

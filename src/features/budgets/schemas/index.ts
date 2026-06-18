@@ -31,3 +31,24 @@ export const ReviewBudgetSchema = z.object({
 export type CreateBudgetInput = z.infer<typeof CreateBudgetSchema>;
 export type UpdateBudgetInput = z.infer<typeof UpdateBudgetSchema>;
 export type ReviewBudgetInput = z.infer<typeof ReviewBudgetSchema>;
+
+export const EditBudgetItemSchema = z.object({
+  id: z.string().optional(),
+  categoryId: z.string().optional(),
+  description: z.string().min(1, "Description is required"),
+  quantity: z.number().positive("Quantity must be positive"),
+  unitCost: z.number().positive("Unit cost must be positive"),
+  notes: z.string().optional(),
+});
+
+export const EditBudgetSchema = z.object({
+  title: z.string().min(1, "Title is required").max(200),
+  description: z.string().optional(),
+  departmentId: z.string().optional(),
+  eventId: z.string().optional(),
+  periodStart: z.coerce.date().optional(),
+  periodEnd: z.coerce.date().optional(),
+  items: z.array(EditBudgetItemSchema).min(1, "At least one budget item is required"),
+});
+
+export type EditBudgetInput = z.infer<typeof EditBudgetSchema>;

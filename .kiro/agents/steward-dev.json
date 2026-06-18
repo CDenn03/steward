@@ -1,0 +1,13 @@
+{
+  "name": "steward-dev",
+  "description": "Steward platform development agent",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "/home/cdenn/personal/steward/.kiro/hooks/update-docs.sh",
+        "timeout_ms": 5000
+      }
+    ]
+  }
+}

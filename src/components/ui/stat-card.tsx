@@ -29,19 +29,19 @@ export function StatCard({
       ? "bg-warning-bg text-warning"
       : accentColor === "gold"
       ? "bg-[var(--gold-light)] text-[var(--gold)]"
-      : "bg-[var(--primary-light)] text-[var(--primary)]";
+      : "bg-[var(--primary-light)] text-(--primary)";
 
   const valueClass =
-    accentColor === "warning" ? "text-warning" : "text-[var(--text)]";
+    accentColor === "warning" ? "text-warning" : "text-(--text)";
 
   return (
     <div
       className={cn(
-        "bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] p-5",
+        "bg-(--surface) border border-(--border) rounded-(--r-card) p-5",
         className
       )}
     >
-      <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.6px] mb-2.5">
+      <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.6px] mb-2.5">
         {label}
       </p>
       <p
@@ -52,7 +52,7 @@ export function StatCard({
       >
         {value}
       </p>
-      <div className="mt-2 flex items-center gap-2 text-[12px] text-[var(--muted)]">
+      <div className="mt-2 flex items-center gap-2 text-[12px] text-(--muted)">
         {delta !== undefined && delta !== null && (
           <span
             className={cn(
@@ -75,7 +75,7 @@ export function StatCard({
         <div className="mt-3">
           <ProgressBar value={progress} />
           {progressLabel && (
-            <p className="text-[10px] text-[var(--muted)] mt-1">{progressLabel}</p>
+            <p className="text-[10px] text-(--muted) mt-1">{progressLabel}</p>
           )}
         </div>
       )}

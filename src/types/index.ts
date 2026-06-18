@@ -21,7 +21,7 @@ export type IncomeCategory =
 
 export type DisbursementStatus = "pending" | "approved" | "released" | "cancelled";
 
-export type UserRole = "admin" | "finance" | "chairperson" | "department_head" | "member";
+export type UserRole = "platform_admin" | "admin" | "finance" | "chairperson" | "department_head" | "member";
 
 // ─── Core entities ───────────────────────────────────────────────────────────
 
@@ -245,4 +245,4 @@ export interface BudgetVariance {
   pct: number;
 }
 
-export type MemberRole = "admin" | "finance" | "chairperson" | "department_head" | "member";
+export type MemberRole = "platform_admin" | "admin" | "finance" | "chairperson" | "department_head" | "member";

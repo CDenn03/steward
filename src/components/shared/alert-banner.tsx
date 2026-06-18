@@ -18,7 +18,7 @@ export function AlertBanner({ type = "info", children, className }: AlertBannerP
   const { bg, text, Icon } = config[type];
   return (
     <div className={cn("flex items-center gap-2.5 border rounded-[var(--r-btn)] px-4 py-2.5 text-[12.5px]", bg, text, className)}>
-      <Icon size={14} className="flex-shrink-0" />
+      <Icon size={14} className="shrink-0" />
       <div>{children}</div>
     </div>
   );

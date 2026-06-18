@@ -1,44 +1,56 @@
 import { prisma } from "@/lib/prisma/client";
-import { createAuditLog } from "@/features/audit/services";
 import type { RecordIncomeInput } from "../schemas";
 
 export async function recordIncomeService(
   input: RecordIncomeInput,
   context: { userId: string; organizationId: string }
 ) {
-  const income = await prisma.income.create({
-    data: {
-      ...input,
-      organizationId: context.organizationId,
-      recordedById: context.userId,
-    },
-  });
+  const income = await prisma.$transaction(async (tx: typeof prisma) => {
+    const account = await tx.financialAccount.findFirst({
+      where: { id: input.accountId, organizationId: context.organizationId },
+      select: { id: true, balance: true },
+    });
+    if (!account) throw new Error("Account not found");
 
-  // Update account balance
-  await prisma.$transaction([
-    prisma.financialAccount.update({
+    const createdIncome = await tx.income.create({
+      data: {
+        ...input,
+        organizationId: context.organizationId,
+        recordedById: context.userId,
+      },
+    });
+
+    const balanceAfter = account.balance + input.amount;
+    await tx.financialAccount.update({
       where: { id: input.accountId },
-      data: { balance: { increment: input.amount } },
-    }),
-    prisma.accountTransaction.create({
+      data: { balance: balanceAfter },
+    });
+
+    await tx.accountTransaction.create({
       data: {
         accountId: input.accountId,
         type: "credit",
         amount: input.amount,
         description: input.description,
-        balanceAfter: 0, // Would be computed in real impl
+        reference: createdIncome.id,
+        balanceAfter,
         recordedById: context.userId,
+        transactedAt: input.receivedAt,
       },
-    }),
-  ]);
+    });
 
-  await createAuditLog({
-    organizationId: context.organizationId,
-    actorId: context.userId,
-    entityType: "Income",
-    entityId: income.id,
-    action: "recorded",
-    after: { amount: income.amount, category: income.category },
+    await tx.auditLog.create({
+      data: {
+        organizationId: context.organizationId,
+        actorId: context.userId,
+        entityType: "Income",
+        entityId: createdIncome.id,
+        action: "recorded",
+        after: { amount: createdIncome.amount, category: createdIncome.category },
+      },
+    });
+
+    return createdIncome;
   });
 
   return income;

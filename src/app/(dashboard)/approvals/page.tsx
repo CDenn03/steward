@@ -1,19 +1,73 @@
-"use client";
-import { CheckCircle2, XCircle, MessageSquare, Clock } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, XCircle, MessageSquare, DollarSign } from "lucide-react";
+import { requireSession } from "@/lib/auth/session";
+import { getBudgetsByOrg, getPendingApprovals } from "@/features/budgets/repositories";
+import { getExpenditureReportsByOrg } from "@/features/finance/repositories";
+import { getPendingDisbursements } from "@/features/disbursements/services";
 import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/badge";
 import { formatCurrency, formatRelative } from "@/lib/utils";
-import { mockBudgets, mockExpenditureReports } from "@/lib/mock/data";
+import { ReleaseDisbursementButton } from "@/features/disbursements/components/release-disbursement-button";
+import type { BudgetStatus } from "@/types";
 
-export default function ApprovalsPage() {
-  const pendingFinance = mockBudgets.filter(
-    (b) => b.status === "submitted"
-  );
-  const pendingChair = mockBudgets.filter(
-    (b) => b.status === "finance_approved"
-  );
+const status = (value: string) => value.toLowerCase() as BudgetStatus;
+
+type BudgetRow = {
+  id: string;
+  title: string;
+  status: string;
+  items: Array<{ totalCost: number }>;
+};
+
+type ApprovalRow = {
+  id: string;
+  budgetId: string;
+  type: string;
+  createdAt: Date;
+  budget: {
+    title: string;
+    status: string;
+    department: { name: string } | null;
+    items: Array<{ totalCost: number }>;
+  };
+};
+
+type ReportRow = {
+  id: string;
+  title: string;
+  status: string;
+  totalClaimed: number;
+  submittedAt: Date | null;
+};
+
+type DisbursementRow = {
+  id: string;
+  description: string;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+  budget: { id: string; title: string; department: { name: string } | null };
+  account: { id: string; name: string };
+};
+
+export default async function ApprovalsPage() {
+  const session = await requireSession();
+  const [approvals, budgets, expenditureReports, pendingDisbursements] = await Promise.all([
+    getPendingApprovals(session.organizationId),
+    getBudgetsByOrg(session.organizationId),
+    getExpenditureReportsByOrg(session.organizationId),
+    getPendingDisbursements(session.organizationId),
+  ]);
+
+  const budgetRows = budgets as BudgetRow[];
+  const approvalRows = approvals as ApprovalRow[];
+  const reportRows = expenditureReports as ReportRow[];
+  const disbursementRows = pendingDisbursements as unknown as DisbursementRow[];
+  const pendingFinance = budgetRows.filter((budget: BudgetRow) => budget.status === "SUBMITTED");
+  const pendingChair = budgetRows.filter((budget: BudgetRow) => budget.status === "FINANCE_APPROVED");
+  const pendingReports = reportRows.filter((report: ReportRow) => report.status === "SUBMITTED");
 
   return (
     <>
@@ -22,135 +76,172 @@ export default function ApprovalsPage() {
         subtitle="Budgets and reports awaiting your decision"
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-4 gap-3 mb-6">
         {[
-          { label: "Pending Finance Review", value: pendingFinance.length, color: "text-[var(--primary)]" },
+          { label: "Pending Finance Review", value: pendingFinance.length, color: "text-(--primary)" },
           { label: "Pending Chair Approval", value: pendingChair.length, color: "text-warning" },
-          { label: "Expenditure Reports", value: mockExpenditureReports.length, color: "text-[var(--muted)]" },
-        ].map((s) => (
-          <div key={s.label} className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] px-5 py-4">
-            <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.5px] mb-2">{s.label}</p>
-            <p className={`text-[24px] font-semibold ${s.color}`}>{s.value}</p>
+          { label: "Pending Disbursements", value: disbursementRows.length, color: "text-success" },
+          { label: "Expenditure Reports", value: pendingReports.length, color: "text-(--muted)" },
+        ].map((item) => (
+          <div key={item.label} className="bg-(--surface) border border-(--border) rounded-(--r-card) px-5 py-4">
+            <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-2">{item.label}</p>
+            <p className={`text-[24px] font-semibold ${item.color}`}>{item.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* Finance Review Queue */}
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              <p className="text-[14px] font-medium">Finance Review Queue</p>
-              <p className="text-[12px] text-[var(--muted)]">{pendingFinance.length} pending items</p>
-            </CardTitle>
-          </CardHeader>
-          <div className="divide-y divide-[var(--border)]">
-            {pendingFinance.length === 0 ? (
-              <div className="px-5 py-10 text-center text-[13px] text-[var(--muted)]">No pending items</div>
-            ) : (
-              pendingFinance.map((b) => (
-                <div key={b.id} className="px-5 py-4">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-base flex-shrink-0">💰</div>
-                    <div className="flex-1">
-                      <p className="text-[13px] font-medium">{b.title}</p>
-                      <p className="text-[11px] text-[var(--muted)]">
-                        {formatCurrency(b.totalAmount)} · {b.department?.name} · Submitted {formatRelative(b.updatedAt)}
-                      </p>
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Finance Review Queue</p>
+                <p className="text-[12px] text-(--muted)">{approvalRows.length} pending items</p>
+              </CardTitle>
+            </CardHeader>
+            <div className="divide-y divide-(--border)">
+              {approvalRows.length === 0 ? (
+                <div className="px-5 py-10 text-center text-[13px] text-(--muted)">No pending items</div>
+              ) : (
+                approvalRows.map((approval: ApprovalRow) => {
+                  const total = approval.budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
+                  return (
+                    <div key={approval.id} className="px-5 py-4">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[10px] font-semibold shrink-0">KES</div>
+                        <div className="flex-1">
+                          <p className="text-[13px] font-medium">{approval.budget.title}</p>
+                          <p className="text-[11px] text-(--muted)">
+                            {formatCurrency(total)} · {approval.budget.department?.name ?? "General"} · Submitted {formatRelative(approval.createdAt)}
+                          </p>
+                        </div>
+                        <StatusBadge status={status(approval.budget.status)} />
+                      </div>
+                      <div className="flex gap-2">
+                        <Link href={`/budgets/${approval.budgetId}`} className="flex-1">
+                          <Button variant="danger" size="sm" className="w-full">
+                            <XCircle size={13} /> Review
+                          </Button>
+                        </Link>
+                        <Link href={`/budgets/${approval.budgetId}`} className="flex-1">
+                          <Button variant="ghost" size="sm" className="w-full">
+                            <MessageSquare size={13} /> Comment
+                          </Button>
+                        </Link>
+                        <Link href={`/budgets/${approval.budgetId}`} className="flex-1">
+                          <Button size="sm" className="w-full">
+                            <CheckCircle2 size={13} /> Open
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                    <StatusBadge status={b.status} />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="danger" size="sm" className="flex-1">
-                      <XCircle size={13} /> Decline
-                    </Button>
-                    <Button variant="ghost" size="sm" className="flex-1">
-                      <MessageSquare size={13} /> Comment
-                    </Button>
-                    <Button size="sm" className="flex-1">
-                      <CheckCircle2 size={13} /> Approve
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
-            {/* Static extras for demo */}
-            <div className="px-5 py-4">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="w-9 h-9 rounded-[10px] bg-warning-bg flex items-center justify-center text-base flex-shrink-0">📋</div>
-                <div className="flex-1">
-                  <p className="text-[13px] font-medium">Camp Transport Disbursement</p>
-                  <p className="text-[11px] text-[var(--muted)]">KES 95,000 · Youth Department · 4h ago</p>
-                </div>
-                <span className="text-[10px] font-medium bg-warning-bg text-warning px-1.5 py-0.5 rounded">Disbursement</span>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="flex-1">
-                  <Clock size={13} /> Hold
-                </Button>
-                <Button size="sm" className="flex-1">
-                  <CheckCircle2 size={13} /> Release Funds
-                </Button>
-              </div>
+                  );
+                })
+              )}
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        {/* Expenditure Reports */}
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Disbursement Queue</p>
+                <p className="text-[12px] text-(--muted)">{disbursementRows.length} pending</p>
+              </CardTitle>
+            </CardHeader>
+            <div className="divide-y divide-(--border)">
+              {disbursementRows.length === 0 ? (
+                <div className="px-5 py-10 text-center text-[13px] text-(--muted)">No pending disbursements</div>
+              ) : (
+                disbursementRows.map((d: DisbursementRow) => (
+                  <div key={d.id} className="px-5 py-4">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-[10px] bg-success-bg flex items-center justify-center text-[10px] font-semibold shrink-0 text-success">
+                        <DollarSign size={14} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[13px] font-medium">{d.description}</p>
+                        <p className="text-[11px] text-(--muted)">
+                          {formatCurrency(d.totalAmount)} · {d.budget.title}
+                          {d.budget.department && ` · ${d.budget.department.name}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-[11px] text-(--muted)">From: {d.account.name}</span>
+                      <span className="ml-auto">
+                        <ReleaseDisbursementButton disbursementId={d.id} />
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle>
               <p className="text-[14px] font-medium">Expenditure Reports</p>
-              <p className="text-[12px] text-[var(--muted)]">{mockExpenditureReports.length} pending review</p>
+              <p className="text-[12px] text-(--muted)">{pendingReports.length} pending review</p>
             </CardTitle>
           </CardHeader>
-          <div className="divide-y divide-[var(--border)]">
-            {mockExpenditureReports.map((rep) => (
-              <div key={rep.id} className="px-5 py-4">
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-[10px] bg-draft-bg flex items-center justify-center text-base flex-shrink-0">📋</div>
-                  <div className="flex-1">
-                    <p className="text-[13px] font-medium">
-                      {rep.department?.name} Report
-                    </p>
-                    <p className="text-[11px] text-[var(--muted)]">
-                      {formatCurrency(rep.totalClaimed)} claimed · {rep.submittedAt ? formatRelative(rep.submittedAt) : ""}
-                    </p>
+          <div className="divide-y divide-(--border)">
+            {pendingReports.length === 0 ? (
+              <div className="px-5 py-10 text-center text-[13px] text-(--muted)">No pending reports</div>
+            ) : (
+              pendingReports.map((report: ReportRow) => (
+                <div key={report.id} className="px-5 py-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-[10px] bg-draft-bg flex items-center justify-center text-[10px] font-semibold shrink-0">REP</div>
+                    <div className="flex-1">
+                      <p className="text-[13px] font-medium">
+                        {report.title}
+                      </p>
+                      <p className="text-[11px] text-(--muted)">
+                        {formatCurrency(report.totalClaimed)} claimed · {report.submittedAt ? formatRelative(report.submittedAt) : "Not submitted"}
+                      </p>
+                    </div>
+                    <StatusBadge status={status(report.status)} />
                   </div>
-                  <StatusBadge status="submitted" />
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" className="flex-1">
+                      <MessageSquare size={13} /> Request Info
+                    </Button>
+                    <Button size="sm" className="flex-1">Review Report</Button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="flex-1">
-                    <MessageSquare size={13} /> Request Info
-                  </Button>
-                  <Button size="sm" className="flex-1">Review Report</Button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
 
-            {/* Chair approval section */}
             {pendingChair.length > 0 && (
               <>
-                <div className="px-5 py-3 bg-[var(--bg)]">
-                  <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.6px]">Chairperson Approvals</p>
+                <div className="px-5 py-3 bg-(--bg)">
+                  <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.6px]">Chairperson Approvals</p>
                 </div>
-                {pendingChair.map((b) => (
-                  <div key={b.id} className="px-5 py-4">
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-base flex-shrink-0">✅</div>
-                      <div className="flex-1">
-                        <p className="text-[13px] font-medium">{b.title}</p>
-                        <p className="text-[11px] text-[var(--muted)]">{formatCurrency(b.totalAmount)} · Finance Approved</p>
+                {pendingChair.map((budget: BudgetRow) => {
+                  const total = budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
+                  return (
+                    <div key={budget.id} className="px-5 py-4">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[10px] font-semibold shrink-0">OK</div>
+                        <div className="flex-1">
+                          <p className="text-[13px] font-medium">{budget.title}</p>
+                          <p className="text-[11px] text-(--muted)">{formatCurrency(total)} · Finance Approved</p>
+                        </div>
+                        <StatusBadge status={status(budget.status)} />
                       </div>
-                      <StatusBadge status={b.status} />
+                      <div className="flex gap-2">
+                        <Link href={`/budgets/${budget.id}`} className="flex-1">
+                          <Button variant="danger" size="sm" className="w-full"><XCircle size={13} /> Review</Button>
+                        </Link>
+                        <Link href={`/budgets/${budget.id}`} className="flex-1">
+                          <Button size="sm" className="w-full"><CheckCircle2 size={13} /> Open</Button>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="danger" size="sm" className="flex-1"><XCircle size={13} /> Reject</Button>
-                      <Button size="sm" className="flex-1"><CheckCircle2 size={13} /> Final Approve</Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </>
             )}
           </div>
