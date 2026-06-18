@@ -183,7 +183,7 @@ export function EditBudgetForm({
     <div className="max-w-[900px]">
       <Link
         href={`/budgets/${budget.id}`}
-        className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors mb-5"
+        className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-(--text) transition-colors mb-5"
       >
         <ArrowLeft size={13} /> Back to Budget
       </Link>
@@ -241,7 +241,7 @@ export function EditBudgetForm({
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Youth Annual Camp 2025"
                   className={cn(
-                    "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors",
+                    "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
                     errors.title ? "border-danger" : "border-(--border)"
                   )}
                 />
@@ -261,7 +261,7 @@ export function EditBudgetForm({
                     value={departmentId}
                     onChange={(e) => setDepartmentId(e.target.value)}
                     className={cn(
-                      "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors",
+                      "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors",
                       errors.departmentId
                         ? "border-danger"
                         : "border-(--border)"
@@ -290,7 +290,7 @@ export function EditBudgetForm({
                   <select
                     value={eventId}
                     onChange={(e) => setEventId(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   >
                     <option value="">None</option>
                     {events.map((ev) => (
@@ -311,7 +311,7 @@ export function EditBudgetForm({
                     type="date"
                     value={periodStart}
                     onChange={(e) => setPeriodStart(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   />
                 </div>
                 <div>
@@ -322,7 +322,7 @@ export function EditBudgetForm({
                     type="date"
                     value={periodEnd}
                     onChange={(e) => setPeriodEnd(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   />
                 </div>
               </div>
@@ -339,7 +339,7 @@ export function EditBudgetForm({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Add context or justification for this budget..."
                   rows={3}
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors resize-none"
+                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
                 />
               </div>
             </CardBody>
@@ -358,7 +358,7 @@ export function EditBudgetForm({
               </Button>
             </CardHeader>
 
-            <div className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-2.5 border-b border-(--border) bg-[var(--bg)]">
+            <div className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-2.5 border-b border-(--border) bg-(--bg)">
               {["Description", "Category", "Qty", "Unit Cost (KES)", "Total", ""].map(
                 (h) => (
                   <span
@@ -375,7 +375,7 @@ export function EditBudgetForm({
               {items.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-3 items-center hover:bg-[var(--bg)] transition-colors"
+                  className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-3 items-center hover:bg-(--bg) transition-colors"
                 >
                   <div>
                     <input
@@ -386,7 +386,7 @@ export function EditBudgetForm({
                       }
                       placeholder={`Item ${idx + 1} description`}
                       className={cn(
-                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors",
+                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
                         errors[`item-${idx}-desc`]
                           ? "border-danger"
                           : "border-(--border)"
@@ -399,7 +399,7 @@ export function EditBudgetForm({
                       onChange={(e) =>
                         updateItem(item.id, "categoryId", e.target.value)
                       }
-                      className="w-full px-2 py-1.5 text-[12.5px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                      className="w-full px-2 py-1.5 text-[12.5px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) text-(--text) transition-colors"
                     >
                       <option value="">Category</option>
                       {categories.map((category) => (
@@ -418,11 +418,11 @@ export function EditBudgetForm({
                         updateItem(
                           item.id,
                           "quantity",
-                          parseFloat(e.target.value) || 0
+                          Number.parseFloat(e.target.value) || 0
                         )
                       }
                       className={cn(
-                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] transition-colors text-right font-mono",
+                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-(--text) transition-colors text-right font-mono",
                         errors[`item-${idx}-qty`]
                           ? "border-danger"
                           : "border-(--border)"
@@ -438,12 +438,12 @@ export function EditBudgetForm({
                         updateItem(
                           item.id,
                           "unitCost",
-                          parseFloat(e.target.value) || 0
+                          Number.parseFloat(e.target.value) || 0
                         )
                       }
                       placeholder="0"
                       className={cn(
-                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors text-right font-mono",
+                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors text-right font-mono",
                         errors[`item-${idx}-cost`]
                           ? "border-danger"
                           : "border-(--border)"
@@ -473,7 +473,7 @@ export function EditBudgetForm({
               ))}
             </div>
 
-            <div className="flex items-center justify-between px-4 py-3.5 border-t-2 border-(--border) bg-[var(--bg)]">
+            <div className="flex items-center justify-between px-4 py-3.5 border-t-2 border-(--border) bg-(--bg)">
               <div className="flex items-center gap-2 text-[12px] text-(--muted)">
                 <Calculator size={13} />
                 {items.length} line item{items.length !== 1 ? "s" : ""}
@@ -524,7 +524,7 @@ export function EditBudgetForm({
                       <span className="text-(--muted) truncate pr-2">
                         {item.description || "Item"}
                       </span>
-                      <span className="font-mono flex-shrink-0">
+                      <span className="font-mono shrink-0">
                         {formatCurrency(item.quantity * item.unitCost).replace(
                           "KES ",
                           ""
@@ -563,7 +563,7 @@ export function EditBudgetForm({
             </Button>
             <Link
               href={`/budgets/${budget.id}`}
-              className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors"
+              className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-(--text) transition-colors"
             >
               Cancel
             </Link>

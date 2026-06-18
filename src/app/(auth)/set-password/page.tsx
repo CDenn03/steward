@@ -60,7 +60,7 @@ export default function SetPasswordPage() {
         </div>
       </div>
 
-      <div className="bg-(--surface) border border-(--border) rounded-[var(--r-dialog)] p-7">
+      <div className="bg-(--surface) border border-(--border) rounded-(--r-dialog) p-7">
         <h1 className="text-[18px] font-semibold mb-1">Set your password</h1>
         <p className="text-[13px] text-(--muted) mb-6">Create a password to finish your first sign-in.</p>
 
@@ -74,12 +74,12 @@ export default function SetPasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full pl-8 pr-9 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors"
+                className="w-full pl-8 pr-9 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted) hover:text-[var(--text)]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted) hover:text-(--text)"
               >
                 {showPw ? <EyeOff size={13} /> : <Eye size={13} />}
               </button>
@@ -96,7 +96,7 @@ export default function SetPasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 placeholder="Repeat password"
-                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors"
+                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
               />
             </div>
           </div>

@@ -37,7 +37,7 @@ export default async function AdminOrgsPage() {
                     <p className="text-[10px] text-(--muted) font-mono mt-0.5">/{org.slug}</p>
                   </div>
                 </div>
-                <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-[var(--bg)] transition-colors">
+                <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) transition-colors">
                   <Settings size={13} />
                 </button>
               </div>
@@ -48,7 +48,7 @@ export default async function AdminOrgsPage() {
                   { icon: DollarSign, label: "Active Budgets", value: org.approvedBudgetCount },
                   { icon: Building2, label: "Liquid Assets", value: formatCurrency(org.totalLiquidity, org.currency, true) },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-[var(--bg)] border border-(--border) rounded-[10px] px-2.5 py-2">
+                  <div key={stat.label} className="bg-(--bg) border border-(--border) rounded-[10px] px-2.5 py-2">
                     <p className="text-[10px] text-(--muted) mb-1">{stat.label}</p>
                     <p className="text-[13px] font-semibold">{stat.value}</p>
                   </div>

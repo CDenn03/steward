@@ -95,7 +95,7 @@ export function BudgetsTable({ budgets }: { budgets: BudgetRow[] }) {
               "px-3 py-1.5 text-[12px] font-medium rounded-[var(--r-btn)] border transition-all",
               filter === f.value
                 ? "bg-(--primary) text-white border-(--primary)"
-                : "bg-transparent text-(--muted) border-(--border) hover:bg-[var(--bg)] hover:text-[var(--text)]"
+                : "bg-transparent text-(--muted) border-(--border) hover:bg-(--bg) hover:text-(--text)"
             )}>
             {f.label}
           </button>
@@ -104,7 +104,7 @@ export function BudgetsTable({ budgets }: { budgets: BudgetRow[] }) {
           <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--muted)" />
           <input type="text" placeholder="Search budgets…" value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-7 pr-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-48 focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors" />
+            className="pl-7 pr-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-48 focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors" />
         </div>
       </div>
       <Card>

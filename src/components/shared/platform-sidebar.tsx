@@ -21,14 +21,14 @@ export function PlatformSidebar() {
     <aside className="fixed left-0 top-0 bottom-0 w-[224px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
       {/* Wordmark */}
       <div className="px-4 py-4 border-b border-(--border) flex items-center gap-2.5">
-        <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center shrink-0">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/>
             <polyline points="9 12 11 14 15 10"/>
           </svg>
         </div>
         <div>
-          <p className="text-[15px] font-semibold tracking-tight text-[var(--text)]">Steward</p>
+          <p className="text-[15px] font-semibold tracking-tight text-(--text)">Steward</p>
           <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Platform Console</p>
         </div>
       </div>
@@ -48,10 +48,10 @@ export function PlatformSidebar() {
                 "flex items-center gap-2.5 mx-2 px-3 py-1.5 rounded-lg text-[13.5px] transition-all duration-150",
                 active
                   ? "bg-[var(--primary-light)] text-(--primary) font-medium"
-                  : "text-(--muted) hover:bg-[var(--bg)] hover:text-[var(--text)]"
+                  : "text-(--muted) hover:bg-(--bg) hover:text-(--text)"
               )}
             >
-              <Icon size={15} className={cn("flex-shrink-0", active ? "opacity-100" : "opacity-60")} />
+              <Icon size={15} className={cn("shrink-0", active ? "opacity-100" : "opacity-60")} />
               {label}
             </Link>
           );
@@ -61,17 +61,17 @@ export function PlatformSidebar() {
       {/* User footer */}
       <div className="border-t border-(--border) p-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
             PA
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium text-[var(--text)] truncate">Platform Admin</p>
+            <p className="text-[12px] font-medium text-(--text) truncate">Platform Admin</p>
             <p className="text-[10px] text-(--muted) truncate">Super Administrator</p>
           </div>
           <button
             title="Sign out"
             onClick={() => router.push("/login")}
-            className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors flex-shrink-0"
+            className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors shrink-0"
           >
             <LogOut size={12} />
           </button>

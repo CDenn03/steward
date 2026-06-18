@@ -46,7 +46,7 @@ export default async function PlatformAdminPage() {
             {organizations.map((org) => (
               <div key={org.id} className="flex items-center gap-3">
                 <div
-                  className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
+                  className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold shrink-0"
                   style={{ background: org.primaryColor }}
                 >
                   {org.logoInitials}

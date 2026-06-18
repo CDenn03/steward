@@ -44,13 +44,13 @@ export function Topbar() {
       <div className="flex items-center gap-1.5 text-[13px]">
         {!isRoot && (
           <>
-            <Link href="/dashboard" className="text-(--muted) hover:text-[var(--text)] transition-colors">
+            <Link href="/dashboard" className="text-(--muted) hover:text-(--text) transition-colors">
               {active?.orgName ?? "Steward"}
             </Link>
             <span className="text-(--muted)">›</span>
           </>
         )}
-        <span className="font-medium text-[var(--text)]">{title}</span>
+        <span className="font-medium text-(--text)">{title}</span>
       </div>
       <div className="flex-1" />
       <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ export function Topbar() {
             placeholder="Search…"
             className={cn(
               "w-full h-8 pl-7 pr-3 text-[12px] bg-(--surface) border border-(--border)",
-              "rounded-(--r-input) outline-none text-[var(--text)] placeholder:text-(--muted)",
+              "rounded-(--r-input) outline-none text-(--text) placeholder:text-(--muted)",
               "focus:border-(--primary) transition-colors"
             )}
           />
@@ -69,7 +69,7 @@ export function Topbar() {
         <ThemeToggle />
         <Link
           href="/notifications"
-          className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-[var(--bg)] hover:text-[var(--text)] transition-colors"
+          className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) hover:text-(--text) transition-colors"
         >
           <Bell size={14} />
           <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-danger rounded-full border border-[var(--surface)]" />

@@ -58,7 +58,7 @@ export default async function AdminUsersPage() {
           {users.map((user) => (
             <div key={user.id} className="px-5 py-4">
               <div className="flex items-center gap-4">
-                <div className="w-9 h-9 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[13px] font-semibold text-(--primary) flex-shrink-0">
+                <div className="w-9 h-9 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[13px] font-semibold text-(--primary) shrink-0">
                   {user.initials}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -71,10 +71,10 @@ export default async function AdminUsersPage() {
                 {user.memberships.map((membership) => (
                   <div
                     key={membership.id}
-                    className="flex items-center gap-3 bg-[var(--bg)] border border-(--border) rounded-[10px] px-3.5 py-3"
+                    className="flex items-center gap-3 bg-(--bg) border border-(--border) rounded-[10px] px-3.5 py-3"
                   >
                     <div
-                      className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                      className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                       style={{ background: membership.org.primaryColor }}
                     >
                       {membership.org.logoInitials}
@@ -90,7 +90,7 @@ export default async function AdminUsersPage() {
                       <Badge variant={roleVariants[membership.role] ?? "draft"}>
                         {roleLabels[membership.role] ?? membership.role}
                       </Badge>
-                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-[var(--text)] hover:bg-[var(--bg)] transition-colors" title="Edit membership">
+                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-(--text) hover:bg-(--bg) transition-colors" title="Edit membership">
                         <Edit2 size={11} />
                       </button>
                       <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors" title="Remove from org">

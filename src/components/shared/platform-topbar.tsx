@@ -26,7 +26,7 @@ export function PlatformTopbar() {
         <Shield size={13} className="text-(--primary)" />
         <span className="text-(--muted)">Platform Console</span>
         <span className="text-(--muted)">›</span>
-        <span className="font-medium text-[var(--text)]">{title}</span>
+        <span className="font-medium text-(--text)">{title}</span>
       </div>
       <div className="flex-1" />
       <div className="flex items-center gap-2">
@@ -36,7 +36,7 @@ export function PlatformTopbar() {
             placeholder="Search…"
             className={cn(
               "w-full h-8 pl-3 pr-3 text-[12px] bg-(--surface) border border-(--border)",
-              "rounded-(--r-input) outline-none text-[var(--text)] placeholder:text-(--muted)",
+              "rounded-(--r-input) outline-none text-(--text) placeholder:text-(--muted)",
               "focus:border-(--primary) transition-colors"
             )}
           />

@@ -35,7 +35,7 @@ export default function SettingsPage() {
                     <p className="text-[13px] font-medium">{s.label}</p>
                     <p className="text-[12px] text-(--muted)">{s.desc}</p>
                   </div>
-                  <div className="w-9 h-5 bg-(--primary) rounded-full flex items-center justify-end pr-0.5 flex-shrink-0 cursor-pointer">
+                  <div className="w-9 h-5 bg-(--primary) rounded-full flex items-center justify-end pr-0.5 shrink-0 cursor-pointer">
                     <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
                   </div>
                 </div>

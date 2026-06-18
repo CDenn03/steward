@@ -11,7 +11,7 @@ const variantClasses = {
   primary:
     "bg-(--primary) text-white border border-(--primary) hover:bg-[#1a3e85] active:scale-[0.98]",
   ghost:
-    "bg-transparent text-(--muted) border border-(--border) hover:bg-[var(--bg)] hover:text-[var(--text)] active:scale-[0.98]",
+    "bg-transparent text-(--muted) border border-(--border) hover:bg-(--bg) hover:text-(--text) active:scale-[0.98]",
   danger:
     "bg-transparent text-danger border border-danger hover:bg-danger-bg active:scale-[0.98]",
   outline:

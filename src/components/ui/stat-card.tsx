@@ -32,7 +32,7 @@ export function StatCard({
       : "bg-[var(--primary-light)] text-(--primary)";
 
   const valueClass =
-    accentColor === "warning" ? "text-warning" : "text-[var(--text)]";
+    accentColor === "warning" ? "text-warning" : "text-(--text)";
 
   return (
     <div

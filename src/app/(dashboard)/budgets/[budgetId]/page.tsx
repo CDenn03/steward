@@ -1,13 +1,17 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Paperclip } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetById } from "@/features/budgets/repositories";
+import { getAccountsForDisbursement } from "@/features/disbursements/services";
 import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress";
 import { formatCurrency, formatDate, formatRelative, pct } from "@/lib/utils";
 import { BudgetActions } from "@/features/budgets/components/budget-actions";
+import { BudgetAttachmentUpload } from "@/features/budgets/components/budget-attachment-upload";
+import { BudgetRevisionHistory } from "@/features/budgets/components/budget-revision-history";
+import { DisbursementRequestButton } from "@/features/disbursements/components/disbursement-request-button";
 import type { BudgetStatus } from "@/types";
 
 type BudgetItemRow = {
@@ -49,6 +53,13 @@ type DisbursementRow = {
   createdAt: Date;
 };
 
+type RevisionRow = {
+  id: string;
+  reason: string;
+  snapshot: Record<string, unknown>;
+  createdAt: Date;
+};
+
 type ExpenditureRow = {
   id: string;
   title: string;
@@ -66,7 +77,10 @@ export default async function BudgetDetailPage({
 }) {
   const { budgetId } = await params;
   const session = await requireSession();
-  const budget = await getBudgetById(budgetId, session.organizationId);
+  const [budget, accounts] = await Promise.all([
+    getBudgetById(budgetId, session.organizationId),
+    getAccountsForDisbursement(session.organizationId),
+  ]);
   if (!budget) notFound();
 
   const items = budget.items as BudgetItemRow[];
@@ -74,6 +88,7 @@ export default async function BudgetDetailPage({
   const attachments = budget.attachments as AttachmentRow[];
   const disbursements = budget.disbursements as DisbursementRow[];
   const expenditures = budget.expenditures as ExpenditureRow[];
+  const revisions = budget.revisions as RevisionRow[];
   const totalAmount = items.reduce((sum: number, item: BudgetItemRow) => sum + item.totalCost, 0);
   const totalDisbursed = disbursements.reduce((sum: number, item: DisbursementRow) => sum + item.totalAmount, 0);
   const totalClaimed = expenditures.reduce((sum: number, report: ExpenditureRow) => sum + report.totalClaimed, 0);
@@ -92,8 +107,8 @@ export default async function BudgetDetailPage({
   const canSubmit = status === "draft" || status === "needs_changes";
 
   return (
-    <div className="max-w-[1100px]">
-      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors mb-5">
+    <div>
+      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-(--text) transition-colors mb-5">
         <ArrowLeft size={13} /> Back to Budgets
       </Link>
 
@@ -115,6 +130,7 @@ export default async function BudgetDetailPage({
           canApprove={canApprove}
           canSubmit={canSubmit}
           approvalType={approvalType}
+          currentUserId={session.user.id}
         />
       </div>
 
@@ -150,7 +166,7 @@ export default async function BudgetDetailPage({
             </CardHeader>
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b border-(--border) bg-[var(--bg)]">
+                <tr className="border-b border-(--border) bg-(--bg)">
                   {["Description", "Category", "Qty", "Unit Cost", "Total"].map((h) => (
                     <th key={h} className="text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 last:text-right">{h}</th>
                   ))}
@@ -158,7 +174,7 @@ export default async function BudgetDetailPage({
               </thead>
               <tbody>
                 {items.map((item: BudgetItemRow) => (
-                  <tr key={item.id} className="border-b border-(--border) last:border-0 hover:bg-[var(--bg)] transition-colors">
+                  <tr key={item.id} className="border-b border-(--border) last:border-0 hover:bg-(--bg) transition-colors">
                     <td className="px-4 py-3 text-[13px] font-medium">{item.description}</td>
                     <td className="px-4 py-3 text-[12px] text-(--muted)">{item.category?.name ?? "—"}</td>
                     <td className="px-4 py-3 text-[13px] font-mono text-(--muted)">{item.quantity}</td>
@@ -168,7 +184,7 @@ export default async function BudgetDetailPage({
                 ))}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 border-(--border) bg-[var(--bg)]">
+                <tr className="border-t-2 border-(--border) bg-(--bg)">
                   <td colSpan={4} className="px-4 py-3 text-[13px] font-semibold">Total</td>
                   <td className="px-4 py-3 text-[14px] font-mono font-semibold text-right">{formatCurrency(totalAmount)}</td>
                 </tr>
@@ -199,6 +215,7 @@ export default async function BudgetDetailPage({
                 comments={allComments}
                 approvalId={activeApproval?.id}
                 currentUserInitials={session.user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+                currentUserId={session.user.id}
               />
             );
           })()}
@@ -209,6 +226,9 @@ export default async function BudgetDetailPage({
                 <p className="text-[14px] font-medium">Disbursements</p>
                 <p className="text-[12px] text-(--muted)">{disbursements.length} records</p>
               </CardTitle>
+              {(status === "chair_approved" || status === "finance_approved") && (
+                <DisbursementRequestButton budgetId={budget.id} accounts={accounts} />
+              )}
             </CardHeader>
             <CardBody className="p-0 divide-y divide-(--border)">
               {disbursements.length === 0 ? (
@@ -269,29 +289,25 @@ export default async function BudgetDetailPage({
                 <p className="text-[12px] text-(--muted)">{attachments.length} files</p>
               </CardTitle>
             </CardHeader>
-            <CardBody className="p-0 divide-y divide-(--border)">
-              {attachments.length === 0 ? (
-                <div className="px-4 py-8 text-center text-[13px] text-(--muted)">No attachments uploaded</div>
-              ) : (
-                attachments.map((attachment: AttachmentRow) => (
-                  <div key={attachment.id} className="flex items-center gap-3 px-4 py-3">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--primary-light)] flex items-center justify-center text-(--primary)">
-                      <Paperclip size={14} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate">{attachment.fileName}</p>
-                      <p className="text-[11px] text-(--muted)">{attachment.mimeType} · {Math.ceil(attachment.size / 1024)} KB</p>
-                    </div>
-                    <span className="text-[11px] text-(--muted)">{formatRelative(attachment.createdAt)}</span>
-                  </div>
-                ))
-              )}
+            <CardBody className="p-0">
+              <BudgetAttachmentUpload budgetId={budget.id} attachments={attachments} />
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Revision History</p>
+                <p className="text-[12px] text-(--muted)">{revisions.length} revisions</p>
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="p-0">
+              <BudgetRevisionHistory revisions={revisions} />
             </CardBody>
           </Card>
         </div>
 
-        {/* Right sidebar */}
-        <div className="space-y-4">
+        <div className="space-y-4 lg:sticky lg:top-[calc(3.5rem+1rem)] lg:self-start">
           <Card>
             <CardHeader>
               <CardTitle><p className="text-[14px] font-medium">Approval Workflow</p></CardTitle>
@@ -303,7 +319,7 @@ export default async function BudgetDetailPage({
                 { step: "Chairperson Approval", done: status === "chair_approved", active: status === "finance_approved" },
               ].map((s, i) => (
                 <div key={s.step} className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-semibold ${
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[11px] font-semibold ${
                     s.done ? "bg-success text-white" : s.active ? "bg-(--primary) text-white" : "bg-(--border) text-(--muted)"
                   }`}>{s.done ? "✓" : i + 1}</div>
                   <div>

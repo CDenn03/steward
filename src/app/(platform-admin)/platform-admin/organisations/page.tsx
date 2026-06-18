@@ -22,7 +22,7 @@ export default async function PlatformOrgsPage() {
             <CardBody>
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white font-bold text-[14px] flex-shrink-0"
+                  className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white font-bold text-[14px] shrink-0"
                   style={{ background: org.primaryColor }}
                 >
                   {org.logoInitials}
@@ -40,7 +40,7 @@ export default async function PlatformOrgsPage() {
                   { label: "Budgets", value: org.budgetCount },
                   { label: "Liquidity", value: formatCurrency(org.totalLiquidity, org.currency) },
                 ].map(({ label, value }) => (
-                  <div key={label} className="bg-[var(--bg)] rounded-[8px] px-2 py-2">
+                  <div key={label} className="bg-(--bg) rounded-[8px] px-2 py-2">
                     <p className="text-[11px] text-(--muted) mb-0.5">{label}</p>
                     <p className="text-[13px] font-semibold">{value}</p>
                   </div>

@@ -45,12 +45,12 @@ export default async function NotificationsPage() {
               <div
                 key={notification.id}
                 className={cn(
-                  "flex items-start gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-[var(--bg)]",
+                  "flex items-start gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-(--bg)",
                   !notification.read && "bg-[var(--primary-light)]"
                 )}
               >
                 <div className={cn(
-                  "w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5",
+                  "w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5",
                   typeStyles[notification.type] ?? typeStyles.info
                 )}>
                   <Bell size={14} />
@@ -59,7 +59,7 @@ export default async function NotificationsPage() {
                   <p className={cn("text-[13px]", !notification.read ? "font-semibold" : "font-medium")}>{notification.title}</p>
                   <p className="text-[12px] text-(--muted) mt-0.5">{notification.message}</p>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <span className="text-[11px] text-(--muted)">{formatRelative(notification.createdAt)}</span>
                   {!notification.read && <span className="w-2 h-2 rounded-full bg-(--primary)" />}
                 </div>

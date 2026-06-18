@@ -36,6 +36,9 @@ export async function getBudgetById(id: string, organizationId: string) {
         include: { comments: true },
         orderBy: { createdAt: "desc" },
       },
+      revisions: {
+        orderBy: { createdAt: "desc" },
+      },
       disbursements: { orderBy: { createdAt: "desc" } },
       expenditures: {
         include: { department: true, receipts: true },

@@ -29,7 +29,7 @@ export function DataTable<T>({
     <div className={cn("overflow-x-auto", className)}>
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b border-(--border) bg-[var(--bg)]">
+          <tr className="border-b border-(--border) bg-(--bg)">
             {columns.map((col) => (
               <th
                 key={col.key}
@@ -60,14 +60,14 @@ export function DataTable<T>({
                 onClick={() => onRowClick?.(row)}
                 className={cn(
                   "border-b border-(--border) last:border-0 transition-colors duration-100",
-                  onRowClick && "cursor-pointer hover:bg-[var(--bg)]"
+                  onRowClick && "cursor-pointer hover:bg-(--bg)"
                 )}
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
                     className={cn(
-                      "px-4 py-3 text-[13px] text-[var(--text)] align-middle",
+                      "px-4 py-3 text-[13px] text-(--text) align-middle",
                       col.className
                     )}
                   >

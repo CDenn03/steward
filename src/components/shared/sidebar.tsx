@@ -83,14 +83,14 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 bottom-0 w-[224px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
       {/* Steward wordmark */}
       <div className="px-4 py-4 border-b border-(--border) flex items-center gap-2.5">
-        <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center shrink-0">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/>
             <polyline points="9 12 11 14 15 10"/>
           </svg>
         </div>
         <div>
-          <p className="text-[15px] font-semibold tracking-tight text-[var(--text)]">Steward</p>
+          <p className="text-[15px] font-semibold tracking-tight text-(--text)">Steward</p>
           <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Financial Governance</p>
         </div>
       </div>
@@ -103,7 +103,7 @@ export function Sidebar() {
           style={{ background: active ? active.orgColor + "18" : "var(--primary-light)" }}
         >
           <div
-            className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+            className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
             style={{ background: active?.orgColor ?? "var(--primary)" }}
           >
             {active?.orgInitials ?? "?"}
@@ -116,7 +116,7 @@ export function Sidebar() {
               {active?.orgDescription ?? "No org selected"}
             </p>
           </div>
-          <ChevronDown size={13} className={cn("text-(--muted) flex-shrink-0 transition-transform duration-200", orgMenuOpen && "rotate-180")} />
+          <ChevronDown size={13} className={cn("text-(--muted) shrink-0 transition-transform duration-200", orgMenuOpen && "rotate-180")} />
         </button>
 
         {/* Dropdown */}
@@ -134,10 +134,10 @@ export function Sidebar() {
                     setOrgMenuOpen(false);
                     if (m.orgId !== active?.orgId) router.push(`/splash/${m.orgId}`);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-[var(--bg)] transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-(--bg) transition-colors text-left"
                 >
                   <div
-                    className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                    className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                     style={{ background: m.orgColor }}
                   >
                     {m.orgInitials}
@@ -147,14 +147,14 @@ export function Sidebar() {
                     <p className="text-[10px] text-(--muted)">{roleLabels[m.role] ?? m.role}</p>
                   </div>
                   {m.orgId === active?.orgId && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-success shrink-0" />
                   )}
                 </button>
               ))}
               <div className="border-t border-(--border)">
                 <button
                   onClick={() => { setOrgMenuOpen(false); handleSwitchOrg(); }}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] text-(--muted) hover:text-[var(--text)] hover:bg-[var(--bg)] transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] text-(--muted) hover:text-(--text) hover:bg-(--bg) transition-colors"
                 >
                   <ArrowLeftRight size={12} /> Switch organisation
                 </button>
@@ -182,10 +182,10 @@ export function Sidebar() {
                     "flex items-center gap-2.5 mx-2 px-3 py-1.5 rounded-lg text-[13.5px] transition-all duration-150",
                     active_link
                       ? "bg-[var(--primary-light)] text-(--primary) font-medium"
-                      : "text-(--muted) hover:bg-[var(--bg)] hover:text-[var(--text)]"
+                      : "text-(--muted) hover:bg-(--bg) hover:text-(--text)"
                   )}
                 >
-                  <Icon size={15} className={cn("flex-shrink-0", active_link ? "opacity-100" : "opacity-60")} />
+                  <Icon size={15} className={cn("shrink-0", active_link ? "opacity-100" : "opacity-60")} />
                   <span className="flex-1">{item.label}</span>
                   {!!item.badge && (
                     <span className="bg-(--primary) text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-tight">
@@ -202,11 +202,11 @@ export function Sidebar() {
       {/* User footer */}
       <div className="border-t border-(--border) p-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
             {active?.userInitials ?? "?"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium text-[var(--text)] truncate">{active?.userName ?? "—"}</p>
+            <p className="text-[12px] font-medium text-(--text) truncate">{active?.userName ?? "—"}</p>
             <p className="text-[10px] text-(--muted) truncate">
               {active ? (roleLabels[active.role] ?? active.role) : ""}
             </p>
@@ -214,7 +214,7 @@ export function Sidebar() {
           <button
             title="Sign out"
             onClick={handleSwitchOrg}
-            className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors flex-shrink-0"
+            className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors shrink-0"
           >
             <LogOut size={12} />
           </button>

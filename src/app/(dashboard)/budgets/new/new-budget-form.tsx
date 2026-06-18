@@ -133,8 +133,8 @@ export function NewBudgetForm({
   };
 
   return (
-    <div className="max-w-[900px]">
-      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors mb-5">
+    <div>
+      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-(--text) transition-colors mb-5">
         <ArrowLeft size={13} /> Back to Budgets
       </Link>
 
@@ -176,7 +176,7 @@ export function NewBudgetForm({
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Youth Annual Camp 2025"
                   className={cn(
-                    "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors",
+                    "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
                     errors.title ? "border-danger" : "border-(--border)"
                   )}
                 />
@@ -192,7 +192,7 @@ export function NewBudgetForm({
                     value={departmentId}
                     onChange={(e) => setDepartmentId(e.target.value)}
                     className={cn(
-                      "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors",
+                      "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors",
                       errors.departmentId ? "border-danger" : "border-(--border)"
                     )}
                   >
@@ -210,7 +210,7 @@ export function NewBudgetForm({
                   <select
                     value={eventId}
                     onChange={(e) => setEventId(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   >
                     <option value="">None</option>
                     {events.map((ev) => (
@@ -227,7 +227,7 @@ export function NewBudgetForm({
                     type="date"
                     value={periodStart}
                     onChange={(e) => setPeriodStart(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   />
                 </div>
                 <div>
@@ -236,7 +236,7 @@ export function NewBudgetForm({
                     type="date"
                     value={periodEnd}
                     onChange={(e) => setPeriodEnd(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   />
                 </div>
               </div>
@@ -250,7 +250,7 @@ export function NewBudgetForm({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Add context or justification for this budget..."
                   rows={3}
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors resize-none"
+                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
                 />
               </div>
             </CardBody>
@@ -267,7 +267,7 @@ export function NewBudgetForm({
               </Button>
             </CardHeader>
 
-            <div className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-2.5 border-b border-(--border) bg-[var(--bg)]">
+            <div className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-2.5 border-b border-(--border) bg-(--bg)">
               {["Description", "Category", "Qty", "Unit Cost (KES)", "Total", ""].map((h) => (
                 <span key={h} className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px]">{h}</span>
               ))}
@@ -275,7 +275,7 @@ export function NewBudgetForm({
 
             <div className="divide-y divide-(--border)">
               {items.map((item, idx) => (
-                <div key={item.id} className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-3 items-center hover:bg-[var(--bg)] transition-colors">
+                <div key={item.id} className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-3 items-center hover:bg-(--bg) transition-colors">
                   <div>
                     <input
                       type="text"
@@ -283,7 +283,7 @@ export function NewBudgetForm({
                       onChange={(e) => updateItem(item.id, "description", e.target.value)}
                       placeholder={`Item ${idx + 1} description`}
                       className={cn(
-                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors",
+                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
                         errors[`item-${idx}-desc`] ? "border-danger" : "border-(--border)"
                       )}
                     />
@@ -292,7 +292,7 @@ export function NewBudgetForm({
                     <select
                       value={item.categoryId}
                       onChange={(e) => updateItem(item.id, "categoryId", e.target.value)}
-                      className="w-full px-2 py-1.5 text-[12.5px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] transition-colors"
+                      className="w-full px-2 py-1.5 text-[12.5px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) text-(--text) transition-colors"
                     >
                       <option value="">Category</option>
                       {categories.map((category) => (
@@ -305,9 +305,9 @@ export function NewBudgetForm({
                       type="number"
                       min={1}
                       value={item.quantity}
-                      onChange={(e) => updateItem(item.id, "quantity", parseFloat(e.target.value) || 0)}
+                      onChange={(e) => updateItem(item.id, "quantity", Number.parseFloat(e.target.value) || 0)}
                       className={cn(
-                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] transition-colors text-right font-mono",
+                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-(--text) transition-colors text-right font-mono",
                         errors[`item-${idx}-qty`] ? "border-danger" : "border-(--border)"
                       )}
                     />
@@ -317,10 +317,10 @@ export function NewBudgetForm({
                       type="number"
                       min={0}
                       value={item.unitCost || ""}
-                      onChange={(e) => updateItem(item.id, "unitCost", parseFloat(e.target.value) || 0)}
+                      onChange={(e) => updateItem(item.id, "unitCost", Number.parseFloat(e.target.value) || 0)}
                       placeholder="0"
                       className={cn(
-                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors text-right font-mono",
+                        "w-full px-2.5 py-1.5 text-[12.5px] bg-(--surface) border rounded-[8px] outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors text-right font-mono",
                         errors[`item-${idx}-cost`] ? "border-danger" : "border-(--border)"
                       )}
                     />
@@ -345,7 +345,7 @@ export function NewBudgetForm({
               ))}
             </div>
 
-            <div className="flex items-center justify-between px-4 py-3.5 border-t-2 border-(--border) bg-[var(--bg)]">
+            <div className="flex items-center justify-between px-4 py-3.5 border-t-2 border-(--border) bg-(--bg)">
               <div className="flex items-center gap-2 text-[12px] text-(--muted)">
                 <Calculator size={13} />
                 {items.length} line item{items.length !== 1 ? "s" : ""}
@@ -367,7 +367,7 @@ export function NewBudgetForm({
           </Card>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 lg:sticky lg:top-[calc(3.5rem+1rem)] lg:self-start">
           <Card>
             <CardHeader>
               <CardTitle><p className="text-[14px] font-medium">Budget Summary</p></CardTitle>
@@ -384,7 +384,7 @@ export function NewBudgetForm({
                 {items.filter((i) => i.unitCost > 0).map((item) => (
                   <div key={item.id} className="flex justify-between text-[12px]">
                     <span className="text-(--muted) truncate pr-2">{item.description || "Item"}</span>
-                    <span className="font-mono flex-shrink-0">
+                    <span className="font-mono shrink-0">
                       {formatCurrency(item.quantity * item.unitCost).replace("KES ", "")}
                     </span>
                   </div>
@@ -412,7 +412,7 @@ export function NewBudgetForm({
                   { step: "3", label: "Approved", desc: "Budget is activated for use" },
                 ].map((s) => (
                   <div key={s.step} className="flex gap-3">
-                    <div className="w-5 h-5 rounded-full bg-(--border) flex items-center justify-center text-[10px] font-semibold text-(--muted) flex-shrink-0 mt-0.5">{s.step}</div>
+                    <div className="w-5 h-5 rounded-full bg-(--border) flex items-center justify-center text-[10px] font-semibold text-(--muted) shrink-0 mt-0.5">{s.step}</div>
                     <div>
                       <p className="text-[12px] font-medium">{s.label}</p>
                       <p className="text-[11px] text-(--muted)">{s.desc}</p>
@@ -430,7 +430,7 @@ export function NewBudgetForm({
             <Button variant="ghost" className="w-full justify-center" onClick={() => handleSave(false)} loading={saving}>
               <Save size={13} /> Save as Draft
             </Button>
-            <Link href="/budgets" className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors">
+            <Link href="/budgets" className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-(--text) transition-colors">
               Cancel
             </Link>
           </div>

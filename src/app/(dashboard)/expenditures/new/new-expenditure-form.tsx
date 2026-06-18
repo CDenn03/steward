@@ -252,7 +252,7 @@ export function NewExpenditureForm({
     <div className="max-w-[900px]">
       <Link
         href="/expenditures"
-        className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors mb-5"
+        className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-(--text) transition-colors mb-5"
       >
         <ArrowLeft size={13} /> Back to Expenditures
       </Link>
@@ -274,7 +274,7 @@ export function NewExpenditureForm({
           <div key={s} className="flex-1 flex items-center gap-2 text-[12px]">
             <div
               className={cn(
-                "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold flex-shrink-0",
+                "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0",
                 i < step
                   ? "bg-success text-white"
                   : i === step
@@ -287,7 +287,7 @@ export function NewExpenditureForm({
             <span
               className={cn(
                 "hidden sm:inline",
-                i === step ? "font-medium text-[var(--text)]" : "text-(--muted)"
+                i === step ? "font-medium text-(--text)" : "text-(--muted)"
               )}
             >
               {s}
@@ -324,7 +324,7 @@ export function NewExpenditureForm({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Youth Camp Expenditure Report"
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors"
+                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
                 />
               </div>
               <div>
@@ -336,7 +336,7 @@ export function NewExpenditureForm({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Any additional context..."
                   rows={3}
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors resize-none"
+                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
                 />
               </div>
             </CardBody>
@@ -376,7 +376,7 @@ export function NewExpenditureForm({
                         </p>
                       </div>
                       {selectedBudgetId === budget.id && (
-                        <Check size={16} className="text-(--primary) flex-shrink-0" />
+                        <Check size={16} className="text-(--primary) shrink-0" />
                       )}
                     </div>
                   </button>
@@ -397,7 +397,7 @@ export function NewExpenditureForm({
               </CardHeader>
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="border-b border-(--border) bg-[var(--bg)]">
+                  <tr className="border-b border-(--border) bg-(--bg)">
                     {["Description", "Category", "Amount"].map((h) => (
                       <th
                         key={h}
@@ -487,7 +487,7 @@ export function NewExpenditureForm({
                 {receipts.map((receipt) => (
                   <div key={receipt.id} className="px-4 py-3.5">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[var(--primary-light)] flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-lg bg-[var(--primary-light)] flex items-center justify-center shrink-0">
                         {receipt.uploaded ? (
                           <Check size={16} className="text-success" />
                         ) : (
@@ -522,7 +522,7 @@ export function NewExpenditureForm({
                             min={0}
                             value={receipt.amount || ""}
                             onChange={(e) =>
-                              updateReceipt(receipt.id, "amount", parseFloat(e.target.value) || 0)
+                              updateReceipt(receipt.id, "amount", Number.parseFloat(e.target.value) || 0)
                             }
                             placeholder="0"
                             className="w-full px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) font-mono"
@@ -602,7 +602,7 @@ export function NewExpenditureForm({
                   </CardHeader>
                   <table className="w-full border-collapse">
                     <thead>
-                      <tr className="border-b border-(--border) bg-[var(--bg)]">
+                      <tr className="border-b border-(--border) bg-(--bg)">
                         {["Budget Item", "Category", "Item Amount", "Allocate"].map(
                           (h) => (
                             <th
@@ -642,7 +642,7 @@ export function NewExpenditureForm({
                                   updateAllocation(
                                     receipt.receiptId!,
                                     item.id,
-                                    parseFloat(e.target.value) || 0
+                                    Number.parseFloat(e.target.value) || 0
                                   )
                                 }
                                 placeholder="0"
@@ -716,10 +716,10 @@ export function NewExpenditureForm({
               {receipts.map((receipt) => (
                 <div key={receipt.id} className="px-4 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-3 min-w-0">
-                    <Check size={14} className="text-success flex-shrink-0" />
+                    <Check size={14} className="text-success shrink-0" />
                     <span className="text-[13px] truncate">{receipt.file.name}</span>
                   </div>
-                  <span className="font-mono text-[13px] flex-shrink-0">
+                  <span className="font-mono text-[13px] shrink-0">
                     {formatCurrency(receipt.amount)}
                   </span>
                 </div>

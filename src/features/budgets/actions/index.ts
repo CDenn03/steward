@@ -6,6 +6,7 @@ import { CreateBudgetSchema, ReviewBudgetSchema, EditBudgetSchema } from "../sch
 import { createBudgetService, submitBudgetService, reviewBudgetService, updateBudgetService } from "../services";
 import { requireSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
+import { generateStorageKey, getSignedUploadUrl } from "@/lib/storage/r2";
 
 export async function createBudgetAction(formData: unknown) {
   const session = await requireSession();
@@ -106,6 +107,49 @@ export async function updateBudgetAction(budgetId: string, formData: unknown) {
     revalidatePath(`/budgets/${budgetId}`);
     revalidatePath("/dashboard");
     return { data: budget };
+  } catch (err) {
+    return { error: { message: err instanceof Error ? err.message : "Unknown error" } };
+  }
+}
+
+export async function getBudgetUploadUrlAction(fileName: string, mimeType: string, budgetId: string) {
+  const session = await requireSession();
+  try {
+    const storageKey = generateStorageKey(
+      session.organizationId,
+      "budget-attachments",
+      budgetId,
+      fileName
+    );
+    const uploadUrl = await getSignedUploadUrl(storageKey, mimeType);
+    return { data: { storageKey, uploadUrl } };
+  } catch (err) {
+    return { error: { message: err instanceof Error ? err.message : "Unknown error" } };
+  }
+}
+
+export async function saveBudgetAttachmentAction(data: {
+  storageKey: string;
+  fileName: string;
+  mimeType: string;
+  size: number;
+  budgetId: string;
+}) {
+  const session = await requireSession();
+  try {
+    const attachment = await prisma.attachment.create({
+      data: {
+        storageKey: data.storageKey,
+        fileName: data.fileName,
+        mimeType: data.mimeType,
+        size: data.size,
+        entityType: "Budget",
+        entityId: data.budgetId,
+        uploadedById: session.userId,
+      },
+    });
+    revalidatePath(`/budgets/${data.budgetId}`);
+    return { data: attachment };
   } catch (err) {
     return { error: { message: err instanceof Error ? err.message : "Unknown error" } };
   }

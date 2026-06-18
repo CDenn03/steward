@@ -108,9 +108,9 @@ export default async function DashboardPage() {
 
       {approvals.length > 0 && (
         <div className="flex items-center gap-2 bg-warning-bg border border-yellow-200 rounded-[var(--r-btn)] px-4 py-2.5 text-[12.5px] text-warning mb-6">
-          <AlertCircle size={14} className="flex-shrink-0" />
+          <AlertCircle size={14} className="shrink-0" />
           <span><strong>{approvalRows.length} budget{approvalRows.length === 1 ? "" : "s"}</strong> pending review.</span>
-          <Link href="/approvals" className="ml-auto font-medium underline-offset-2 hover:underline flex-shrink-0">Review now</Link>
+          <Link href="/approvals" className="ml-auto font-medium underline-offset-2 hover:underline shrink-0">Review now</Link>
         </div>
       )}
 
@@ -155,13 +155,13 @@ export default async function DashboardPage() {
               {approvalRows.slice(0, 3).map((approval: ApprovalRow) => {
                 const total = approval.budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
                 return (
-                  <Link key={approval.id} href={`/budgets/${approval.budgetId}`} className="flex items-start gap-3 px-5 py-3.5 hover:bg-[var(--bg)] transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--primary-light)] flex items-center justify-center text-[13px] flex-shrink-0">KES</div>
+                  <Link key={approval.id} href={`/budgets/${approval.budgetId}`} className="flex items-start gap-3 px-5 py-3.5 hover:bg-(--bg) transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--primary-light)] flex items-center justify-center text-[13px] shrink-0">KES</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium truncate">{approval.budget.title}</p>
                       <p className="text-[11px] text-(--muted)">{formatCurrency(total)} · Pending {approval.type.toLowerCase()} review</p>
                     </div>
-                    <span className="text-[10px] font-medium bg-[var(--primary-light)] text-(--primary) px-1.5 py-0.5 rounded flex-shrink-0 capitalize">{approval.type.toLowerCase()}</span>
+                    <span className="text-[10px] font-medium bg-[var(--primary-light)] text-(--primary) px-1.5 py-0.5 rounded shrink-0 capitalize">{approval.type.toLowerCase()}</span>
                   </Link>
                 );
               })}
@@ -179,7 +179,7 @@ export default async function DashboardPage() {
             <div className="divide-y divide-(--border)">
               {accounts.map((account: AccountRow) => (
                 <div key={account.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold flex-shrink-0">
+                  <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold shrink-0">
                     {account.type}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -212,7 +212,7 @@ export default async function DashboardPage() {
               const total = budget?.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0) ?? 0;
               return (
                 <div key={event.id} className="flex items-center gap-4 px-5 py-3.5">
-                  <div className="text-center w-9 flex-shrink-0">
+                  <div className="text-center w-9 shrink-0">
                     <p className="text-[18px] font-semibold leading-none text-(--primary)">{event.startDate.getDate()}</p>
                     <p className="text-[10px] text-(--muted) tracking-wide">{event.startDate.toLocaleString("en", { month: "short" }).toUpperCase()}</p>
                   </div>
@@ -239,7 +239,7 @@ export default async function DashboardPage() {
           <CardBody className="pt-3">
             {auditRows.map((log: AuditRow, index: number) => (
               <div key={log.id} className="flex gap-3.5 pb-4 relative">
-                <div className="flex flex-col items-center flex-shrink-0">
+                <div className="flex flex-col items-center shrink-0">
                   <div className={`w-2 h-2 rounded-full mt-1.5 z-10 ${index < 2 ? "bg-(--primary)" : "bg-(--border)"}`} />
                 </div>
                 <div className="flex-1 min-w-0 pb-1">

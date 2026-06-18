@@ -102,7 +102,7 @@ export function AnalyticsClient({
           <div className="px-5 pb-5 space-y-2">
             {pieData.map((department, i) => (
               <div key={department.name} className="flex items-center gap-2 text-[12px]">
-                <div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+                <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="flex-1">{department.name}</span>
                 <span className="font-mono text-(--muted)">{formatCurrency(department.value, currency, true)}</span>
               </div>
@@ -116,7 +116,7 @@ export function AnalyticsClient({
           </CardHeader>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-(--border) bg-[var(--bg)]">
+              <tr className="border-b border-(--border) bg-(--bg)">
                 {["Department", "Allocated", "Spent", "Variance", "Util."].map((h) => (
                   <th key={h} className="text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5">{h}</th>
                 ))}
@@ -126,7 +126,7 @@ export function AnalyticsClient({
               {departmentSpend.map((department) => {
                 const percent = pct(department.spent, department.allocated);
                 return (
-                  <tr key={department.id} className="border-b border-(--border) last:border-0 hover:bg-[var(--bg)] transition-colors">
+                  <tr key={department.id} className="border-b border-(--border) last:border-0 hover:bg-(--bg) transition-colors">
                     <td className="px-4 py-3 text-[13px] font-medium">{department.name}</td>
                     <td className="px-4 py-3 text-[13px] font-mono text-(--muted)">{formatCurrency(department.allocated, currency, true)}</td>
                     <td className="px-4 py-3 text-[13px] font-mono">{department.spent > 0 ? formatCurrency(department.spent, currency, true) : "-"}</td>

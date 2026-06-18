@@ -32,10 +32,10 @@ export default async function PlatformUsersPage() {
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="border-b border-(--border) last:border-0 hover:bg-[var(--bg)] transition-colors">
+                <tr key={user.id} className="border-b border-(--border) last:border-0 hover:bg-(--bg) transition-colors">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
                         {user.initials}
                       </div>
                       <span className="font-medium">{user.name}</span>
@@ -45,9 +45,9 @@ export default async function PlatformUsersPage() {
                   <td className="px-5 py-3">
                     <div className="flex flex-wrap gap-1.5">
                       {user.memberships.map((membership) => (
-                        <span key={membership.id} className="inline-flex items-center gap-1 text-[11px] bg-[var(--bg)] border border-(--border) rounded-full px-2 py-0.5">
+                        <span key={membership.id} className="inline-flex items-center gap-1 text-[11px] bg-(--bg) border border-(--border) rounded-full px-2 py-0.5">
                           <span
-                            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                            className="w-1.5 h-1.5 rounded-full shrink-0"
                             style={{ background: membership.org.primaryColor }}
                           />
                           {membership.org.logoInitials} · {roleLabels[membership.role] ?? membership.role}

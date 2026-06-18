@@ -86,7 +86,7 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
             >
               <div className="flex items-center gap-3.5">
                 <div
-                  className="w-11 h-11 rounded-[10px] flex items-center justify-center text-white font-semibold text-[15px] flex-shrink-0"
+                  className="w-11 h-11 rounded-[10px] flex items-center justify-center text-white font-semibold text-[15px] shrink-0"
                   style={{ background: m.orgColor }}
                 >
                   {m.orgInitials}
@@ -106,7 +106,7 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
                     )}
                   </div>
                 </div>
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {isSelected && loading ? (
                     <svg className="animate-spin w-5 h-5 text-(--primary)" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -123,7 +123,7 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
       </div>
 
       <button
-        className="w-full mt-6 flex items-center justify-center gap-2 text-[12px] text-(--muted) hover:text-[var(--text)] transition-colors py-2"
+        className="w-full mt-6 flex items-center justify-center gap-2 text-[12px] text-(--muted) hover:text-(--text) transition-colors py-2"
         onClick={() => signOut({ callbackUrl: "/login" })}
       >
         <LogOut size={13} />

@@ -64,7 +64,7 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
         </div>
       </div>
 
-      <div className="bg-(--surface) border border-(--border) rounded-[var(--r-dialog)] p-7">
+      <div className="bg-(--surface) border border-(--border) rounded-(--r-dialog) p-7">
         <h1 className="text-[18px] font-semibold mb-1">Verify your account</h1>
         <p className="text-[13px] text-(--muted) mb-6">Enter the one-time code for your first sign-in.</p>
 
@@ -78,7 +78,7 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.org"
-                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors"
+                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
               />
             </div>
           </div>
@@ -94,7 +94,7 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 onKeyDown={(e) => e.key === "Enter" && handleVerify()}
                 placeholder="000000"
-                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-[var(--text)] placeholder:text-(--muted) transition-colors"
+                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
               />
             </div>
           </div>
