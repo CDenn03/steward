@@ -22,16 +22,25 @@ interface SplashClientProps {
   role: MemberRole;
 }
 
-export function SplashClient({ orgName, orgColor, orgInitials, userName, role }: SplashClientProps) {
+interface SplashClientProps {
+  orgName: string;
+  orgColor: string;
+  orgInitials: string;
+  userName: string;
+  role: MemberRole;
+  redirectTo?: string;
+}
+
+export function SplashClient({ orgName, orgColor, orgInitials, userName, role, redirectTo }: SplashClientProps) {
   const router = useRouter();
   const [phase, setPhase] = useState<"loading" | "ready" | "done">("loading");
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("ready"),  900);
     const t2 = setTimeout(() => setPhase("done"),   1700);
-    const t3 = setTimeout(() => router.replace("/dashboard"), 2000);
+    const t3 = setTimeout(() => router.replace(redirectTo ?? "/dashboard"), 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [router]);
+  }, [router, redirectTo]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center" style={{ background: orgColor }}>

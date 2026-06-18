@@ -9,14 +9,15 @@ import {
   CreditCard, TrendingUp, Users, Shield, Bell, Settings,
   ChevronDown, TrendingDown, LogOut, ArrowLeftRight, UserCog, Building2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getUnreadCountAction } from "@/features/notifications/actions";
 
 const roleLabels: Record<string, string> = {
   admin: "Administrator", chairperson: "Chairperson",
   finance: "Finance Officer", department_head: "Department Head", member: "Member",
 };
 
-function buildNavItems(role: string) {
+function buildNavItems(role: string, unreadCount = 0) {
   const items = [
     {
       section: "Overview",
@@ -46,7 +47,7 @@ function buildNavItems(role: string) {
       items: [
         { label: "Departments",   href: "/departments",  icon: Users },
         { label: "Audit Log",     href: "/audit",        icon: Shield },
-        { label: "Notifications", href: "/notifications",icon: Bell,   badge: 2 },
+        { label: "Notifications", href: "/notifications",icon: Bell,   badge: unreadCount },
         { label: "Settings",      href: "/settings",     icon: Settings },
       ],
     },
@@ -71,8 +72,18 @@ export function Sidebar() {
   const router     = useRouter();
   const { active, clearActive, allMemberships } = useOrg();
   const [orgMenuOpen, setOrgMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  const navItems = buildNavItems(active?.role ?? "member");
+  useEffect(() => {
+    const fetchCount = async () => {
+      try { setUnreadCount(await getUnreadCountAction()); } catch { /* ignore */ }
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const navItems = buildNavItems(active?.role ?? "member", unreadCount);
 
   const handleSwitchOrg = () => {
     clearActive();

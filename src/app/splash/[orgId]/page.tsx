@@ -12,8 +12,9 @@ function orgColor(name: string) {
   return ORG_COLORS[n % ORG_COLORS.length];
 }
 
-export default async function SplashPage() {
+export default async function SplashPage(props: { searchParams?: Promise<{ redirect?: string }> }) {
   const session = await requireOrgSession();
+  const searchParams = await props.searchParams;
 
   return (
     <SplashClient
@@ -22,6 +23,7 @@ export default async function SplashPage() {
       orgInitials={initials(session.organization.name)}
       userName={session.user.name}
       role={session.role}
+      redirectTo={searchParams?.redirect}
     />
   );
 }

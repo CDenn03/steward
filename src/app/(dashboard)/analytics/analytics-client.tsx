@@ -1,12 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { CustomTooltip } from "@/components/charts/custom-tooltip";
 import { formatCurrency, pct } from "@/lib/utils";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend,
+  ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell,
 } from "recharts";
 
 const COLORS = ["#1F4B99", "#C8A04D", "#15803D", "#D97706", "#64748B", "#2563EB"];
@@ -30,11 +31,16 @@ export function AnalyticsClient({
   departmentSpend,
   monthlyIncome,
   currency,
+  years,
+  selectedYear,
 }: {
   departmentSpend: DepartmentSpend[];
   monthlyIncome: MonthlyIncome[];
   currency: string;
+  years: number[];
+  selectedYear: number;
 }) {
+  const router = useRouter();
   const pieData = departmentSpend.map((department) => ({
     name: department.name,
     value: department.allocated,
@@ -42,7 +48,18 @@ export function AnalyticsClient({
 
   return (
     <>
-      <PageHeader title="Analytics" subtitle="Budget variance, income trends, and department utilisation" />
+      <PageHeader title="Analytics" subtitle="Budget variance, income trends, and department utilisation">
+
+        <select
+          value={selectedYear}
+          onChange={(e) => router.push(`/analytics?year=${e.target.value}`)}
+          className="px-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+        >
+          {years.map((y) => (
+            <option key={y} value={y}>{y}</option>
+          ))}
+        </select>
+      </PageHeader>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <Card>
@@ -56,7 +73,6 @@ export function AnalyticsClient({
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${v / 1000}k`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="allocated" name="Allocated" fill="#E6EAF0" radius={[3, 3, 0, 0]} />
                 <Bar dataKey="spent" name="Spent" fill="#1F4B99" radius={[3, 3, 0, 0]} />
               </BarChart>
@@ -66,7 +82,7 @@ export function AnalyticsClient({
 
         <Card>
           <CardHeader>
-            <CardTitle><p className="text-[14px] font-medium">Income Trend</p></CardTitle>
+            <CardTitle><p className="text-[14px] font-medium">Income Trend for {selectedYear}</p></CardTitle>
           </CardHeader>
           <div className="p-5">
             <ResponsiveContainer width="100%" height={220}>
@@ -75,7 +91,6 @@ export function AnalyticsClient({
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${v / 1000}k`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Line type="monotone" dataKey="offerings" name="Offerings" stroke="#1F4B99" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="donations" name="Donations" stroke="#C8A04D" strokeWidth={2} dot={false} strokeDasharray="4 2" />
               </LineChart>

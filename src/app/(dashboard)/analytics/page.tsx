@@ -12,11 +12,16 @@ type BudgetAnalyticsRow = {
   }>;
 };
 
-export default async function AnalyticsPage() {
+export default async function AnalyticsPage(props: { searchParams?: Promise<{ year?: string }> }) {
   const session = await requireSession();
+  const searchParams = await props.searchParams;
+  const currentYear = new Date().getFullYear();
+  const year = Number.parseInt(searchParams?.year ?? "") || currentYear;
+  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+
   const [departments, monthlyIncome] = await Promise.all([
     getBudgetAnalytics(session.organizationId),
-    getIncomeMonthlyBreakdown(session.organizationId),
+    getIncomeMonthlyBreakdown(session.organizationId, year),
   ]);
 
   const departmentSpend = (departments as BudgetAnalyticsRow[])
@@ -44,6 +49,8 @@ export default async function AnalyticsPage() {
       departmentSpend={departmentSpend}
       monthlyIncome={monthlyIncome}
       currency={session.organization.currency}
+      years={years}
+      selectedYear={year}
     />
   );
 }

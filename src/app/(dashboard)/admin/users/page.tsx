@@ -1,9 +1,11 @@
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { getPlatformStats, getUsersWithMemberships } from "@/features/admin/repositories";
+import { prisma } from "@/lib/prisma/client";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { UserActions } from "./user-actions";
 
 const roleLabels: Record<string, string> = {
   admin: "Admin",
@@ -24,10 +26,18 @@ const roleVariants: Record<string, "default"|"info"|"success"|"gold"|"warning"|"
 };
 
 export default async function AdminUsersPage() {
-  const [users, stats] = await Promise.all([
+  const [users, stats, allDepartments] = await Promise.all([
     getUsersWithMemberships(),
     getPlatformStats(),
+    prisma.department.findMany({ select: { id: true, name: true, organizationId: true } }),
   ]);
+
+  const deptsByOrg = new Map<string, Array<{ id: string; name: string }>>();
+  for (const dept of allDepartments) {
+    const list = deptsByOrg.get(dept.organizationId) ?? [];
+    list.push({ id: dept.id, name: dept.name });
+    deptsByOrg.set(dept.organizationId, list);
+  }
 
   return (
     <>
@@ -90,12 +100,12 @@ export default async function AdminUsersPage() {
                       <Badge variant={roleVariants[membership.role] ?? "draft"}>
                         {roleLabels[membership.role] ?? membership.role}
                       </Badge>
-                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-(--text) hover:bg-(--bg) transition-colors" title="Edit membership">
-                        <Edit2 size={11} />
-                      </button>
-                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors" title="Remove from org">
-                        <Trash2 size={11} />
-                      </button>
+                      <UserActions
+                        membershipId={membership.id}
+                        currentRole={membership.role}
+                        currentDeptId={membership.department?.id ?? null}
+                        departments={deptsByOrg.get(membership.org.id) ?? []}
+                      />
                     </div>
                   </div>
                 ))}

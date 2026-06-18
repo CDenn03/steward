@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma/client";
 import { createAuditLog } from "@/features/audit/services";
 import { createNotification } from "@/features/notifications/services";
+import { sendBudgetSubmittedEmail, sendApprovalDecisionEmail } from "@/lib/email/resend";
 import { updateBudget } from "../repositories";
 import type { CreateBudgetInput, ReviewBudgetInput } from "../schemas";
 
@@ -96,14 +97,32 @@ export async function submitBudgetService(
   });
 
   // Notify finance officers
-  await createNotification({
-    organizationId: context.organizationId,
-    userId: context.userId, // Would normally be all finance officer IDs
-    title: "Budget submitted for review",
-    message: `${budget.title} has been submitted for finance review`,
-    type: "approval",
-    link: `/budgets/${budgetId}`,
+  const financeOfficers = await prisma.membership.findMany({
+    where: { organizationId: context.organizationId, role: "FINANCE", isActive: true },
+    include: { user: { select: { id: true, name: true, email: true } } },
   });
+
+  const orgLink = `/api/redirect?orgId=${context.organizationId}&path=${encodeURIComponent(`/budgets/${budgetId}`)}`;
+
+  for (const officer of financeOfficers) {
+    await createNotification({
+      organizationId: context.organizationId,
+      userId: officer.user.id,
+      title: "Budget submitted for review",
+      message: `${budget.title} has been submitted for finance review`,
+      type: "approval",
+      link: orgLink,
+    });
+
+    await sendBudgetSubmittedEmail({
+      to: officer.user.email,
+      reviewerName: officer.user.name,
+      submitterName: context.userId,
+      budgetTitle: budget.title,
+      amount: budget.items.reduce((s: number, i: { totalCost: number }) => s + i.totalCost, 0),
+      reviewUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/budgets/${budgetId}`,
+    }).catch(() => {});
+  }
 
   return updated;
 }
@@ -165,6 +184,34 @@ export async function reviewBudgetService(
     before: { status: budget.status },
     after: { status: newStatus, comment: input.comment },
   });
+
+  // Notify the submitter
+  if (budget.submittedById) {
+    const submitter = await prisma.user.findUnique({
+      where: { id: budget.submittedById },
+      select: { id: true, name: true, email: true },
+    });
+    if (submitter) {
+      const orgLink = `/api/redirect?orgId=${context.organizationId}&path=${encodeURIComponent(`/budgets/${input.budgetId}`)}`;
+      await createNotification({
+        organizationId: context.organizationId,
+        userId: submitter.id,
+        title: `Budget ${input.decision.replace("_", " ")}: ${budget.title}`,
+        message: `Your budget was reviewed — ${input.decision.replace("_", " ")}`,
+        type: input.decision === "approved" ? "success" : input.decision === "rejected" ? "warning" : "info",
+        link: orgLink,
+      });
+
+      await sendApprovalDecisionEmail({
+        to: submitter.email,
+        submitterName: submitter.name,
+        budgetTitle: budget.title,
+        decision: input.decision,
+        comment: input.comment,
+        budgetUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/budgets/${input.budgetId}`,
+      }).catch(() => {});
+    }
+  }
 }
 
 export async function updateBudgetService(

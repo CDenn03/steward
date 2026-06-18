@@ -1,9 +1,10 @@
-import { Plus, Users, DollarSign, Building2, Settings } from "lucide-react";
+import Link from "next/link";
+import { Users, DollarSign, Building2, Settings } from "lucide-react";
 import { getOrganizationOverviews } from "@/features/admin/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
+import { NewOrgButton } from "./new-org-button";
 
 export default async function AdminOrgsPage() {
   const organizations = await getOrganizationOverviews();
@@ -14,9 +15,7 @@ export default async function AdminOrgsPage() {
         title="Organisations"
         subtitle="All organisations on this Steward instance"
       >
-        <Button size="sm">
-          <Plus size={13} /> New Organisation
-        </Button>
+        <NewOrgButton />
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4">
@@ -37,9 +36,9 @@ export default async function AdminOrgsPage() {
                     <p className="text-[10px] text-(--muted) font-mono mt-0.5">/{org.slug}</p>
                   </div>
                 </div>
-                <button className="w-7 h-7 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) transition-colors">
+                <Link href={`/admin/organisations/${org.id}`} className="w-7 h-7 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) transition-colors">
                   <Settings size={13} />
-                </button>
+                </Link>
               </div>
 
               <div className="grid grid-cols-3 gap-2.5 mb-4">

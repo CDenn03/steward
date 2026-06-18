@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/badge";
 import { BudgetOverviewTable, type BudgetRow } from "./budget-overview-table";
+import { ExportCsvButton } from "@/components/shared/export-button";
 import { formatCurrency, formatRelative } from "@/lib/utils";
 import type { BudgetStatus } from "@/types";
 
@@ -102,7 +103,8 @@ export default async function DashboardPage() {
         title={`Good day, ${session.user.name.split(" ")[0] ?? "there"}`}
         subtitle={`${session.organization.name} · ${roleLabel(session.role)}`}
       >
-        <Button variant="ghost" size="sm"><Download size={13} /> Export</Button>
+        <ExportCsvButton url="/api/export/budgets/csv" />
+        <ExportCsvButton label="Income" url="/api/export/income/csv" />
         <Link href="/budgets/new"><Button size="sm"><Plus size={13} /> New Budget</Button></Link>
       </PageHeader>
 

@@ -1,99 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { requireSession } from "@/lib/auth/session";
+import { getAuditFilterOptions } from "@/features/audit/services";
 import { getAuditLogsByOrg } from "@/features/finance/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card } from "@/components/ui/card";
-import { DataTable } from "@/components/shared/data-table";
-import { Badge } from "@/components/ui/badge";
-import { formatRelative } from "@/lib/utils";
+import { AuditClient } from "./audit-client";
 
-const actionVariants: Record<string, "default"|"success"|"warning"|"danger"|"info"> = {
-  submitted: "info",
-  approved: "success",
-  uploaded: "default",
-  needs_changes: "warning",
-  recorded: "success",
-  rejected: "danger",
-  created: "info",
-};
+const ACTIONS = ["submitted", "approved", "rejected", "needs_changes", "created", "updated", "uploaded", "recorded", "allocated"];
 
-type AuditRow = {
-  id: string;
-  entityType: string;
-  entityId: string;
-  action: string;
-  after?: unknown;
-  createdAt: Date;
-  actor?: {
-    name?: string;
-    role?: string;
-  };
-};
-
-export default async function AuditPage() {
+export default async function AuditPage(props: { searchParams?: Promise<Record<string, string>> }) {
   const session = await requireSession();
-  const logs = await getAuditLogsByOrg(session.organizationId) as AuditRow[];
+  const searchParams = (await props.searchParams) ?? {};
+
+  const entityType = searchParams.entityType || "";
+  const actorId = searchParams.actorId || "";
+  const action = searchParams.action || "";
+
+  const [logs, filterOptions] = await Promise.all([
+    getAuditLogsByOrg(session.organizationId, 200),
+    getAuditFilterOptions(session.organizationId),
+  ]);
+
+  let filtered: any[] = logs as any[];
+  if (entityType) filtered = filtered.filter((l: any) => l.entityType === entityType);
+  if (actorId) filtered = filtered.filter((l: any) => l.actorId === actorId);
+  if (action) filtered = filtered.filter((l: any) => l.action === action);
 
   return (
     <>
       <PageHeader title="Audit Log" subtitle="Immutable record of all financial actions and state changes" />
       <Card>
-        <DataTable
-          columns={[
-            {
-              key: "actor",
-              header: "Actor",
-              render: (log: AuditRow) => {
-                const name = log.actor?.name ?? "Unknown user";
-                return (
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary)">
-                      {name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
-                    </div>
-                    <div>
-                      <p className="text-[13px] font-medium">{name}</p>
-                      <p className="text-[11px] text-(--muted) capitalize">{(log.actor?.role ?? "member").replace("_", " ")}</p>
-                    </div>
-                  </div>
-                );
-              },
-            },
-            {
-              key: "entity",
-              header: "Entity",
-              render: (log: AuditRow) => (
-                <div>
-                  <p className="text-[13px]">{log.entityType}</p>
-                  <p className="text-[11px] text-(--muted) font-mono">{log.entityId}</p>
-                </div>
-              ),
-            },
-            {
-              key: "action",
-              header: "Action",
-              render: (log: AuditRow) => (
-                <Badge variant={actionVariants[log.action] ?? "default"} className="capitalize">
-                  {log.action.replace("_", " ")}
-                </Badge>
-              ),
-            },
-            {
-              key: "detail",
-              header: "Detail",
-              render: (log: AuditRow) => (
-                <span className="text-[12px] text-(--muted) font-mono">
-                  {log.after ? JSON.stringify(log.after) : "-"}
-                </span>
-              ),
-            },
-            {
-              key: "time",
-              header: "Time",
-              render: (log: AuditRow) => (
-                <span className="text-(--muted)">{formatRelative(log.createdAt)}</span>
-              ),
-            },
-          ]}
-          data={logs}
+        <AuditClient
+          data={filtered as import("./audit-table").AuditRow[]}
+          entityTypes={filterOptions.entityTypes}
+          actors={filterOptions.actors}
+          actions={ACTIONS}
+          selectedEntityType={entityType}
+          selectedActorId={actorId}
+          selectedAction={action}
         />
       </Card>
     </>

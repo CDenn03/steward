@@ -3,9 +3,11 @@
 import { usePathname } from "next/navigation";
 import { Bell, Search } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 import { useOrg } from "@/lib/org/context";
 import { cn } from "@/lib/utils";
+import { getUnreadCountAction } from "@/features/notifications/actions";
 
 const pageTitles: Record<string, string> = {
   "/dashboard":          "Dashboard",
@@ -30,6 +32,16 @@ const pageTitles: Record<string, string> = {
 export function Topbar() {
   const pathname = usePathname();
   const { active } = useOrg();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try { setUnreadCount(await getUnreadCountAction()); } catch { /* ignore */ }
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Find the most-specific match
   const matchedKey = Object.keys(pageTitles)
@@ -72,7 +84,11 @@ export function Topbar() {
           className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) hover:text-(--text) transition-colors"
         >
           <Bell size={14} />
-          <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-danger rounded-full border border-[var(--surface)]" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] flex items-center justify-center bg-danger text-white text-[9px] font-bold rounded-full px-0.5 border border-[var(--surface)]">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
         </Link>
       </div>
     </header>

@@ -1,10 +1,8 @@
-/**
- * Email client using Resend
- * Install: npm install resend
- */
+import { Resend } from "resend";
 
-// import { Resend } from "resend";
-// const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 const FROM = "Steward <noreply@steward.app>";
 
@@ -15,8 +13,9 @@ export interface EmailPayload {
 }
 
 export async function sendEmail(payload: EmailPayload): Promise<void> {
-  // await resend.emails.send({ from: FROM, ...payload });
-  if (process.env.NODE_ENV === "development") {
+  if (resend) {
+    await resend.emails.send({ from: FROM, ...payload });
+  } else if (process.env.NODE_ENV === "development") {
     console.log(`[Email] To: ${payload.to} | Subject: ${payload.subject}`);
   }
 }
