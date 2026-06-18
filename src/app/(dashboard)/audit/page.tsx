@@ -1,11 +1,10 @@
-"use client";
+import { requireSession } from "@/lib/auth/session";
+import { getAuditLogsByOrg } from "@/features/finance/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card } from "@/components/ui/card";
 import { DataTable } from "@/components/shared/data-table";
 import { Badge } from "@/components/ui/badge";
 import { formatRelative } from "@/lib/utils";
-import { mockAuditLogs } from "@/lib/mock/data";
-import type { AuditLog } from "@/types";
 
 const actionVariants: Record<string, "default"|"success"|"warning"|"danger"|"info"> = {
   submitted: "info",
@@ -14,9 +13,26 @@ const actionVariants: Record<string, "default"|"success"|"warning"|"danger"|"inf
   needs_changes: "warning",
   recorded: "success",
   rejected: "danger",
+  created: "info",
 };
 
-export default function AuditPage() {
+type AuditRow = {
+  id: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  after?: unknown;
+  createdAt: Date;
+  actor?: {
+    name?: string;
+    role?: string;
+  };
+};
+
+export default async function AuditPage() {
+  const session = await requireSession();
+  const logs = await getAuditLogsByOrg(session.organizationId) as AuditRow[];
+
   return (
     <>
       <PageHeader title="Audit Log" subtitle="Immutable record of all financial actions and state changes" />
@@ -26,55 +42,58 @@ export default function AuditPage() {
             {
               key: "actor",
               header: "Actor",
-              render: (l: AuditLog) => (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-[var(--primary)]">
-                    {l.actor?.name.split(" ").map(n => n[0]).join("").slice(0,2)}
+              render: (log: AuditRow) => {
+                const name = log.actor?.name ?? "Unknown user";
+                return (
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-[var(--primary)]">
+                      {name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-medium">{name}</p>
+                      <p className="text-[11px] text-[var(--muted)] capitalize">{(log.actor?.role ?? "member").replace("_", " ")}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[13px] font-medium">{l.actor?.name}</p>
-                    <p className="text-[11px] text-[var(--muted)] capitalize">{l.actor?.role.replace("_", " ")}</p>
-                  </div>
-                </div>
-              ),
+                );
+              },
             },
             {
               key: "entity",
               header: "Entity",
-              render: (l: AuditLog) => (
+              render: (log: AuditRow) => (
                 <div>
-                  <p className="text-[13px]">{l.entityType}</p>
-                  <p className="text-[11px] text-[var(--muted)] font-mono">{l.entityId}</p>
+                  <p className="text-[13px]">{log.entityType}</p>
+                  <p className="text-[11px] text-[var(--muted)] font-mono">{log.entityId}</p>
                 </div>
               ),
             },
             {
               key: "action",
               header: "Action",
-              render: (l: AuditLog) => (
-                <Badge variant={actionVariants[l.action] ?? "default"} className="capitalize">
-                  {l.action.replace("_", " ")}
+              render: (log: AuditRow) => (
+                <Badge variant={actionVariants[log.action] ?? "default"} className="capitalize">
+                  {log.action.replace("_", " ")}
                 </Badge>
               ),
             },
             {
               key: "detail",
               header: "Detail",
-              render: (l: AuditLog) => (
+              render: (log: AuditRow) => (
                 <span className="text-[12px] text-[var(--muted)] font-mono">
-                  {l.after ? JSON.stringify(l.after) : "—"}
+                  {log.after ? JSON.stringify(log.after) : "-"}
                 </span>
               ),
             },
             {
               key: "time",
               header: "Time",
-              render: (l: AuditLog) => (
-                <span className="text-[var(--muted)]">{formatRelative(l.createdAt)}</span>
+              render: (log: AuditRow) => (
+                <span className="text-[var(--muted)]">{formatRelative(log.createdAt)}</span>
               ),
             },
           ]}
-          data={mockAuditLogs}
+          data={logs}
         />
       </Card>
     </>

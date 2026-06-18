@@ -18,6 +18,7 @@ export async function createBudgetAction(formData: unknown) {
       organizationId: session.organizationId,
     });
     revalidatePath("/budgets");
+    revalidatePath("/dashboard");
     return { data: budget };
   } catch (err) {
     return { error: { message: err instanceof Error ? err.message : "Unknown error" } };
@@ -34,6 +35,7 @@ export async function submitBudgetAction(budgetId: string) {
     revalidatePath("/budgets");
     revalidatePath(`/budgets/${budgetId}`);
     revalidatePath("/approvals");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Unknown error" };

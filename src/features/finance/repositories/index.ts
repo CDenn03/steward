@@ -144,3 +144,58 @@ export async function getRecentAuditLogs(organizationId: string, take = 5) {
     take,
   });
 }
+
+export async function getAuditLogsByOrg(organizationId: string, take = 100) {
+  const logs = await prisma.auditLog.findMany({
+    where: { organizationId },
+    orderBy: { createdAt: "desc" },
+    take,
+  });
+
+  const actorIds = [...new Set(logs.map((log: { actorId: string }) => log.actorId))];
+  const [users, memberships] = await Promise.all([
+    prisma.user.findMany({
+      where: { id: { in: actorIds } },
+      select: { id: true, name: true, email: true },
+    }),
+    prisma.membership.findMany({
+      where: { organizationId, userId: { in: actorIds } },
+      select: { userId: true, role: true },
+    }),
+  ]);
+
+  const usersById = new Map<string, { id: string; name: string; email: string }>(
+    (users as Array<{ id: string; name: string; email: string }>).map((user) => [user.id, user])
+  );
+  const rolesByUserId = new Map(
+    memberships.map((membership: { userId: string; role: string }) => [
+      membership.userId,
+      membership.role.toLowerCase(),
+    ])
+  );
+
+  return logs.map((log: { actorId: string }) => {
+    const user = usersById.get(log.actorId);
+    return {
+    ...log,
+    actor: {
+      id: user?.id ?? log.actorId,
+      name: user?.name ?? "Unknown user",
+      email: user?.email ?? "",
+      role: rolesByUserId.get(log.actorId) ?? "member",
+    },
+  };
+  });
+}
+
+export async function getNotificationsForUser(
+  organizationId: string,
+  userId: string,
+  take = 100
+) {
+  return prisma.notification.findMany({
+    where: { organizationId, userId },
+    orderBy: { createdAt: "desc" },
+    take,
+  });
+}

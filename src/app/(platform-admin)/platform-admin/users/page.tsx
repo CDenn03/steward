@@ -1,7 +1,6 @@
+import { getUsersWithMemberships } from "@/features/admin/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { mockAllUsers } from "@/lib/mock/data";
 
 const roleLabels: Record<string, string> = {
   platform_admin: "Platform Admin",
@@ -12,10 +11,12 @@ const roleLabels: Record<string, string> = {
   member: "Member",
 };
 
-export default function PlatformUsersPage() {
+export default async function PlatformUsersPage() {
+  const users = await getUsersWithMemberships();
+
   return (
     <>
-      <PageHeader title="All Users" subtitle={`${mockAllUsers.length} users across all organisations`} />
+      <PageHeader title="All Users" subtitle={`${users.length} users across all organisations`} />
 
       <Card>
         <CardBody className="p-0">
@@ -30,7 +31,7 @@ export default function PlatformUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {mockAllUsers.map((user) => (
+              {users.map((user) => (
                 <tr key={user.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] transition-colors">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2.5">
@@ -43,13 +44,13 @@ export default function PlatformUsersPage() {
                   <td className="px-5 py-3 text-[var(--muted)]">{user.email}</td>
                   <td className="px-5 py-3">
                     <div className="flex flex-wrap gap-1.5">
-                      {user.memberships.map((m) => (
-                        <span key={m.id} className="inline-flex items-center gap-1 text-[11px] bg-[var(--bg)] border border-[var(--border)] rounded-full px-2 py-0.5">
+                      {user.memberships.map((membership) => (
+                        <span key={membership.id} className="inline-flex items-center gap-1 text-[11px] bg-[var(--bg)] border border-[var(--border)] rounded-full px-2 py-0.5">
                           <span
                             className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                            style={{ background: m.org.primaryColor }}
+                            style={{ background: membership.org.primaryColor }}
                           />
-                          {m.org.logoInitials} · {roleLabels[m.role] ?? m.role}
+                          {membership.org.logoInitials} · {roleLabels[membership.role] ?? membership.role}
                         </span>
                       ))}
                     </div>

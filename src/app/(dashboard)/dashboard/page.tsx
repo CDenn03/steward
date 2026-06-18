@@ -64,13 +64,13 @@ type AuditRow = {
 
 const status = (value: string) => value.toLowerCase() as BudgetStatus;
 const roleLabel = (role: string) =>
-  role === "DEPARTMENT_HEAD"
+  role === "department_head"
     ? "Department Head"
-    : role === "FINANCE"
+    : role === "finance"
       ? "Finance Officer"
-      : role === "CHAIRPERSON"
+      : role === "chairperson"
         ? "Chairperson"
-        : role.toLowerCase();
+        : role.replace("_", " ");
 
 export default async function DashboardPage() {
   const session = await requireSession();

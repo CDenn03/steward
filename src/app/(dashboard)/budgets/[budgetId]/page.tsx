@@ -41,6 +41,24 @@ type AttachmentRow = {
   createdAt: Date;
 };
 
+type DisbursementRow = {
+  id: string;
+  description: string;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+};
+
+type ExpenditureRow = {
+  id: string;
+  title: string;
+  status: string;
+  totalClaimed: number;
+  totalApproved: number | null;
+  submittedAt: Date | null;
+  receipts: Array<{ id: string }>;
+};
+
 export default async function BudgetDetailPage({
   params,
 }: {
@@ -54,7 +72,11 @@ export default async function BudgetDetailPage({
   const items = budget.items as BudgetItemRow[];
   const approvals = budget.approvals as ApprovalRow[];
   const attachments = budget.attachments as AttachmentRow[];
+  const disbursements = budget.disbursements as DisbursementRow[];
+  const expenditures = budget.expenditures as ExpenditureRow[];
   const totalAmount = items.reduce((sum: number, item: BudgetItemRow) => sum + item.totalCost, 0);
+  const totalDisbursed = disbursements.reduce((sum: number, item: DisbursementRow) => sum + item.totalAmount, 0);
+  const totalClaimed = expenditures.reduce((sum: number, report: ExpenditureRow) => sum + report.totalClaimed, 0);
   const status = budget.status.toLowerCase();
 
   // Determine what approval type the current reviewer would do
@@ -107,6 +129,14 @@ export default async function BudgetDetailPage({
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] px-4 py-3.5">
               <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.5px] mb-2">Line Items</p>
               <p className="text-[20px] font-semibold tracking-tight">{items.length}</p>
+            </div>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] px-4 py-3.5">
+              <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.5px] mb-2">Disbursed</p>
+              <p className="text-[20px] font-semibold tracking-tight font-mono">{formatCurrency(totalDisbursed)}</p>
+            </div>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-card)] px-4 py-3.5">
+              <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-[0.5px] mb-2">Claimed</p>
+              <p className="text-[20px] font-semibold tracking-tight font-mono">{formatCurrency(totalClaimed)}</p>
             </div>
           </div>
 
@@ -172,6 +202,65 @@ export default async function BudgetDetailPage({
               />
             );
           })()}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Disbursements</p>
+                <p className="text-[12px] text-[var(--muted)]">{disbursements.length} records</p>
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="p-0 divide-y divide-[var(--border)]">
+              {disbursements.length === 0 ? (
+                <div className="px-4 py-8 text-center text-[13px] text-[var(--muted)]">No disbursements recorded</div>
+              ) : (
+                disbursements.map((disbursement: DisbursementRow) => (
+                  <div key={disbursement.id} className="flex items-center justify-between gap-4 px-4 py-3">
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-medium truncate">{disbursement.description}</p>
+                      <p className="text-[11px] text-[var(--muted)]">{formatRelative(disbursement.createdAt)}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-[13px] font-medium">{formatCurrency(disbursement.totalAmount)}</span>
+                      <span className="text-[10px] font-medium bg-[var(--primary-light)] text-[var(--primary)] px-1.5 py-0.5 rounded capitalize">
+                        {disbursement.status.toLowerCase()}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p className="text-[14px] font-medium">Expenditure Reports</p>
+                <p className="text-[12px] text-[var(--muted)]">{expenditures.length} reports</p>
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="p-0 divide-y divide-[var(--border)]">
+              {expenditures.length === 0 ? (
+                <div className="px-4 py-8 text-center text-[13px] text-[var(--muted)]">No expenditure reports submitted</div>
+              ) : (
+                expenditures.map((report: ExpenditureRow) => (
+                  <div key={report.id} className="flex items-center justify-between gap-4 px-4 py-3">
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-medium truncate">{report.title}</p>
+                      <p className="text-[11px] text-[var(--muted)]">
+                        {report.receipts.length} receipt{report.receipts.length === 1 ? "" : "s"}
+                        {report.submittedAt ? ` · Submitted ${formatRelative(report.submittedAt)}` : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-[13px] font-medium">{formatCurrency(report.totalApproved ?? report.totalClaimed)}</span>
+                      <StatusBadge status={report.status.toLowerCase() as BudgetStatus} />
+                    </div>
+                  </div>
+                ))
+              )}
+            </CardBody>
+          </Card>
 
           <Card>
             <CardHeader>

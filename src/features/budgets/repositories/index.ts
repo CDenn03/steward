@@ -117,3 +117,72 @@ export async function getDashboardBudgets(organizationId: string) {
     take: 6,
   });
 }
+
+export async function getBudgetFormOptions(organizationId: string) {
+  const [departments, events, categories] = await Promise.all([
+    prisma.department.findMany({
+      where: { organizationId, isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.event.findMany({
+      where: { organizationId },
+      select: { id: true, name: true, startDate: true },
+      orderBy: { startDate: "desc" },
+    }),
+    prisma.budgetCategory.findMany({
+      where: { organizationId, isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
+
+  return { departments, events, categories };
+}
+
+export async function getDepartmentBudgetSummaries(organizationId: string) {
+  return prisma.department.findMany({
+    where: { organizationId, isActive: true },
+    include: {
+      budgets: {
+        include: {
+          items: { select: { totalCost: true } },
+          expenditures: { select: { totalClaimed: true } },
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getEventsWithBudgets(organizationId: string) {
+  return prisma.event.findMany({
+    where: { organizationId },
+    include: {
+      department: true,
+      budgets: {
+        include: { items: { select: { totalCost: true } } },
+        orderBy: { updatedAt: "desc" },
+        take: 1,
+      },
+    },
+    orderBy: { startDate: "desc" },
+  });
+}
+
+export async function getBudgetAnalytics(organizationId: string) {
+  return prisma.department.findMany({
+    where: { organizationId, isActive: true },
+    select: {
+      id: true,
+      name: true,
+      budgets: {
+        select: {
+          items: { select: { totalCost: true } },
+          expenditures: { select: { totalClaimed: true } },
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+}

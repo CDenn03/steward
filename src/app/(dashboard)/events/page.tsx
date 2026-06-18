@@ -1,13 +1,26 @@
-"use client";
 import { Plus, Calendar } from "lucide-react";
+import { requireSession } from "@/lib/auth/session";
+import { getEventsWithBudgets } from "@/features/budgets/repositories";
 import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/badge";
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { mockEvents, mockBudgets } from "@/lib/mock/data";
+import type { BudgetStatus } from "@/types";
 
-export default function EventsPage() {
+type EventRow = {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date | null;
+  department: { name: string } | null;
+  budgets: Array<{ status: string; items: Array<{ totalCost: number }> }>;
+};
+
+export default async function EventsPage() {
+  const session = await requireSession();
+  const events = await getEventsWithBudgets(session.organizationId) as EventRow[];
+
   return (
     <>
       <PageHeader title="Events" subtitle="Manage recurring and one-time events with budget templates">
@@ -16,25 +29,28 @@ export default function EventsPage() {
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4">
-        {mockEvents.map((ev) => {
-          const budget = mockBudgets.find((b) => b.departmentId === ev.departmentId);
+        {events.map((event) => {
+          const budget = event.budgets[0];
+          const total = budget?.items.reduce((sum, item) => sum + item.totalCost, 0) ?? 0;
           return (
-            <Card key={ev.id} className="hover:shadow-card-hover transition-shadow cursor-pointer">
+            <Card key={event.id} className="hover:shadow-card-hover transition-shadow cursor-pointer">
               <CardBody>
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-xl">📅</div>
-                  <StatusBadge status={budget?.status ?? "draft"} />
+                  <div className="w-10 h-10 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary)]">
+                    <Calendar size={18} />
+                  </div>
+                  <StatusBadge status={(budget?.status.toLowerCase() ?? "draft") as BudgetStatus} />
                 </div>
-                <h3 className="text-[15px] font-medium mb-1">{ev.name}</h3>
+                <h3 className="text-[15px] font-medium mb-1">{event.name}</h3>
                 <p className="text-[12px] text-[var(--muted)] mb-4">
-                  {ev.department?.name ?? "No department"} · {formatDate(ev.startDate)}
-                  {ev.endDate ? ` – ${formatDate(ev.endDate)}` : ""}
+                  {event.department?.name ?? "No department"} · {formatDate(event.startDate)}
+                  {event.endDate ? ` - ${formatDate(event.endDate)}` : ""}
                 </p>
                 <div className="border-t border-[var(--border)] pt-3 flex items-center justify-between">
                   <div>
                     <p className="text-[11px] text-[var(--muted)] mb-0.5">Budget</p>
                     <p className="text-[13px] font-mono font-medium">
-                      {budget ? formatCurrency(budget.totalAmount) : "Not started"}
+                      {budget ? formatCurrency(total, session.organization.currency) : "Not started"}
                     </p>
                   </div>
                   <Button variant="ghost" size="sm">Manage</Button>
