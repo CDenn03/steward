@@ -7,11 +7,11 @@ export function ExportCsvButton({
   label = "Export",
   url,
   fileName,
-}: {
+}: Readonly<{
   label?: string;
   url: string;
   fileName?: string;
-}) {
+}>) {
   const handleExport = async () => {
     try {
       const res = await fetch(url);

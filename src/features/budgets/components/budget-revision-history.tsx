@@ -11,7 +11,7 @@ type Revision = {
   createdAt: Date;
 };
 
-export function BudgetRevisionHistory({ revisions }: { revisions: Revision[] }) {
+export function BudgetRevisionHistory({ revisions }: Readonly<{ revisions: Revision[] }>) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (revisions.length === 0) {

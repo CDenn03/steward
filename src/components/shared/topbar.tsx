@@ -43,7 +43,7 @@ export function Topbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Find the most-specific match
+
   const matchedKey = Object.keys(pageTitles)
     .filter(k => pathname === k || pathname.startsWith(k + "/"))
     .sort((a, b) => b.length - a.length)[0];

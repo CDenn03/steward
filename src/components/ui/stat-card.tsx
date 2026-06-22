@@ -21,7 +21,7 @@ export function StatCard({
   progressLabel,
   accentColor = "primary",
   className,
-}: StatCardProps) {
+}: Readonly<StatCardProps>) {
   const accentClass =
     accentColor === "success"
       ? "bg-success-bg text-success"

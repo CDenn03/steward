@@ -44,7 +44,7 @@ export function BudgetActions({
   currentUserInitials = "?",
   approvalId,
   currentUserId,
-}: Props) {
+}: Readonly<Props>) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [comment, setComment] = useState("");
@@ -52,7 +52,6 @@ export function BudgetActions({
   const [rejectComment, setRejectComment] = useState("");
   const [error, setError] = useState("");
 
-  // ── Confirmation dialog state for approve/reject ──────────────────────────
   const [confirmDecision, setConfirmDecision] = useState<"approved" | "rejected" | null>(null);
   const [confirmComment, setConfirmComment] = useState("");
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -68,7 +67,6 @@ export function BudgetActions({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [confirmDecision]);
 
-  // ── Optimistic comment state ─────────────────────────────────────────────
   const [optimisticComments, setOptimisticComments] = useState<Comment[] | null>(null);
   const displayComments = optimisticComments ?? comments;
 
@@ -125,7 +123,6 @@ export function BudgetActions({
     setConfirmComment("");
   };
 
-  // ── Header buttons mode ───────────────────────────────────────────────────
   if (!commentsMode) {
     return (
       <div className="flex items-center gap-2 flex-wrap justify-end">
@@ -216,7 +213,6 @@ export function BudgetActions({
     );
   }
 
-  // ── Comments mode ─────────────────────────────────────────────────────────
   return (
     <Card>
       <CardHeader>

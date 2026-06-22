@@ -5,8 +5,6 @@ import { prisma } from "@/lib/prisma/client";
 import { can, isPlatformAdmin, isOrgRole, type Permission } from "./permissions";
 import type { MemberRole } from "@/types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export interface SessionContext {
   userId: string;
   organizationId: string;
@@ -17,13 +15,11 @@ export interface SessionContext {
   departmentId: string | null;
 }
 
-// ─── Session fetch ────────────────────────────────────────────────────────────
 
 export async function requireSession(organizationSlug?: string): Promise<SessionContext> {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  // Try cookie-based org slug as default if none provided explicitly
   if (!organizationSlug) {
     try {
       const cookieStore = await cookies();
@@ -64,25 +60,18 @@ export async function requireSession(organizationSlug?: string): Promise<Session
   };
 }
 
-// ─── Access guards ────────────────────────────────────────────────────────────
-// Call these in layouts/pages. They redirect rather than throw so the
-// user sees a proper 403 page, not a crash.
-
-/** Require the session role to be platform_admin. */
 export async function requirePlatformAdmin(): Promise<SessionContext> {
   const session = await requireSession();
   if (!isPlatformAdmin(session.role)) redirect("/dashboard");
   return session;
 }
 
-/** Require the session role to be any org role (not platform_admin). */
 export async function requireOrgSession(organizationSlug?: string): Promise<SessionContext> {
   const session = await requireSession(organizationSlug);
   if (!isOrgRole(session.role)) redirect("/platform-admin");
   return session;
 }
 
-/** Require the session to have a specific permission; redirect to /403 otherwise. */
 export async function requirePermission(
   permission: Permission,
   organizationSlug?: string,
@@ -92,7 +81,6 @@ export async function requirePermission(
   return session;
 }
 
-/** Require an exact role match; redirect to /403 otherwise. */
 export async function requireRole(
   role: MemberRole | MemberRole[],
   organizationSlug?: string,

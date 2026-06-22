@@ -7,7 +7,7 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export function PageHeader({ title, subtitle, children, className }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, children, className }: Readonly<PageHeaderProps>) {
   return (
     <div className={cn("flex items-start justify-between mb-6", className)}>
       <div>

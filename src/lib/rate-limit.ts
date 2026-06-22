@@ -1,8 +1,3 @@
-/**
- * Simple in-memory rate limiter.
- * Resets on server restart — suitable for basic abuse prevention.
- */
-
 const store = new Map<string, { count: number; resetAt: number }>();
 
 export interface RateLimitConfig {

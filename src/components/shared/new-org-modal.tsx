@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 export function NewOrgModal({
   open,
   onClose,
-}: {
+}: Readonly<{
   open: boolean;
   onClose: () => void;
-}) {
+}>) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");

@@ -34,10 +34,10 @@ const OrgContext = createContext<OrgContextValue | null>(null);
 export function OrgProvider({
   initialOrg,
   children,
-}: {
+}: Readonly<{
   initialOrg?: ActiveOrg | null;
   children: ReactNode;
-}) {
+}>) {
   const [active, setActiveState] = useState<ActiveOrg | null>(initialOrg ?? null);
 
   const setActive = useCallback((org: ActiveOrg) => setActiveState(org), []);
@@ -47,8 +47,6 @@ export function OrgProvider({
     signOut({ callbackUrl: "/login" });
   }, []);
 
-  // For now, allMemberships is just the single active org.
-  // Multi-org switching via the org picker will re-populate this once implemented.
   const allMemberships: ActiveOrg[] = active ? [active] : [];
 
   return (

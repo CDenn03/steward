@@ -25,13 +25,12 @@ export function FileUpload({
   accept,
   label,
   description,
-  currentUrl,
   onStarted,
   onCompleted,
   onError,
   getUploadUrl,
   saveKey,
-}: FileUploadProps) {
+}: Readonly<FileUploadProps>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 

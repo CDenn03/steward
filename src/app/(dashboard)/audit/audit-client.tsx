@@ -13,7 +13,7 @@ export function AuditClient({
   selectedEntityType,
   selectedActorId,
   selectedAction,
-}: {
+}: Readonly<{
   data: AuditRow[];
   entityTypes: string[];
   actors: ActorOpt[];
@@ -21,7 +21,7 @@ export function AuditClient({
   selectedEntityType: string;
   selectedActorId: string;
   selectedAction: string;
-}) {
+}>) {
   const router = useRouter();
 
   const updateFilter = (key: string, value: string) => {

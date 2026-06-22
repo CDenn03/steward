@@ -20,7 +20,7 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-export function StatusBadge({ status, className }: StatusBadgeProps) {
+export function StatusBadge({ status, className }: Readonly<StatusBadgeProps>) {
   const config = statusConfig[status];
   return (
     <span

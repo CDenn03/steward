@@ -1,12 +1,3 @@
-/**
- * Prisma type stubs — mirrors what `prisma generate` produces.
- *
- * These let the app compile before running `pnpm db:generate`.
- * After generate, you may import directly from "@prisma/client" if preferred.
- */
-
-// ─── Enums ────────────────────────────────────────────────────────────────────
-
 export enum BudgetStatus {
   DRAFT = "DRAFT",
   SUBMITTED = "SUBMITTED",

@@ -13,7 +13,7 @@ interface CustomTooltipProps {
   currency?: boolean;
 }
 
-export function CustomTooltip({ active, payload, label, currency = true }: CustomTooltipProps) {
+export function CustomTooltip({ active, payload, label, currency = true }: Readonly<CustomTooltipProps>) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white border border-[#E6EAF0] rounded-[10px] px-3 py-2.5 shadow-lg text-[12px] min-w-[140px]">

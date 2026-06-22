@@ -18,10 +18,10 @@ type Attachment = {
 export function BudgetAttachmentUpload({
   budgetId,
   attachments,
-}: {
+}: Readonly<{
   budgetId: string;
   attachments: Attachment[];
-}) {
+}>) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);

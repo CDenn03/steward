@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import type { MemberRole } from "@/types";
 
-// ─── Session / current user ───────────────────────────────────────────────────
 
 interface SessionState {
   userId: string | null;
@@ -39,7 +38,6 @@ export const useSessionStore = create<SessionState>((set) => ({
     }),
 }));
 
-// ─── Active organisation ──────────────────────────────────────────────────────
 
 interface OrgState {
   id: string | null;

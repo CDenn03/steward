@@ -18,7 +18,6 @@ export function MobileSidebar() {
         <Menu size={16} />
       </button>
 
-      {/* Overlay */}
       {open && (
         <div
           className="fixed inset-0 z-40 bg-black/30 md:hidden"
@@ -27,7 +26,6 @@ export function MobileSidebar() {
         />
       )}
 
-      {/* Drawer */}
       <div
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-[224px] transition-transform duration-200 ease-in-out md:hidden",

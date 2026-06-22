@@ -20,7 +20,6 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
   }
 }
 
-// ─── Templates ───────────────────────────────────────────────────────────────
 
 export async function sendBudgetSubmittedEmail(opts: {
   to: string;

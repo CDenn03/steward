@@ -33,13 +33,11 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const response = NextResponse.next();
 
-  // ── Dark mode (15.3) ─────────────────────────────────────────────────────
   const theme = request.cookies.get("theme")?.value;
   if (theme === "dark") {
     response.headers.set("x-theme", "dark");
   }
 
-  // ── CSRF protection (14.1) ───────────────────────────────────────────────
   if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method)) {
     const origin = request.headers.get("origin");
     const host = request.headers.get("host");
@@ -61,7 +59,6 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // ── Auth route protection ─────────────────────────────────────────────────
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
