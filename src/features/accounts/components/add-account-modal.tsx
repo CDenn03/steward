@@ -18,10 +18,10 @@ const ACCOUNT_TYPES = [
 export function AddAccountModal({
   open,
   onClose,
-}: {
+}: Readonly<{
   open: boolean;
   onClose: () => void;
-}) {
+}>) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
@@ -75,7 +75,7 @@ export function AddAccountModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <dialog className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" aria-modal="true" aria-label="Add account">
       <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 py-4 border-b border-(--border)">
           <div>
@@ -152,6 +152,6 @@ export function AddAccountModal({
           </Button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }

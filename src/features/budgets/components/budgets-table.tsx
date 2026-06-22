@@ -32,7 +32,7 @@ const FILTERS = [
   { label: "Rejected",        value: "rejected" },
 ];
 
-export function BudgetsTable({ budgets }: { budgets: BudgetRow[] }) {
+export function BudgetsTable({ budgets }: Readonly<{ budgets: BudgetRow[] }>) {
   const router = useRouter();
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");

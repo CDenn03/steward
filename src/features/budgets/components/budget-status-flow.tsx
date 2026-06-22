@@ -21,12 +21,12 @@ function getStepIndex(status: BudgetStatus): number {
   return steps.findIndex((s) => s.status.includes(status));
 }
 
-export function BudgetStatusFlow({ status, className }: BudgetStatusFlowProps) {
+export function BudgetStatusFlow({ status, className }: Readonly<BudgetStatusFlowProps>) {
   const current = getStepIndex(status);
   if (status === "rejected") {
     return (
       <div className="flex items-center gap-2 text-danger text-[12px]">
-        <span className="w-2 h-2 rounded-full bg-danger" />
+        <span className="w-2 h-2 rounded-full bg-danger" /> {" "}
         Budget has been rejected
       </div>
     );

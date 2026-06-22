@@ -8,7 +8,7 @@ interface BudgetCardProps {
   budget: Budget;
 }
 
-export function BudgetCard({ budget }: BudgetCardProps) {
+export function BudgetCard({ budget }: Readonly<BudgetCardProps>) {
   const utilPct = budget.spentAmount ? pct(budget.spentAmount, budget.totalAmount) : 0;
 
   return (

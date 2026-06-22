@@ -10,7 +10,7 @@ const ToastContext = createContext<ToastCtx>({ toast: () => {} });
 
 export function useToast() { return useContext(ToastContext); }
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
+export function ToastProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const toast = useCallback((message: string, type: Toast["type"] = "info") => {

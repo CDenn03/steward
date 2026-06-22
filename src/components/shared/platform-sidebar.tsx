@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, Building2, Users, Shield, LogOut,
+  LayoutDashboard, Building2, Users, LogOut,
 } from "lucide-react";
 
 const navItems = [
@@ -19,7 +19,6 @@ export function PlatformSidebar() {
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-[224px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
-      {/* Wordmark */}
       <div className="px-4 py-4 border-b border-(--border) flex items-center gap-2.5">
         <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center shrink-0">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -33,7 +32,6 @@ export function PlatformSidebar() {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3">
         <p className="px-4 pb-1.5 text-[10px] font-medium text-(--muted) uppercase tracking-[0.8px]">
           Platform
@@ -58,7 +56,6 @@ export function PlatformSidebar() {
         })}
       </nav>
 
-      {/* User footer */}
       <div className="border-t border-(--border) p-3">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">

@@ -6,7 +6,7 @@ interface ProgressBarProps {
   size?: "sm" | "md";
 }
 
-export function ProgressBar({ value, className, size = "sm" }: ProgressBarProps) {
+export function ProgressBar({ value, className, size = "sm" }: Readonly<ProgressBarProps>) {
   const clamped = Math.min(100, Math.max(0, value));
   const color =
     clamped >= 95

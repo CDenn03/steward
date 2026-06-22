@@ -14,7 +14,7 @@ const config = {
   danger: { bg: "bg-danger-bg border-red-200", text: "text-danger", Icon: AlertCircle },
 };
 
-export function AlertBanner({ type = "info", children, className }: AlertBannerProps) {
+export function AlertBanner({ type = "info", children, className }: Readonly<AlertBannerProps>) {
   const { bg, text, Icon } = config[type];
   return (
     <div className={cn("flex items-center gap-2.5 border rounded-[var(--r-btn)] px-4 py-2.5 text-[12.5px]", bg, text, className)}>

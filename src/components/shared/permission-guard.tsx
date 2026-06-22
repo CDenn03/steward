@@ -9,7 +9,7 @@ interface PermissionGuardProps {
   fallback?: React.ReactNode;
 }
 
-export function PermissionGuard({ role, permission, children, fallback = null }: PermissionGuardProps) {
+export function PermissionGuard({ role, permission, children, fallback = null }: Readonly<PermissionGuardProps>) {
   if (!can(role, permission)) return <>{fallback}</>;
   return <>{children}</>;
 }

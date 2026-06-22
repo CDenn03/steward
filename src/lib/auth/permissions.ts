@@ -1,7 +1,5 @@
 import type { MemberRole } from "@/types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export type Permission =
   | "budget.create"
   | "budget.edit_own"
@@ -21,8 +19,6 @@ export type Permission =
   | "users.manage"
   | "platform.manage";
 
-// ─── Role → Permission map ────────────────────────────────────────────────────
-// Single source of truth. "*" means all non-platform permissions.
 
 const WILDCARD = "*" as const;
 
@@ -56,9 +52,6 @@ const rolePermissions: Record<MemberRole, Permission[] | typeof WILDCARD> = {
   member: ["receipt.upload"],
 };
 
-// ─── Route access map ─────────────────────────────────────────────────────────
-// Maps route prefixes to the minimum permission required to enter.
-// Layouts/pages call requirePermission(session, "budget.approve_chair") etc.
 
 export const routePermissions: Record<string, Permission> = {
   "/analytics":    "analytics.view",
@@ -71,7 +64,6 @@ export const routePermissions: Record<string, Permission> = {
   "/admin":        "users.manage",
 };
 
-// ─── Core helpers ─────────────────────────────────────────────────────────────
 
 export function can(role: MemberRole, ...permissions: Permission[]): boolean {
   const perms = rolePermissions[role];

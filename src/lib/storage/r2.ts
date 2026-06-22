@@ -17,10 +17,6 @@ const r2 = new S3Client({
 
 const BUCKET = process.env.R2_BUCKET_NAME ?? "steward-files";
 
-/**
- * Generate a key for storing a file.
- * Pattern: {orgId}/{entityType}/{entityId}/{timestamp}-{filename}
- */
 export function generateStorageKey(
   orgId: string,
   entityType: string,
@@ -32,9 +28,6 @@ export function generateStorageKey(
   return `${orgId}/${entityType}/${entityId}/${ts}-${safe}`;
 }
 
-/**
- * Get a short-lived signed URL for reading a file.
- */
 export async function getSignedReadUrl(
   storageKey: string,
   expiresInSeconds = 3600
@@ -43,9 +36,6 @@ export async function getSignedReadUrl(
   return getSignedUrl(r2, command, { expiresIn: expiresInSeconds });
 }
 
-/**
- * Get a short-lived signed URL for uploading a file directly from the browser.
- */
 export async function getSignedUploadUrl(
   storageKey: string,
   contentType: string,
@@ -59,9 +49,6 @@ export async function getSignedUploadUrl(
   return getSignedUrl(r2, command, { expiresIn: expiresInSeconds });
 }
 
-/**
- * Delete a file from R2.
- */
 export async function deleteFile(storageKey: string): Promise<void> {
   await r2.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: storageKey }));
 }

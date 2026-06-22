@@ -24,7 +24,7 @@ export function DataTable<T>({
   onRowClick,
   emptyMessage = "No data found",
   className,
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   return (
     <div className={cn("overflow-x-auto", className)}>
       <table className="w-full border-collapse">

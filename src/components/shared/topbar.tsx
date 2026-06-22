@@ -43,7 +43,7 @@ export function Topbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Find the most-specific match
+
   const matchedKey = Object.keys(pageTitles)
     .filter(k => pathname === k || pathname.startsWith(k + "/"))
     .sort((a, b) => b.length - a.length)[0];
@@ -81,11 +81,15 @@ export function Topbar() {
         <ThemeToggle />
         <Link
           href="/notifications"
+          aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
           className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) hover:text-(--text) transition-colors"
         >
           <Bell size={14} />
           {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] flex items-center justify-center bg-danger text-white text-[9px] font-bold rounded-full px-0.5 border border-[var(--surface)]">
+            <span
+              aria-hidden="true"
+              className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] flex items-center justify-center bg-danger text-white text-[9px] font-bold rounded-full px-0.5 border border-[var(--surface)]"
+            >
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}

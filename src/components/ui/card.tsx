@@ -4,7 +4,7 @@ export function Card({
   className,
   children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div
       className={cn(
@@ -22,7 +22,7 @@ export function CardHeader({
   className,
   children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div
       className={cn(
@@ -40,7 +40,7 @@ export function CardTitle({
   className,
   children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div className={cn("flex-1", className)} {...props}>
       {children}
@@ -52,7 +52,7 @@ export function CardBody({
   className,
   children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div className={cn("p-5", className)} {...props}>
       {children}

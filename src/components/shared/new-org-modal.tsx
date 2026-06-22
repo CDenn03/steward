@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
 export function NewOrgModal({
   open,
   onClose,
-}: {
+}: Readonly<{
   open: boolean;
   onClose: () => void;
-}) {
+}>) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
@@ -63,7 +63,7 @@ export function NewOrgModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" role="dialog" aria-modal="true" aria-label="New organisation">
       <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-xl w-full max-w-md">
         <div className="flex items-center justify-between px-5 py-4 border-b border-(--border)">
           <p className="text-[15px] font-semibold">New Organisation</p>

@@ -7,6 +7,7 @@ import { createBudgetService, submitBudgetService, reviewBudgetService, updateBu
 import { requireSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
 import { generateStorageKey, getSignedUploadUrl } from "@/lib/storage/r2";
+import { validateFileMeta } from "@/lib/storage/validation";
 
 export async function createBudgetAction(formData: unknown) {
   const session = await requireSession();
@@ -114,6 +115,10 @@ export async function updateBudgetAction(budgetId: string, formData: unknown) {
 
 export async function getBudgetUploadUrlAction(fileName: string, mimeType: string, budgetId: string) {
   const session = await requireSession();
+
+  const validationError = validateFileMeta(fileName, mimeType);
+  if (validationError) return { error: { message: validationError } };
+
   try {
     const storageKey = generateStorageKey(
       session.organizationId,
@@ -136,6 +141,10 @@ export async function saveBudgetAttachmentAction(data: {
   budgetId: string;
 }) {
   const session = await requireSession();
+
+  const validationError = validateFileMeta(data.fileName, data.mimeType, data.size);
+  if (validationError) return { error: { message: validationError } };
+
   try {
     const attachment = await prisma.attachment.create({
       data: {
