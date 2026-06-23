@@ -5,14 +5,12 @@
   --font-geist-sans: "Geist", system-ui, sans-serif;
   --font-geist-mono: "Geist Mono", monospace;
 
-  /* Brand */
   --primary: #1F4B99;
   --primary-light: #EEF3FF;
   --primary-mid: #4F7FE6;
   --gold: #C8A04D;
   --gold-light: #FDF6E7;
 
-  /* Semantic */
   --success: #15803D;
   --success-bg: #F0FDF4;
   --warning: #D97706;
@@ -24,14 +22,12 @@
   --info: #2563EB;
   --info-bg: #EFF6FF;
 
-  /* Neutral */
   --bg: #FAFBFC;
   --surface: #FFFFFF;
   --border: #E6EAF0;
   --text: #111827;
   --muted: #6B7280;
 
-  /* Radii */
   --r-btn: 10px;
   --r-card: 14px;
   --r-input: 10px;

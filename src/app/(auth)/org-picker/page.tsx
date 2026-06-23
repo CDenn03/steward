@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma/client";
-import { OrgPickerClient } from "./org-picker-client";
+import { OrgPickerClient } from "@/features/auth/components/org-picker-client";
 
 const ORG_COLORS = ["#1F4B99", "#15803D", "#7C3AED", "#B45309", "#0F766E"];
 function orgColor(name: string) {
@@ -27,7 +27,6 @@ export default async function OrgPickerPage() {
     redirect("/platform-admin");
   }
 
-  // If user has a last-used org cookie, redirect straight to its splash screen
   try {
     const cookieStore = await cookies();
     const orgSlug = cookieStore.get("org_slug")?.value;
@@ -38,7 +37,6 @@ export default async function OrgPickerPage() {
       }
     }
   } catch {
-    // cookies() unavailable outside request context
   }
 
   const data = memberships.map((m: (typeof memberships)[number]) => ({

@@ -51,3 +51,21 @@ export function pct(spent: number, total: number): number {
   if (total === 0) return 0;
   return Math.round((spent / total) * 100);
 }
+
+const MAX_TOAST_LENGTH = 120;
+
+export function formatErrorMessage(
+  backendMessage?: string | null,
+  fallback = "Something went wrong. Please try again."
+): string {
+  const text = backendMessage?.trim();
+  if (!text) return fallback;
+  if (text.length > MAX_TOAST_LENGTH) return text.slice(0, MAX_TOAST_LENGTH).trimEnd() + "…";
+  return text;
+}
+
+export const REASON_MESSAGES: Record<string, string> = {
+  invalid_credentials: "Invalid email or password.",
+  magic_link_failed: "Could not send magic link. Try again.",
+  unknown: "Something went wrong. Please try again.",
+};

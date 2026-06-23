@@ -12,12 +12,12 @@ export function UserActions({
   currentRole,
   currentDeptId,
   departments,
-}: {
+}: Readonly<{
   membershipId: string;
   currentRole: string;
   currentDeptId: string | null;
   departments: Array<{ id: string; name: string }>;
-}) {
+}>) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [role, setRole] = useState(currentRole);
@@ -36,7 +36,7 @@ export function UserActions({
         </button>
         <button
           onClick={async () => {
-            if (!window.confirm("Remove this user from the organisation?")) return;
+            if (!globalThis.confirm("Remove this user from the organisation?")) return;
             await removeMembershipAction(membershipId);
             router.refresh();
           }}

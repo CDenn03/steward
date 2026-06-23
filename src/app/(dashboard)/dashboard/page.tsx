@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { AlertCircle, Download, Plus } from "lucide-react";
+import {
+  AlertCircle, Download, Plus, DollarSign, Wallet, Calendar, Shield, Clock,
+} from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { getDashboardBudgets, getPendingApprovals } from "@/features/budgets/repositories";
 import {
@@ -8,10 +10,10 @@ import {
   getUpcomingEvents,
 } from "@/features/finance/repositories";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatCard } from "@/components/ui/stat-card";
+import { DashboardStats } from "./dashboard-stats";
 import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/ui/badge";
+import { StatusBadge, Badge } from "@/components/ui/badge";
 import { BudgetOverviewTable, type BudgetRow } from "./budget-overview-table";
 import { ExportCsvButton } from "@/components/shared/export-button";
 import { formatCurrency, formatRelative } from "@/lib/utils";
@@ -97,6 +99,8 @@ export default async function DashboardPage() {
   const auditRows = auditLogs as AuditRow[];
   const totalBalance = accounts.reduce((sum: number, account: AccountRow) => sum + account.balance, 0);
 
+  const pendingCount = approvalRows.length;
+
   return (
     <>
       <PageHeader
@@ -109,61 +113,63 @@ export default async function DashboardPage() {
       </PageHeader>
 
       {approvals.length > 0 && (
-        <div className="flex items-center gap-2 bg-warning-bg border border-yellow-200 rounded-[var(--r-btn)] px-4 py-2.5 text-[12.5px] text-warning mb-6">
+        <div className="flex items-center gap-2 bg-warning-bg border border-yellow-200 rounded-(--r-btn) px-4 py-2.5 text-[12.5px] text-warning mb-6">
           <AlertCircle size={14} className="shrink-0" />
           <span><strong>{approvalRows.length} budget{approvalRows.length === 1 ? "" : "s"}</strong> pending review.</span>
           <Link href="/approvals" className="ml-auto font-medium underline-offset-2 hover:underline shrink-0">Review now</Link>
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-3.5 mb-6">
-        <StatCard label="Approved Budget" value={formatCurrency(stats.approvedBudget, "KES", true)} deltaLabel="fully approved" />
-        <StatCard label="Total Income" value={formatCurrency(stats.totalIncome, "KES", true)} deltaLabel="all time" accentColor="success" />
-        <StatCard label="Total Expenditure" value={formatCurrency(stats.totalExpenditure, "KES", true)} delta={stats.expenditurePct} deltaLabel="of approved" accentColor="gold" />
-        <StatCard
-          label="Outstanding Reports"
-          value={String(stats.outstandingReports)}
-          deltaLabel="draft reports"
-          accentColor="warning"
-          progress={stats.accountabilityRate}
-          progressLabel={`${stats.accountabilityRate}% clear`}
-        />
-      </div>
+      <DashboardStats stats={stats} pendingCount={pendingCount} />
 
-      <div className="grid grid-cols-[1fr_360px] gap-3.5 mb-3.5">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-3 md:gap-4 mb-3.5">
         <Card>
           <CardHeader>
             <CardTitle>
-              <p className="text-[14px] font-medium">Budget Overview</p>
-              <p className="text-[12px] text-(--muted)">Latest budgets from the database</p>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center">
+                  <DollarSign size={14} className="text-(--primary)" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-semibold text-(--text)">Budget Overview</p>
+                  <p className="text-[12px] text-(--muted)">Latest budgets from the database</p>
+                </div>
+              </div>
             </CardTitle>
             <Link href="/budgets"><Button variant="ghost" size="sm">View all</Button></Link>
           </CardHeader>
           <BudgetOverviewTable data={budgets} />
         </Card>
 
-        <div className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-3 md:gap-4">
           <Card>
             <CardHeader>
               <CardTitle>
-                <p className="text-[14px] font-medium">Pending Approvals</p>
-                <p className="text-[12px] text-(--muted)">Awaiting action</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center">
+                    <Clock size={14} className="text-(--primary)" />
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-semibold text-(--text)">Pending Approvals</p>
+                    <p className="text-[12px] text-(--muted)">Awaiting action</p>
+                  </div>
+                </div>
               </CardTitle>
-              <span className="text-[11px] font-medium bg-warning-bg text-warning px-2 py-0.5 rounded-md">
-                {approvalRows.length} items
-              </span>
+              <Badge variant="warning">{approvalRows.length} items</Badge>
             </CardHeader>
             <CardBody className="p-0 divide-y divide-(--border)">
               {approvalRows.slice(0, 3).map((approval: ApprovalRow) => {
                 const total = approval.budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
                 return (
                   <Link key={approval.id} href={`/budgets/${approval.budgetId}`} className="flex items-start gap-3 px-5 py-3.5 hover:bg-(--bg) transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--primary-light)] flex items-center justify-center text-[13px] shrink-0">KES</div>
+                    <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
+                      {approval.budget.title.slice(0, 2).toUpperCase()}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium truncate">{approval.budget.title}</p>
                       <p className="text-[11px] text-(--muted)">{formatCurrency(total)} · Pending {approval.type.toLowerCase()} review</p>
                     </div>
-                    <span className="text-[10px] font-medium bg-[var(--primary-light)] text-(--primary) px-1.5 py-0.5 rounded shrink-0 capitalize">{approval.type.toLowerCase()}</span>
+                    <Badge variant="info" className="shrink-0 capitalize">{approval.type.toLowerCase()}</Badge>
                   </Link>
                 );
               })}
@@ -173,39 +179,53 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>
-                <p className="text-[14px] font-medium">Account Balances</p>
-                <p className="text-[12px] text-(--muted)">Current stored balances</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center">
+                    <Wallet size={14} className="text-(--primary)" />
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-semibold text-(--text)">Account Balances</p>
+                    <p className="text-[12px] text-(--muted)">Current stored balances</p>
+                  </div>
+                </div>
               </CardTitle>
               <Link href="/accounts"><Button variant="ghost" size="sm">Manage</Button></Link>
             </CardHeader>
             <div className="divide-y divide-(--border)">
               {accounts.map((account: AccountRow) => (
-                <div key={account.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold shrink-0">
-                    {account.type}
+                <div key={account.id} className="flex items-center gap-3 px-5 py-3">
+                  <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[10px] font-semibold text-(--primary) shrink-0">
+                    {account.type === "CHECKING" ? "C" : account.type === "SAVINGS" ? "S" : account.type.slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-medium truncate">{account.name}</p>
                     <p className="text-[11px] text-(--muted)">{account.provider ?? account.accountNumber ?? "Account"}</p>
                   </div>
-                  <p className="font-mono text-[13px] font-medium">{formatCurrency(account.balance, account.currency, true)}</p>
+                  <p className="font-mono text-[13px] font-semibold text-(--text)">{formatCurrency(account.balance, account.currency, true)}</p>
                 </div>
               ))}
             </div>
-            <div className="px-4 py-3 border-t border-(--border) flex justify-between items-center">
+            <div className="px-5 py-3.5 border-t border-(--border) flex justify-between items-center">
               <span className="text-[12px] text-(--muted)">Total liquid assets</span>
-              <span className="font-mono font-semibold text-[13px]">{formatCurrency(totalBalance, "KES", true)}</span>
+              <span className="font-mono font-semibold text-[14px] text-(--text)">{formatCurrency(totalBalance, "KES", true)}</span>
             </div>
           </Card>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4">
         <Card>
           <CardHeader>
             <CardTitle>
-              <p className="text-[14px] font-medium">Upcoming Events</p>
-              <p className="text-[12px] text-(--muted)">Events with active budgets</p>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center">
+                  <Calendar size={14} className="text-(--primary)" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-semibold text-(--text)">Upcoming Events</p>
+                  <p className="text-[12px] text-(--muted)">Events with active budgets</p>
+                </div>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardBody className="p-0 divide-y divide-(--border)">
@@ -214,9 +234,9 @@ export default async function DashboardPage() {
               const total = budget?.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0) ?? 0;
               return (
                 <div key={event.id} className="flex items-center gap-4 px-5 py-3.5">
-                  <div className="text-center w-9 shrink-0">
-                    <p className="text-[18px] font-semibold leading-none text-(--primary)">{event.startDate.getDate()}</p>
-                    <p className="text-[10px] text-(--muted) tracking-wide">{event.startDate.toLocaleString("en", { month: "short" }).toUpperCase()}</p>
+                  <div className="w-9 h-9 rounded-[8px] bg-(--primary-light) flex flex-col items-center justify-center shrink-0">
+                    <p className="text-[14px] font-bold leading-none text-(--primary)">{event.startDate.getDate()}</p>
+                    <p className="text-[8px] font-semibold text-(--primary) tracking-wide uppercase">{event.startDate.toLocaleString("en", { month: "short" })}</p>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-medium truncate">{event.name}</p>
@@ -234,19 +254,29 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <p className="text-[14px] font-medium">Recent Activity</p>
-              <p className="text-[12px] text-(--muted)">Audit trail</p>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center">
+                  <Shield size={14} className="text-(--primary)" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-semibold text-(--text)">Recent Activity</p>
+                  <p className="text-[12px] text-(--muted)">Audit trail</p>
+                </div>
+              </div>
             </CardTitle>
           </CardHeader>
-          <CardBody className="pt-3">
+          <CardBody className="px-5 py-4">
             {auditRows.map((log: AuditRow, index: number) => (
-              <div key={log.id} className="flex gap-3.5 pb-4 relative">
+              <div key={log.id} className="flex gap-3.5 pb-4 last:pb-0 relative">
                 <div className="flex flex-col items-center shrink-0">
-                  <div className={`w-2 h-2 rounded-full mt-1.5 z-10 ${index < 2 ? "bg-(--primary)" : "bg-(--border)"}`} />
+                  <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center ${index < 2 ? "bg-(--primary-light) text-(--primary)" : "bg-(--bg) text-(--muted)"}`}>
+                    <Shield size={12} />
+                  </div>
+                  {index < auditRows.length - 1 && <div className="w-px flex-1 bg-(--border) mt-1" />}
                 </div>
                 <div className="flex-1 min-w-0 pb-1">
                   <p className="text-[13px] leading-snug">
-                    <span className="font-medium">{log.entityType}</span> {log.action}
+                    <span className="font-medium capitalize">{log.entityType.replace(/_/g, " ")}</span> {log.action.replace(/_/g, " ")}
                   </p>
                   <p className="text-[11px] text-(--muted) mt-0.5">{formatRelative(log.createdAt)}</p>
                 </div>

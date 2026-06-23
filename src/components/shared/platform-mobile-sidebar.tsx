@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sidebar } from "./sidebar";
+import { PlatformSidebar } from "./platform-sidebar";
 
-export function MobileSidebar() {
+export function PlatformMobileSidebar() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,7 +40,7 @@ export function MobileSidebar() {
           >
             <X size={14} />
           </button>
-          <Sidebar onNavClick={() => setOpen(false)} />
+          <PlatformSidebar onNavClick={() => setOpen(false)} />
         </div>
       </div>
     </>

@@ -6,8 +6,7 @@ import { Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/badge";
-import { ProgressBar } from "@/components/ui/progress";
-import { DataTable } from "@/components/shared/data-table";
+import { DataTable, createColumnHelper } from "@/components/shared/data-table";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import type { BudgetStatus } from "@/types";
 
@@ -21,6 +20,8 @@ type BudgetRow = {
   totalAmount: number;
   updatedAt: Date;
 };
+
+const helper = createColumnHelper<BudgetRow>();
 
 const FILTERS = [
   { label: "All",             value: "all" },
@@ -47,43 +48,49 @@ export function BudgetsTable({ budgets }: Readonly<{ budgets: BudgetRow[] }>) {
   });
 
   const columns = [
-    {
-      key: "title", header: "Budget Name",
-      render: (b: BudgetRow) => (
+    helper.accessor("title", {
+      header: "Budget Name",
+      cell: (info) => (
         <div>
-          <p className="font-medium">{b.title}</p>
-          {b.department && <p className="text-[11px] text-(--muted)">{b.department.name}</p>}
+          <p className="font-medium">{info.row.original.title}</p>
+          {info.row.original.department && (
+            <p className="text-[11px] text-(--muted)">{info.row.original.department.name}</p>
+          )}
         </div>
       ),
-    },
-    {
-      key: "period", header: "Period",
-      render: (b: BudgetRow) =>
-        b.periodStart ? (
+    }),
+    helper.accessor("periodStart", {
+      header: "Period",
+      cell: (info) => {
+        const start = info.row.original.periodStart;
+        const end = info.row.original.periodEnd;
+        return start ? (
           <span className="text-(--muted)">
-            {formatDate(b.periodStart)}{b.periodEnd ? ` – ${formatDate(b.periodEnd)}` : ""}
+            {formatDate(start)}{end ? ` – ${formatDate(end)}` : ""}
           </span>
-        ) : <span className="text-(--muted)">—</span>,
-    },
-    {
-      key: "amount", header: "Allocated",
-      render: (b: BudgetRow) => (
-        <span className="font-mono text-[12.5px]">{formatCurrency(b.totalAmount)}</span>
+        ) : <span className="text-(--muted)">—</span>;
+      },
+    }),
+    helper.accessor("totalAmount", {
+      header: "Allocated",
+      cell: (info) => (
+        <span className="font-mono text-[12.5px]">{formatCurrency(info.getValue())}</span>
       ),
-    },
-    {
-      key: "status", header: "Status",
-      render: (b: BudgetRow) => <StatusBadge status={b.status as BudgetStatus} />,
-    },
-    {
-      key: "actions", header: "",
-      render: (b: BudgetRow) => (
+    }),
+    helper.accessor("status", {
+      header: "Status",
+      cell: (info) => <StatusBadge status={info.getValue() as BudgetStatus} />,
+    }),
+    helper.display({
+      id: "actions",
+      header: "",
+      cell: (info) => (
         <Button variant="ghost" size="sm" className="text-[11px] px-2 py-1"
-          onClick={(e) => { e.stopPropagation(); router.push(`/budgets/${b.id}`); }}>
-          {b.status === "draft" ? "Edit" : "View"}
+          onClick={(e) => { e.stopPropagation(); router.push(`/budgets/${info.row.original.id}`); }}>
+          {info.row.original.status === "draft" ? "Edit" : "View"}
         </Button>
       ),
-    },
+    }),
   ];
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/shared/data-table";
+import { DataTable, createColumnHelper } from "@/components/shared/data-table";
 import { Badge } from "@/components/ui/badge";
 import { formatRelative } from "@/lib/utils";
 
@@ -24,12 +24,15 @@ export type AuditRow = {
   actor?: { name?: string; role?: string };
 };
 
+const helper = createColumnHelper<AuditRow>();
+
 const columns = [
-  {
-    key: "actor",
+  helper.display({
+    id: "actor",
     header: "Actor",
-    render: (log: AuditRow) => {
-      const name = log.actor?.name ?? "Unknown user";
+    cell: (info) => {
+      const actor = info.row.original.actor;
+      const name = actor?.name ?? "Unknown user";
       return (
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary)">
@@ -37,49 +40,47 @@ const columns = [
           </div>
           <div>
             <p className="text-[13px] font-medium">{name}</p>
-            <p className="text-[11px] text-(--muted) capitalize">{(log.actor?.role ?? "member").replace("_", " ")}</p>
+            <p className="text-[11px] text-(--muted) capitalize">{(actor?.role ?? "member").replace("_", " ")}</p>
           </div>
         </div>
       );
     },
-  },
-  {
-    key: "entity",
+  }),
+  helper.display({
+    id: "entity",
     header: "Entity",
-    render: (log: AuditRow) => (
+    cell: (info) => (
       <div>
-        <p className="text-[13px]">{log.entityType}</p>
-        <p className="text-[11px] text-(--muted) font-mono">{log.entityId}</p>
+        <p className="text-[13px]">{info.row.original.entityType}</p>
+        <p className="text-[11px] text-(--muted) font-mono">{info.row.original.entityId}</p>
       </div>
     ),
-  },
-  {
-    key: "action",
+  }),
+  helper.accessor("action", {
     header: "Action",
-    render: (log: AuditRow) => (
-      <Badge variant={actionVariants[log.action] ?? "default"} className="capitalize">
-        {log.action.replace("_", " ")}
+    cell: (info) => (
+      <Badge variant={actionVariants[info.getValue()] ?? "default"} className="capitalize">
+        {info.getValue().replace("_", " ")}
       </Badge>
     ),
-  },
-  {
-    key: "detail",
+  }),
+  helper.display({
+    id: "detail",
     header: "Detail",
-    render: (log: AuditRow) => (
+    cell: (info) => (
       <span className="text-[12px] text-(--muted) font-mono">
-        {log.after ? JSON.stringify(log.after) : "-"}
+        {info.row.original.after ? JSON.stringify(info.row.original.after) : "-"}
       </span>
     ),
-  },
-  {
-    key: "time",
+  }),
+  helper.accessor("createdAt", {
     header: "Time",
-    render: (log: AuditRow) => (
-      <span className="text-(--muted)">{formatRelative(log.createdAt)}</span>
+    cell: (info) => (
+      <span className="text-(--muted)">{formatRelative(info.getValue())}</span>
     ),
-  },
+  }),
 ];
 
 export function AuditTable({ data }: { data: AuditRow[] }) {
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={data} pageSize={25} />;
 }

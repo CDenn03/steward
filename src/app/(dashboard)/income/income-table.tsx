@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/shared/data-table";
+import { DataTable, createColumnHelper } from "@/components/shared/data-table";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -13,17 +13,34 @@ export type IncomeRecord = {
   recordedBy: string;
 };
 
+const helper = createColumnHelper<IncomeRecord>();
+
 const catVariants: Record<string, "default" | "success" | "info" | "gold" | "warning"> = {
   offering: "default", tithe: "default", donation: "success",
   registration: "info", fundraising: "gold", grant: "warning",
 };
 
 const columns = [
-  { key: "desc", header: "Description", render: (r: IncomeRecord) => <span className="font-medium">{r.description}</span> },
-  { key: "cat", header: "Category", render: (r: IncomeRecord) => <Badge variant={catVariants[r.category] ?? "default"}>{r.category}</Badge> },
-  { key: "date", header: "Date", render: (r: IncomeRecord) => <span className="text-(--muted)">{formatDate(r.date)}</span> },
-  { key: "by", header: "Recorded By", render: (r: IncomeRecord) => <span className="text-(--muted)">{r.recordedBy}</span> },
-  { key: "amount", header: "Amount", render: (r: IncomeRecord) => <span className="font-mono font-medium text-success">{formatCurrency(r.amount)}</span> },
+  helper.accessor("description", {
+    header: "Description",
+    cell: (info) => <span className="font-medium">{info.getValue()}</span>,
+  }),
+  helper.accessor("category", {
+    header: "Category",
+    cell: (info) => <Badge variant={catVariants[info.getValue()] ?? "default"}>{info.getValue()}</Badge>,
+  }),
+  helper.accessor("date", {
+    header: "Date",
+    cell: (info) => <span className="text-(--muted)">{formatDate(info.getValue())}</span>,
+  }),
+  helper.accessor("recordedBy", {
+    header: "Recorded By",
+    cell: (info) => <span className="text-(--muted)">{info.getValue()}</span>,
+  }),
+  helper.accessor("amount", {
+    header: "Amount",
+    cell: (info) => <span className="font-mono font-medium text-success">{formatCurrency(info.getValue())}</span>,
+  }),
 ];
 
 export function IncomeTable({ data }: { data: IncomeRecord[] }) {
