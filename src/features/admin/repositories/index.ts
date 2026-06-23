@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export type OrganizationOverview = {
   id: string;
@@ -93,58 +94,102 @@ export async function getPlatformStats(): Promise<{
   return { organizations, users, memberships };
 }
 
-export async function getUsersWithMemberships(): Promise<AdminUser[]> {
-  const users = await prisma.user.findMany({
-    include: {
-      memberships: {
-        include: {
-          organization: true,
-          department: true,
-        },
-        orderBy: { joinedAt: "desc" },
-      },
-    },
-    orderBy: { name: "asc" },
-  });
+export async function getUsersWithMemberships(params?: {
+  search?: string;
+  orgId?: string;
+  role?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<{
+  users: AdminUser[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}> {
+  const { search, orgId, role, page = 1, pageSize = 20 } = params ?? {};
 
-  return users.map((user: {
-    id: string;
-    name: string;
-    email: string;
-    memberships: Array<{
-      id: string;
-      role: string;
-      organization: { id: string; name: string; slug: string };
-      department: { id: string; name: string } | null;
-    }>;
-  }) => ({
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    initials: user.name
-      .split(" ")
-      .map((part: string) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase(),
-    memberships: user.memberships.map((membership) => ({
-      id: membership.id,
-      role: membership.role.toLowerCase(),
-      department: membership.department,
-      org: {
-        id: membership.organization.id,
-        name: membership.organization.name,
-        slug: membership.organization.slug,
-        primaryColor: "#1F4B99",
-        logoInitials: membership.organization.name
-          .split(" ")
-          .map((part: string) => part[0])
-          .join("")
-          .slice(0, 2)
-          .toUpperCase(),
+  const where: Prisma.UserWhereInput = {};
+
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { email: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  if (orgId || role) {
+    where.memberships = {
+      some: {
+        ...(orgId ? { organizationId: orgId } : {}),
+        ...(role ? { role: role as never } : {}),
       },
+    };
+  }
+
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        memberships: {
+          include: {
+            organization: true,
+            department: true,
+          },
+          orderBy: { joinedAt: "desc" },
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
+    prisma.user.count({ where }),
+  ]);
+
+  return {
+    users: users.map((user: {
+      id: string;
+      name: string;
+      email: string;
+      memberships: Array<{
+        id: string;
+        role: string;
+        organization: { id: string; name: string; slug: string };
+        department: { id: string; name: string } | null;
+      }>;
+    }) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      initials: user.name
+        .split(" ")
+        .map((part: string) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase(),
+      memberships: user.memberships.map((membership) => ({
+        id: membership.id,
+        role: membership.role.toLowerCase(),
+        department: membership.department,
+        org: {
+          id: membership.organization.id,
+          name: membership.organization.name,
+          slug: membership.organization.slug,
+          primaryColor: "#1F4B99",
+          logoInitials: membership.organization.name
+            .split(" ")
+            .map((part: string) => part[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase(),
+        },
+      })),
     })),
-  }));
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
 }
 
 export async function getInviteOptions() {

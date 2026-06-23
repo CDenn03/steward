@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { signOut } from "next-auth/react";
 import type { MemberRole } from "@/types";
 
 export interface ActiveOrg {
@@ -33,9 +32,11 @@ const OrgContext = createContext<OrgContextValue | null>(null);
 
 export function OrgProvider({
   initialOrg,
+  initialMemberships = [],
   children,
 }: Readonly<{
   initialOrg?: ActiveOrg | null;
+  initialMemberships?: ActiveOrg[];
   children: ReactNode;
 }>) {
   const [active, setActiveState] = useState<ActiveOrg | null>(initialOrg ?? null);
@@ -44,10 +45,14 @@ export function OrgProvider({
 
   const clearActive = useCallback(() => {
     setActiveState(null);
-    signOut({ callbackUrl: "/login" });
   }, []);
 
-  const allMemberships: ActiveOrg[] = active ? [active] : [];
+  const allMemberships: ActiveOrg[] =
+    initialMemberships.length > 0
+      ? initialMemberships
+      : active
+        ? [active]
+        : [];
 
   return (
     <OrgContext.Provider value={{ active, setActive, clearActive, allMemberships }}>

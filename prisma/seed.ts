@@ -267,10 +267,10 @@ async function main() {
 
     console.log("\n✅  Seed complete.");
     console.log("\n📋  Login credentials:");
-    console.log("    Super user:  admin@steward.app / password123");
-    console.log("    Finance:     james@gracecommunity.org / password123");
-    console.log("    Chairperson: chair@gracecommunity.org / password123");
-    console.log("    Dept Head:   sarah@gracecommunity.org / password123");
+    console.log("    Super user:  admin@steward.app / Password123");
+    console.log("    Finance:     james@gracecommunity.org / Password123");
+    console.log("    Chairperson: chair@gracecommunity.org / Password123");
+    console.log("    Dept Head:   sarah@gracecommunity.org / Password123");
   } finally {
     await prisma.$disconnect();
   }

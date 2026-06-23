@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/shared/data-table";
+import { DataTable, createColumnHelper } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress";
 import { formatCurrency, pct } from "@/lib/utils";
@@ -15,30 +15,29 @@ export type BudgetRow = {
   spentAmount: number;
 };
 
+const helper = createColumnHelper<BudgetRow>();
+
 const columns = [
-  {
-    key: "name",
+  helper.accessor("title", {
     header: "Department / Event",
-    render: (budget: BudgetRow) => (
+    cell: (info) => (
       <div>
-        <p className="font-medium">{budget.title}</p>
-        <p className="text-[11px] text-(--muted)">{budget.department?.name ?? "General"}</p>
+        <p className="font-medium">{info.getValue()}</p>
+        <p className="text-[11px] text-(--muted)">{info.row.original.department?.name ?? "General"}</p>
       </div>
     ),
-  },
-  {
-    key: "amount",
+  }),
+  helper.accessor("totalAmount", {
     header: "Amount",
-    render: (budget: BudgetRow) => (
-      <span className="font-mono text-[12.5px]">{formatCurrency(budget.totalAmount)}</span>
-    ),
-  },
-  {
-    key: "utilisation",
+    cell: (info) => <span className="font-mono text-[12.5px]">{formatCurrency(info.getValue())}</span>,
+  }),
+  helper.display({
+    id: "utilisation",
     header: "Utilisation",
-    render: (budget: BudgetRow) => {
-      if (!budget.spentAmount) return <span className="text-(--muted) text-[12px]">-</span>;
-      const value = pct(budget.spentAmount, budget.totalAmount);
+    cell: (info) => {
+      const { spentAmount, totalAmount } = info.row.original;
+      if (!spentAmount) return <span className="text-(--muted) text-[12px]">-</span>;
+      const value = pct(spentAmount, totalAmount);
       return (
         <div className="w-24">
           <span className="text-[12px] text-(--muted)">{value}%</span>
@@ -46,12 +45,11 @@ const columns = [
         </div>
       );
     },
-  },
-  {
-    key: "status",
+  }),
+  helper.accessor("status", {
     header: "Status",
-    render: (budget: BudgetRow) => <StatusBadge status={budget.status} />,
-  },
+    cell: (info) => <StatusBadge status={info.getValue()} />,
+  }),
 ];
 
 export function BudgetOverviewTable({ data }: { data: BudgetRow[] }) {

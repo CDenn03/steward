@@ -2,21 +2,25 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { ArrowRight, KeyRound, Mail, RotateCcw } from "lucide-react";
+import { ArrowRight, KeyRound, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import {
   startFirstLogin,
   verifyFirstLoginOtp,
+  resendLoginOtp,
 } from "@/features/auth/actions/first-login";
 
-export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
+export function VerifyOtpForm({ initialEmail, devOtp: initialDevOtp, otpType }: { initialEmail: string; devOtp?: string; otpType?: "login" }) {
   const router = useRouter();
   const { toast } = useToast();
+  const isLogin = otpType === "login";
 
   const [email, setEmail] = useState(initialEmail);
   const [otp, setOtp] = useState("");
+  const [devOtp, setDevOtp] = useState(initialDevOtp);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
@@ -24,6 +28,20 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
   const handleVerify = async () => {
     setError("");
     setLoading(true);
+
+    if (isLogin) {
+      const result = await signIn("otp", { email, otp, redirect: false });
+      setLoading(false);
+
+      if (result?.error) {
+        setError("Invalid or expired verification code.");
+        return;
+      }
+
+      toast("Signed in successfully.", "success");
+      router.push("/org-picker");
+      return;
+    }
 
     const res = await verifyFirstLoginOtp(email, otp);
     setLoading(false);
@@ -41,7 +59,7 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
     setError("");
     setResending(true);
 
-    const res = await startFirstLogin(email);
+    const res = isLogin ? await resendLoginOtp(email) : await startFirstLogin(email);
     setResending(false);
 
     if (!res.ok) {
@@ -49,7 +67,7 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
       return;
     }
 
-    if (res.otp) toast(`Development OTP: ${res.otp}`, "info");
+    if (res.otp) setDevOtp(res.otp);
   };
 
   return (
@@ -60,29 +78,17 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
         </div>
         <div>
           <p className="text-[17px] font-semibold tracking-tight">Steward</p>
-          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">First login</p>
+          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">{isLogin ? "Two-factor" : "First login"}</p>
         </div>
       </div>
 
       <div className="bg-(--surface) border border-(--border) rounded-(--r-dialog) p-7">
         <h1 className="text-[18px] font-semibold mb-1">Verify your account</h1>
-        <p className="text-[13px] text-(--muted) mb-6">Enter the one-time code for your first sign-in.</p>
+        <p className="text-[13px] text-(--muted) mb-6">
+          {isLogin ? "Enter the one-time code sent to your email." : "Enter the one-time code for your first sign-in."}
+        </p>
 
         <div className="space-y-3.5">
-          <div>
-            <label className="block text-[12px] font-medium mb-1.5">Email address</label>
-            <div className="relative">
-              <Mail size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-(--muted)" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.org"
-                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
-              />
-            </div>
-          </div>
-
           <div>
             <label className="block text-[12px] font-medium mb-1.5">One-time code</label>
             <div className="relative">
@@ -100,6 +106,12 @@ export function VerifyOtpForm({ initialEmail }: { initialEmail: string }) {
           </div>
 
           {error && <p className="text-[12px] text-danger">{error}</p>}
+
+          {devOtp && (
+            <p className="text-[12px] font-mono text-center text-(--muted) bg-(--bg) border border-(--border) rounded-(--r-input) px-3 py-2 select-all">
+              Dev OTP: {devOtp}
+            </p>
+          )}
 
           <Button className="w-full justify-center" onClick={handleVerify} loading={loading}>
             <ArrowRight size={13} /> Continue

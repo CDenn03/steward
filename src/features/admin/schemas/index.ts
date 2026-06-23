@@ -21,5 +21,18 @@ export const CreateOrganizationSchema = z.object({
     .default("01-01"),
 });
 
+export const UpdateUserSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  email: z.string().email("Invalid email"),
+});
+
+export const CreateMembershipSchema = z.object({
+  userId: z.string().min(1, "User is required"),
+  organizationId: z.string().min(1, "Organisation is required"),
+  role: z.enum(["PLATFORM_ADMIN", "ADMIN", "CHAIRPERSON", "FINANCE", "DEPARTMENT_HEAD", "MEMBER"]),
+});
+
 export type UpdateMembershipInput = z.infer<typeof UpdateMembershipSchema>;
 export type CreateOrganizationInput = z.infer<typeof CreateOrganizationSchema>;
+export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
+export type CreateMembershipInput = z.infer<typeof CreateMembershipSchema>;

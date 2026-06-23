@@ -5,6 +5,7 @@ import { compare, hash } from "bcryptjs";
 import { createHmac, randomInt, timingSafeEqual } from "crypto";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma/client";
+import { OTP_EMAIL_COOKIE, buildOtpEmailCookie } from "./otp";
 
 const emailSchema = z.string().email();
 const otpSchema = z.string().regex(/^\d{6}$/);
@@ -52,6 +53,17 @@ function readToken(value?: string) {
   return { userId };
 }
 
+async function setOtpEmailCookie(email: string, otp?: string) {
+  const cookieStore = await cookies();
+  cookieStore.set(OTP_EMAIL_COOKIE, buildOtpEmailCookie(email, otp), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: OTP_TTL_MS / 1000,
+    path: "/",
+  });
+}
+
 export async function startFirstLogin(email: string): Promise<ActionResult> {
   const parsedEmail = emailSchema.safeParse(email.trim().toLowerCase());
   if (!parsedEmail.success) {
@@ -82,9 +94,80 @@ export async function startFirstLogin(email: string): Promise<ActionResult> {
     },
   });
 
+  await setOtpEmailCookie(parsedEmail.data, otp);
+
   return {
     ok: true,
     message: "Verification code generated.",
+    otp: process.env.NODE_ENV === "production" ? undefined : otp,
+  };
+}
+
+export async function sendLoginOtp(email: string, password: string): Promise<ActionResult> {
+  const parsedEmail = emailSchema.safeParse(email.trim().toLowerCase());
+  if (!parsedEmail.success) {
+    return { ok: false, message: "Enter a valid email address." };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: parsedEmail.data },
+    select: { id: true, password: true },
+  });
+
+  if (!user || !user.password) {
+    return { ok: false, message: "Invalid email or password." };
+  }
+
+  const valid = await compare(password, user.password);
+  if (!valid) {
+    return { ok: false, message: "Invalid email or password." };
+  }
+
+  const otp = String(randomInt(100000, 1000000));
+  const otpHash = await hash(otp, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { otp: otpHash, otpExpiry: new Date(Date.now() + OTP_TTL_MS) },
+  });
+
+  await setOtpEmailCookie(parsedEmail.data, otp);
+
+  return {
+    ok: true,
+    message: "Verification code sent to your email.",
+    otp: process.env.NODE_ENV === "production" ? undefined : otp,
+  };
+}
+
+export async function resendLoginOtp(email: string): Promise<ActionResult> {
+  const parsedEmail = emailSchema.safeParse(email.trim().toLowerCase());
+  if (!parsedEmail.success) {
+    return { ok: false, message: "Enter a valid email address." };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: parsedEmail.data },
+    select: { id: true },
+  });
+
+  if (!user) {
+    return { ok: false, message: "We could not find an account for that email." };
+  }
+
+  const otp = String(randomInt(100000, 1000000));
+  const otpHash = await hash(otp, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { otp: otpHash, otpExpiry: new Date(Date.now() + OTP_TTL_MS) },
+  });
+
+  await setOtpEmailCookie(parsedEmail.data, otp);
+
+  return {
+    ok: true,
+    message: "Verification code resent.",
     otp: process.env.NODE_ENV === "production" ? undefined : otp,
   };
 }

@@ -3,12 +3,13 @@ import { OrgProvider, type ActiveOrg } from "@/lib/org/context";
 import { Sidebar } from "@/components/shared/sidebar";
 import { Topbar } from "@/components/shared/topbar";
 import { MobileSidebar } from "@/components/shared/mobile-sidebar";
+import { auth } from "@/lib/auth/auth";
+import { prisma } from "@/lib/prisma/client";
 
 function initials(name: string) {
   return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
 }
 
-// Deterministic colour from org name
 const ORG_COLORS = ["#1F4B99", "#15803D", "#7C3AED", "#B45309", "#0F766E"];
 function orgColor(name: string) {
   let n = 0;
@@ -18,7 +19,6 @@ function orgColor(name: string) {
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await requireOrgSession();
-
   const color = orgColor(session.organization.name);
 
   const initialOrg: ActiveOrg = {
@@ -39,14 +39,48 @@ export default async function DashboardLayout({ children }: { children: React.Re
     membershipId: session.membershipId,
   };
 
+  const authSession = await auth();
+  const rawMemberships = authSession?.user?.id
+    ? await prisma.membership.findMany({
+        where: { userId: authSession.user.id, isActive: true },
+        include: { organization: true },
+      })
+    : [];
+
+  const initialMemberships: ActiveOrg[] = rawMemberships.map(
+    (m: {
+      id: string;
+      userId: string;
+      organizationId: string;
+      role: string;
+      departmentId: string | null;
+      organization: { name: string; slug: string; currency: string };
+    }) => ({
+    orgId: m.organizationId,
+    orgName: m.organization.name,
+    orgSlug: m.organization.slug,
+    orgInitials: initials(m.organization.name),
+    orgColor: orgColor(m.organization.name),
+    orgDescription: m.organization.slug,
+    currency: m.organization.currency,
+    userId: m.userId,
+    userName: session.user.name,
+    userInitials: initials(session.user.name),
+    userEmail: session.user.email,
+    role: m.role.toLowerCase() as ActiveOrg["role"],
+    departmentId: m.departmentId,
+    departmentName: null,
+    membershipId: m.id,
+  }));
+
   return (
-    <OrgProvider initialOrg={initialOrg}>
+    <OrgProvider initialOrg={initialOrg} initialMemberships={initialMemberships}>
       <div className="flex min-h-screen">
         <div className="hidden md:block">
           <Sidebar />
         </div>
         <MobileSidebar />
-        <div className="md:ml-[224px] flex-1 flex flex-col min-w-0">
+        <div className="md:ml-[232px] flex-1 flex flex-col min-w-0">
           <Topbar />
           <main className="flex-1 p-4 md:p-7 pt-14 md:pt-4">{children}</main>
         </div>

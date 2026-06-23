@@ -28,6 +28,31 @@ export const authConfig: NextAuthConfig = {
         return { id: user.id, name: user.name, email: user.email };
       },
     }),
+    Credentials({
+      id: "otp",
+      name: "OTP",
+      async authorize(credentials) {
+        const parsed = z
+          .object({ email: z.string().email(), otp: z.string().regex(/^\d{6}$/) })
+          .safeParse(credentials);
+        if (!parsed.success) return null;
+
+        const user = await prisma.user.findUnique({
+          where: { email: parsed.data.email },
+        });
+        if (!user?.otp || !user?.otpExpiry || user.otpExpiry < new Date()) return null;
+
+        const valid = await compare(parsed.data.otp, user.otp);
+        if (!valid) return null;
+
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { otp: null, otpExpiry: null },
+        });
+
+        return { id: user.id, name: user.name, email: user.email };
+      },
+    }),
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,

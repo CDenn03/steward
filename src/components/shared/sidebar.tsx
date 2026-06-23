@@ -10,6 +10,7 @@ import {
   ChevronDown, TrendingDown, LogOut, ArrowLeftRight, UserCog, Building2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { signOut } from "next-auth/react";
 import { getUnreadCountAction } from "@/features/notifications/actions";
 
 const roleLabels: Record<string, string> = {
@@ -66,7 +67,7 @@ function buildNavItems(role: string, unreadCount = 0) {
   return items;
 }
 
-export function Sidebar() {
+export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
   const pathname   = usePathname();
   const router     = useRouter();
   const { active, clearActive, allMemberships } = useOrg();
@@ -90,28 +91,24 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[224px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
-      <div className="px-4 py-4 border-b border-(--border) flex items-center gap-2.5">
-        <div className="w-8 h-8 bg-(--primary) rounded-lg flex items-center justify-center shrink-0">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/>
-            <polyline points="9 12 11 14 15 10"/>
-          </svg>
-        </div>
+    <aside className="fixed left-0 top-0 bottom-0 w-[232px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
+      {/* Brand */}
+      <div className="px-5 py-5 border-b border-(--border) flex items-center gap-2.5">
         <div>
-          <p className="text-[15px] font-semibold tracking-tight text-(--text)">Steward</p>
-          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Financial Governance</p>
+          <p className="text-[16px] font-semibold tracking-tight text-(--text) leading-tight">Steward</p>
+          <p className="text-[10px] text-(--muted) uppercase tracking-[0.6px] mt-0.5">Financial Governance</p>
         </div>
       </div>
 
-      <div className="relative mx-2.5 mt-3 mb-1">
+      {/* Org switcher */}
+      <div className="relative mx-3 mt-4 mb-2">
         <button
           onClick={() => setOrgMenuOpen(v => !v)}
-          className="w-full text-left px-3 py-2.5 rounded-[var(--r-btn)] flex items-center gap-2.5 hover:opacity-90 active:scale-[0.98] transition-all"
+          className="w-full text-left px-3.5 py-3 rounded-(--r-btn) flex items-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all"
           style={{ background: active ? active.orgColor + "18" : "var(--primary-light)" }}
         >
           <div
-            className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+            className="w-7 h-7 rounded-[8px] flex items-center justify-center text-white text-[10.5px] font-bold shrink-0"
             style={{ background: active?.orgColor ?? "var(--primary)" }}
           >
             {active?.orgInitials ?? "?"}
@@ -120,7 +117,7 @@ export function Sidebar() {
             <p className="text-[13px] font-semibold truncate leading-tight" style={{ color: active?.orgColor ?? "var(--primary)" }}>
               {active?.orgName ?? "Select org"}
             </p>
-            <p className="text-[10px] text-(--muted) mt-0.5">
+            <p className="text-[10.5px] text-(--muted) mt-0.5 truncate">
               {active?.orgDescription ?? "No org selected"}
             </p>
           </div>
@@ -130,8 +127,8 @@ export function Sidebar() {
         {orgMenuOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setOrgMenuOpen(false)} />
-            <div className="absolute top-full left-0 right-0 mt-1.5 bg-(--surface) border border-(--border) rounded-(--r-card) shadow-card-hover z-20 overflow-hidden">
-              <div className="px-3 py-2 border-b border-(--border)">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-(--surface) border border-(--border) rounded-(--r-card) shadow-lg z-20 overflow-hidden">
+              <div className="px-3.5 py-2.5 border-b border-(--border)">
                 <p className="text-[10px] font-medium text-(--muted) uppercase tracking-[0.6px]">Your organisations</p>
               </div>
               {allMemberships.map((m) => (
@@ -141,27 +138,27 @@ export function Sidebar() {
                     setOrgMenuOpen(false);
                     if (m.orgId !== active?.orgId) router.push(`/splash/${m.orgId}`);
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-(--bg) transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 hover:bg-(--bg) transition-colors text-left"
                 >
                   <div
-                    className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                     style={{ background: m.orgColor }}
                   >
                     {m.orgInitials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-medium truncate">{m.orgName}</p>
-                    <p className="text-[10px] text-(--muted)">{roleLabels[m.role] ?? m.role}</p>
+                    <p className="text-[12.5px] font-medium text-(--text) truncate">{m.orgName}</p>
+                    <p className="text-[10.5px] text-(--muted)">{roleLabels[m.role] ?? m.role}</p>
                   </div>
                   {m.orgId === active?.orgId && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-success shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-(--success) shrink-0" />
                   )}
                 </button>
               ))}
               <div className="border-t border-(--border)">
                 <button
                   onClick={() => { setOrgMenuOpen(false); handleSwitchOrg(); }}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 text-[12px] text-(--muted) hover:text-(--text) hover:bg-(--bg) transition-colors"
+                  className="w-full flex items-center gap-2 px-3.5 py-2.5 text-[12px] text-(--muted) hover:text-(--text) hover:bg-(--bg) transition-colors"
                 >
                   <ArrowLeftRight size={12} /> Switch organisation
                 </button>
@@ -171,59 +168,64 @@ export function Sidebar() {
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-1">
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto py-2">
         {navItems.map((group) => (
           <div key={group.section}>
-            <p className="px-4 pt-4 pb-1.5 text-[10px] font-medium text-(--muted) uppercase tracking-[0.8px]">
+            <p className="px-5 pt-5 pb-2 text-[10px] font-medium text-(--muted) uppercase tracking-[0.8px]">
               {group.section}
             </p>
-            {group.items.map((item) => {
-              const Icon   = item.icon;
-              const active_link = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-label={item.label}
-                  aria-current={active_link ? "page" : undefined}
-                  className={cn(
-                    "flex items-center gap-2.5 mx-2 px-3 py-1.5 rounded-lg text-[13.5px] transition-all duration-150",
-                    active_link
-                      ? "bg-[var(--primary-light)] text-(--primary) font-medium"
-                      : "text-(--muted) hover:bg-(--bg) hover:text-(--text)"
-                  )}
-                >
-                  <Icon size={15} className={cn("shrink-0", active_link ? "opacity-100" : "opacity-60")} />
-                  <span className="flex-1">{item.label}</span>
-                  {!!item.badge && (
-                    <span className="bg-(--primary) text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-tight">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+            <div className="space-y-0.5 px-2.5">
+              {group.items.map((item) => {
+                const Icon   = item.icon;
+                const active_link = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onNavClick}
+                    aria-label={item.label}
+                    aria-current={active_link ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-(--r-btn) text-[13.5px] transition-all duration-150",
+                      active_link
+                        ? "bg-(--primary-light) text-(--primary) font-medium"
+                        : "text-(--muted) hover:bg-(--bg) hover:text-(--text)"
+                    )}
+                  >
+                    <Icon size={16} className={cn("shrink-0", active_link ? "opacity-100" : "opacity-60")} />
+                    <span className="flex-1">{item.label}</span>
+                    {!!item.badge && (
+                      <span className="bg-(--primary) text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-tight">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         ))}
       </nav>
 
-      <div className="border-t border-(--border) p-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
+      {/* User footer */}
+      <div className="border-t border-(--border) p-3.5">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[11.5px] font-semibold text-(--primary) shrink-0">
             {active?.userInitials ?? "?"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium text-(--text) truncate">{active?.userName ?? "—"}</p>
-            <p className="text-[10px] text-(--muted) truncate">
+            <p className="text-[12.5px] font-medium text-(--text) truncate">{active?.userName ?? "—"}</p>
+            <p className="text-[10.5px] text-(--muted) truncate">
               {active ? (roleLabels[active.role] ?? active.role) : ""}
             </p>
           </div>
           <button
             title="Sign out"
-            onClick={handleSwitchOrg}
-            className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors shrink-0"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="w-7 h-7 flex items-center justify-center rounded-(--r-btn) text-(--muted) hover:text-(--danger) hover:bg-(--danger-bg) transition-colors shrink-0"
           >
-            <LogOut size={12} />
+            <LogOut size={13} />
           </button>
         </div>
       </div>
