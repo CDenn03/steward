@@ -13,7 +13,7 @@ try {
     const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
     globalForPrisma._prisma = new PrismaClient({
       adapter,
-      log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+      log: ["query", "info", "warn", "error"],
     });
   }
 
