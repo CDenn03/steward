@@ -24,6 +24,7 @@ const allowedOrigins = ALLOWED_ORIGINS_ENV
 
 function getSessionCookie(request: NextRequest) {
   return (
+    request.cookies.get("authjs.session-token") ??
     request.cookies.get("next-auth.session-token") ??
     request.cookies.get("__Secure-next-auth.session-token")
   );
