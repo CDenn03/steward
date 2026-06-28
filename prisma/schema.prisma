@@ -8,6 +8,509 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model Organization {
+  id               String              @id @default(cuid())
+  name             String
+  slug             String              @unique
+  logoUrl          String?
+  currency         String              @default("KES")
+  fiscalYearStart  String              @default("01-01")
+  timezone         String              @default("Africa/Nairobi")
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  auditLogs        AuditLog[]
+  budgets          Budget[]
+  budgetCategories BudgetCategory[]
+  departments      Department[]
+  disbursements    Disbursement[]
+  events           Event[]
+  eventTemplates   EventTemplate[]
+  expenditures     ExpenditureReport[]
+  accounts         FinancialAccount[]
+  incomeRecords    Income[]
+  invites          Invite[]
+  members          Membership[]
+  notifications    Notification[]
+
+  @@index([slug])
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String
+  email         String       @unique
+  emailVerified DateTime?
+  avatarUrl     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  password      String?
+  otp           String?
+  otpExpiry     DateTime?
+  accounts      Account[]
+  memberships   Membership[]
+  sessions      Session[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Membership {
+  id                      String       @id @default(cuid())
+  userId                  String
+  organizationId          String
+  role                    MemberRole   @default(MEMBER)
+  departmentId            String?
+  joinedAt                DateTime     @default(now())
+  isActive                Boolean      @default(true)
+  notificationPreferences Json?        @default("{}")
+  department              Department?  @relation(fields: [departmentId], references: [id])
+  organization            Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user                    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([userId])
+  @@index([organizationId])
+}
+
+model Invite {
+  id             String       @id @default(cuid())
+  email          String
+  organizationId String
+  role           MemberRole   @default(MEMBER)
+  token          String       @unique @default(cuid())
+  invitedById    String
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([organizationId])
+}
+
+model Department {
+  id             String                 @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  headId         String?
+  softLimit      Float?
+  isActive       Boolean                @default(true)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  budgets        Budget[]
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  allocations    DepartmentAllocation[]
+  events         Event[]
+  expenditures   ExpenditureReport[]
+  income         Income[]
+  memberships    Membership[]
+
+  @@index([organizationId])
+}
+
+model DepartmentAllocation {
+  id           String     @id @default(cuid())
+  departmentId String
+  fiscalYear   Int
+  amount       Float
+  createdAt    DateTime   @default(now())
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([departmentId, fiscalYear])
+}
+
+model EventTemplate {
+  id             String               @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  budgetItems    BudgetItemTemplate[]
+  events         Event[]
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model BudgetItemTemplate {
+  id          String        @id @default(cuid())
+  templateId  String
+  categoryId  String?
+  description String
+  quantity    Float         @default(1)
+  unitCost    Float
+  notes       String?
+  template    EventTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+}
+
+model Event {
+  id             String         @id @default(cuid())
+  organizationId String
+  departmentId   String?
+  templateId     String?
+  name           String
+  description    String?
+  status         EventStatus    @default(PLANNING)
+  startDate      DateTime
+  endDate        DateTime?
+  isRecurring    Boolean        @default(false)
+  recurrenceRule String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  budgets        Budget[]
+  department     Department?    @relation(fields: [departmentId], references: [id])
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  template       EventTemplate? @relation(fields: [templateId], references: [id])
+  income         Income[]
+
+  @@index([organizationId])
+  @@index([departmentId])
+}
+
+model BudgetCategory {
+  id             String           @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  parentId       String?
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent         BudgetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children       BudgetCategory[] @relation("CategoryHierarchy")
+  budgetItems    BudgetItem[]
+
+  @@index([organizationId])
+}
+
+model Budget {
+  id             String              @id @default(cuid())
+  organizationId String
+  departmentId   String?
+  eventId        String?
+  title          String
+  description    String?
+  status         BudgetStatus        @default(DRAFT)
+  periodStart    DateTime?
+  periodEnd      DateTime?
+  submittedById  String?
+  submittedAt    DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  approvals      Approval[]
+  department     Department?         @relation(fields: [departmentId], references: [id])
+  event          Event?              @relation(fields: [eventId], references: [id])
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  items          BudgetItem[]
+  revisions      BudgetRevision[]
+  disbursements  Disbursement[]
+  expenditures   ExpenditureReport[]
+
+  @@index([organizationId])
+  @@index([departmentId])
+  @@index([eventId])
+  @@index([status])
+}
+
+model BudgetItem {
+  id          String              @id @default(cuid())
+  budgetId    String
+  categoryId  String?
+  description String
+  quantity    Float               @default(1)
+  unitCost    Float
+  totalCost   Float
+  notes       String?
+  budget      Budget              @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  category    BudgetCategory?     @relation(fields: [categoryId], references: [id])
+  receipts    ReceiptAllocation[]
+
+  @@index([budgetId])
+}
+
+model BudgetRevision {
+  id          String   @id @default(cuid())
+  budgetId    String
+  revisedById String
+  reason      String
+  snapshot    Json
+  createdAt   DateTime @default(now())
+  budget      Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@index([budgetId])
+}
+
+model Approval {
+  id         String            @id @default(cuid())
+  budgetId   String
+  type       ApprovalType
+  status     ApprovalStatus    @default(PENDING)
+  reviewerId String?
+  comment    String?
+  reviewedAt DateTime?
+  createdAt  DateTime          @default(now())
+  budget     Budget            @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  comments   ApprovalComment[]
+
+  @@index([budgetId])
+  @@index([status])
+}
+
+model ApprovalComment {
+  id         String   @id @default(cuid())
+  approvalId String
+  authorId   String
+  body       String
+  createdAt  DateTime @default(now())
+  approval   Approval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+
+  @@index([approvalId])
+}
+
+model FinancialAccount {
+  id             String               @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  accountNumber  String?
+  provider       String?
+  type           AccountType          @default(BANK)
+  balance        Float                @default(0)
+  currency       String               @default("KES")
+  isActive       Boolean              @default(true)
+  isRestricted   Boolean              @default(false)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  transactions   AccountTransaction[]
+  disbursements  Disbursement[]
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  income         Income[]
+
+  @@index([organizationId])
+}
+
+model AccountTransaction {
+  id           String           @id @default(cuid())
+  accountId    String
+  type         String
+  amount       Float
+  description  String
+  reference    String?
+  balanceAfter Float
+  recordedById String
+  transactedAt DateTime         @default(now())
+  createdAt    DateTime         @default(now())
+  account      FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([transactedAt])
+}
+
+model Income {
+  id             String           @id @default(cuid())
+  organizationId String
+  accountId      String
+  departmentId   String?
+  eventId        String?
+  category       IncomeCategory   @default(OFFERING)
+  amount         Float
+  description    String
+  notes          String?
+  recordedById   String
+  receivedAt     DateTime         @default(now())
+  createdAt      DateTime         @default(now())
+  account        FinancialAccount @relation(fields: [accountId], references: [id])
+  department     Department?      @relation(fields: [departmentId], references: [id])
+  event          Event?           @relation(fields: [eventId], references: [id])
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([accountId])
+  @@index([receivedAt])
+}
+
+model Disbursement {
+  id             String             @id @default(cuid())
+  organizationId String
+  budgetId       String
+  accountId      String
+  description    String
+  totalAmount    Float
+  status         DisbursementStatus @default(PENDING)
+  requestedById  String
+  approvedById   String?
+  approvedAt     DateTime?
+  releasedAt     DateTime?
+  notes          String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  account        FinancialAccount   @relation(fields: [accountId], references: [id])
+  budget         Budget             @relation(fields: [budgetId], references: [id])
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  items          DisbursementItem[]
+
+  @@index([organizationId])
+  @@index([budgetId])
+  @@index([status])
+}
+
+model DisbursementItem {
+  id             String       @id @default(cuid())
+  disbursementId String
+  description    String
+  amount         Float
+  budgetItemId   String?
+  disbursement   Disbursement @relation(fields: [disbursementId], references: [id], onDelete: Cascade)
+
+  @@index([disbursementId])
+}
+
+model ExpenditureReport {
+  id             String            @id @default(cuid())
+  organizationId String
+  budgetId       String
+  departmentId   String
+  title          String
+  status         ExpenditureStatus @default(DRAFT)
+  totalClaimed   Float             @default(0)
+  totalApproved  Float?
+  notes          String?
+  submittedById  String
+  submittedAt    DateTime?
+  reviewedById   String?
+  reviewedAt     DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  budget         Budget            @relation(fields: [budgetId], references: [id])
+  department     Department        @relation(fields: [departmentId], references: [id])
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  receipts       Receipt[]
+
+  @@index([organizationId])
+  @@index([budgetId])
+  @@index([departmentId])
+}
+
+model Receipt {
+  id                  String              @id @default(cuid())
+  expenditureReportId String
+  storageKey          String
+  fileName            String
+  mimeType            String
+  size                Int
+  amount              Float
+  vendor              String?
+  receiptDate         DateTime
+  notes               String?
+  uploadedById        String
+  createdAt           DateTime            @default(now())
+  report              ExpenditureReport   @relation(fields: [expenditureReportId], references: [id], onDelete: Cascade)
+  allocations         ReceiptAllocation[]
+
+  @@index([expenditureReportId])
+}
+
+model ReceiptAllocation {
+  id           String     @id @default(cuid())
+  receiptId    String
+  budgetItemId String
+  amount       Float
+  budgetItem   BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: Cascade)
+  receipt      Receipt    @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+
+  @@unique([receiptId, budgetItemId])
+}
+
+model Attachment {
+  id           String   @id @default(cuid())
+  storageKey   String
+  fileName     String
+  mimeType     String
+  size         Int
+  entityType   String
+  entityId     String
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  @@index([entityType, entityId])
+}
+
+model Notification {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String
+  title          String
+  message        String
+  type           String       @default("info")
+  read           Boolean      @default(false)
+  link           String?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId])
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  organizationId String
+  actorId        String
+  entityType     String
+  entityId       String
+  action         String
+  before         Json?
+  after          Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
 enum BudgetStatus {
   DRAFT
   SUBMITTED
@@ -62,12 +565,12 @@ enum IncomeCategory {
 }
 
 enum MemberRole {
-  PLATFORM_ADMIN
   ADMIN
   FINANCE
   CHAIRPERSON
   DEPARTMENT_HEAD
   MEMBER
+  PLATFORM_ADMIN
 }
 
 enum EventStatus {
@@ -75,542 +578,4 @@ enum EventStatus {
   ACTIVE
   COMPLETED
   CANCELLED
-}
-
-model Organization {
-  id              String   @id @default(cuid())
-  name            String
-  slug            String   @unique
-  logoUrl         String?
-  currency        String   @default("KES")
-  fiscalYearStart String   @default("01-01")
-  timezone        String   @default("Africa/Nairobi")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  members          Membership[]
-  departments      Department[]
-  events           Event[]
-  eventTemplates   EventTemplate[]
-  budgetCategories BudgetCategory[]
-  budgets          Budget[]
-  accounts         FinancialAccount[]
-  incomeRecords    Income[]
-  disbursements    Disbursement[]
-  expenditures     ExpenditureReport[]
-  auditLogs        AuditLog[]
-  notifications    Notification[]
-  invites          Invite[]
-
-  @@index([slug])
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  avatarUrl     String?
-  password      String?
-  otp           String?
-  otpExpiry     DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  memberships Membership[]
-  sessions    Session[]
-  accounts    Account[]
-
-  @@index([email])
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
-model Membership {
-  id                     String     @id @default(cuid())
-  userId                 String
-  organizationId         String
-  role                   MemberRole @default(MEMBER)
-  departmentId           String?
-  joinedAt               DateTime   @default(now())
-  isActive               Boolean    @default(true)
-  notificationPreferences Json?     @default("{}")
-
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  department   Department?  @relation(fields: [departmentId], references: [id])
-
-  @@unique([userId, organizationId])
-  @@index([userId])
-  @@index([organizationId])
-}
-
-model Invite {
-  id             String     @id @default(cuid())
-  email          String
-  organizationId String
-  role           MemberRole @default(MEMBER)
-  token          String     @unique @default(cuid())
-  invitedById    String
-  expiresAt      DateTime
-  acceptedAt     DateTime?
-  createdAt      DateTime   @default(now())
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([email])
-  @@index([organizationId])
-}
-
-model Department {
-  id             String  @id @default(cuid())
-  organizationId String
-  name           String
-  description    String?
-  headId         String?
-  softLimit      Float?
-  isActive       Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  memberships  Membership[]
-  budgets      Budget[]
-  events       Event[]
-  income       Income[]
-  expenditures ExpenditureReport[]
-  allocations  DepartmentAllocation[]
-
-  @@index([organizationId])
-}
-
-model DepartmentAllocation {
-  id           String   @id @default(cuid())
-  departmentId String
-  fiscalYear   Int
-  amount       Float
-  createdAt    DateTime @default(now())
-
-  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-
-  @@unique([departmentId, fiscalYear])
-}
-
-model EventTemplate {
-  id             String  @id @default(cuid())
-  organizationId String
-  name           String
-  description    String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  events       Event[]
-  budgetItems  BudgetItemTemplate[]
-
-  @@index([organizationId])
-}
-
-model BudgetItemTemplate {
-  id          String  @id @default(cuid())
-  templateId  String
-  categoryId  String?
-  description String
-  quantity    Float   @default(1)
-  unitCost    Float
-  notes       String?
-
-  template EventTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
-
-  @@index([templateId])
-}
-
-model Event {
-  id             String      @id @default(cuid())
-  organizationId String
-  departmentId   String?
-  templateId     String?
-  name           String
-  description    String?
-  status         EventStatus @default(PLANNING)
-  startDate      DateTime
-  endDate        DateTime?
-  isRecurring    Boolean     @default(false)
-  recurrenceRule String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  department   Department?    @relation(fields: [departmentId], references: [id])
-  template     EventTemplate? @relation(fields: [templateId], references: [id])
-  budgets      Budget[]
-  income       Income[]
-
-  @@index([organizationId])
-  @@index([departmentId])
-}
-
-model BudgetCategory {
-  id             String  @id @default(cuid())
-  organizationId String
-  name           String
-  description    String?
-  parentId       String?
-  isActive       Boolean @default(true)
-
-  createdAt DateTime @default(now())
-
-  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  parent       BudgetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children     BudgetCategory[] @relation("CategoryHierarchy")
-  budgetItems  BudgetItem[]
-
-  @@index([organizationId])
-}
-
-model Budget {
-  id             String       @id @default(cuid())
-  organizationId String
-  departmentId   String?
-  eventId        String?
-  title          String
-  description    String?
-  status         BudgetStatus @default(DRAFT)
-  periodStart    DateTime?
-  periodEnd      DateTime?
-  submittedById  String?
-  submittedAt    DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization  Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  department    Department?         @relation(fields: [departmentId], references: [id])
-  event         Event?              @relation(fields: [eventId], references: [id])
-  items         BudgetItem[]
-  approvals     Approval[]
-  disbursements Disbursement[]
-  revisions     BudgetRevision[]
-  expenditures  ExpenditureReport[]
-
-  @@index([organizationId])
-  @@index([departmentId])
-  @@index([eventId])
-  @@index([status])
-}
-
-model BudgetItem {
-  id          String  @id @default(cuid())
-  budgetId    String
-  categoryId  String?
-  description String
-  quantity    Float   @default(1)
-  unitCost    Float
-  totalCost   Float
-  notes       String?
-
-  budget   Budget           @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-  category BudgetCategory?  @relation(fields: [categoryId], references: [id])
-  receipts ReceiptAllocation[]
-
-  @@index([budgetId])
-}
-
-model BudgetRevision {
-  id          String   @id @default(cuid())
-  budgetId    String
-  revisedById String
-  reason      String
-  snapshot    Json
-  createdAt   DateTime @default(now())
-
-  budget Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-
-  @@index([budgetId])
-}
-
-model Approval {
-  id         String         @id @default(cuid())
-  budgetId   String
-  type       ApprovalType
-  status     ApprovalStatus @default(PENDING)
-  reviewerId String?
-  comment    String?
-  reviewedAt DateTime?
-  createdAt  DateTime       @default(now())
-
-  budget   Budget            @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-  comments ApprovalComment[]
-
-  @@index([budgetId])
-  @@index([status])
-}
-
-model ApprovalComment {
-  id         String   @id @default(cuid())
-  approvalId String
-  authorId   String
-  body       String
-  createdAt  DateTime @default(now())
-
-  approval Approval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
-
-  @@index([approvalId])
-}
-
-model FinancialAccount {
-  id             String      @id @default(cuid())
-  organizationId String
-  name           String
-  description    String?
-  accountNumber  String?
-  provider       String?
-  type           AccountType @default(BANK)
-  balance        Float       @default(0)
-  currency       String      @default("KES")
-  isActive       Boolean     @default(true)
-  isRestricted   Boolean     @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization  Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  transactions  AccountTransaction[]
-  income        Income[]
-  disbursements Disbursement[]
-
-  @@index([organizationId])
-}
-
-model AccountTransaction {
-  id           String   @id @default(cuid())
-  accountId    String
-  type         String
-  amount       Float
-  description  String
-  reference    String?
-  balanceAfter Float
-  recordedById String
-  transactedAt DateTime @default(now())
-  createdAt    DateTime @default(now())
-
-  account FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
-
-  @@index([accountId])
-  @@index([transactedAt])
-}
-
-model Income {
-  id             String         @id @default(cuid())
-  organizationId String
-  accountId      String
-  departmentId   String?
-  eventId        String?
-  category       IncomeCategory @default(OFFERING)
-  amount         Float
-  description    String
-  notes          String?
-  recordedById   String
-  receivedAt     DateTime       @default(now())
-  createdAt      DateTime       @default(now())
-
-  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  account      FinancialAccount  @relation(fields: [accountId], references: [id])
-  department   Department?       @relation(fields: [departmentId], references: [id])
-  event        Event?            @relation(fields: [eventId], references: [id])
-
-  @@index([organizationId])
-  @@index([accountId])
-  @@index([receivedAt])
-}
-
-model Disbursement {
-  id             String             @id @default(cuid())
-  organizationId String
-  budgetId       String
-  accountId      String
-  description    String
-  totalAmount    Float
-  status         DisbursementStatus @default(PENDING)
-  requestedById  String
-  approvedById   String?
-  approvedAt     DateTime?
-  releasedAt     DateTime?
-  notes          String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  budget       Budget             @relation(fields: [budgetId], references: [id])
-  account      FinancialAccount   @relation(fields: [accountId], references: [id])
-  items        DisbursementItem[]
-
-  @@index([organizationId])
-  @@index([budgetId])
-  @@index([status])
-}
-
-model DisbursementItem {
-  id             String  @id @default(cuid())
-  disbursementId String
-  description    String
-  amount         Float
-  budgetItemId   String?
-
-  disbursement Disbursement @relation(fields: [disbursementId], references: [id], onDelete: Cascade)
-
-  @@index([disbursementId])
-}
-
-model ExpenditureReport {
-  id             String            @id @default(cuid())
-  organizationId String
-  budgetId       String
-  departmentId   String
-  title          String
-  status         ExpenditureStatus @default(DRAFT)
-  totalClaimed   Float             @default(0)
-  totalApproved  Float?
-  notes          String?
-  submittedById  String
-  submittedAt    DateTime?
-  reviewedById   String?
-  reviewedAt     DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  budget       Budget        @relation(fields: [budgetId], references: [id])
-  department   Department    @relation(fields: [departmentId], references: [id])
-  receipts     Receipt[]
-
-  @@index([organizationId])
-  @@index([budgetId])
-  @@index([departmentId])
-}
-
-model Receipt {
-  id                  String   @id @default(cuid())
-  expenditureReportId String
-  storageKey          String
-  fileName            String
-  mimeType            String
-  size                Int
-  amount              Float
-  vendor              String?
-  receiptDate         DateTime
-  notes               String?
-  uploadedById        String
-  createdAt           DateTime @default(now())
-
-  report      ExpenditureReport  @relation(fields: [expenditureReportId], references: [id], onDelete: Cascade)
-  allocations ReceiptAllocation[]
-
-  @@index([expenditureReportId])
-}
-
-model ReceiptAllocation {
-  id           String @id @default(cuid())
-  receiptId    String
-  budgetItemId String
-  amount       Float
-
-  receipt    Receipt    @relation(fields: [receiptId], references: [id], onDelete: Cascade)
-  budgetItem BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: Cascade)
-
-  @@unique([receiptId, budgetItemId])
-}
-
-model Attachment {
-  id           String   @id @default(cuid())
-  storageKey   String
-  fileName     String
-  mimeType     String
-  size         Int
-  entityType   String
-  entityId     String
-  uploadedById String
-  createdAt    DateTime @default(now())
-
-  @@index([entityType, entityId])
-}
-
-model Notification {
-  id             String   @id @default(cuid())
-  organizationId String
-  userId         String
-  title          String
-  message        String
-  type           String   @default("info")
-  read           Boolean  @default(false)
-  link           String?
-  createdAt      DateTime @default(now())
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([organizationId])
-}
-
-model AuditLog {
-  id             String   @id @default(cuid())
-  organizationId String
-  actorId        String
-  entityType     String
-  entityId       String
-  action         String
-  before         Json?
-  after          Json?
-  ipAddress      String?
-  userAgent      String?
-  createdAt      DateTime @default(now())
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([organizationId])
-  @@index([actorId])
-  @@index([entityType, entityId])
-  @@index([createdAt])
 }

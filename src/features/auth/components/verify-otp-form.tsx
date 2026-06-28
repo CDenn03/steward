@@ -30,7 +30,15 @@ export function VerifyOtpForm({ initialEmail, devOtp: initialDevOtp, otpType }: 
     setLoading(true);
 
     if (isLogin) {
+      console.log("[VERIFY] calling signIn('otp', ...)", { email, otpLen: otp.length });
       const result = await signIn("otp", { email, otp, redirect: false });
+      console.log("[VERIFY] signIn result:", {
+        ok: !result?.error,
+        error: result?.error,
+        status: result?.status,
+        url: result?.url,
+      });
+      console.log("[VERIFY] cookies after signIn:", document.cookie);
       setLoading(false);
 
       if (result?.error) {
