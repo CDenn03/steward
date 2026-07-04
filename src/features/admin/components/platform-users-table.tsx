@@ -194,6 +194,9 @@ export function PlatformUsersTable({
     setDeleteTarget(null);
     router.refresh();
   };
+  const selectedOrg = organizations.find(
+  (org) => org.id === initialOrgFilter
+);
 
   return (
     <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-sm overflow-hidden">
@@ -213,13 +216,13 @@ export function PlatformUsersTable({
           <Select value={initialOrgFilter || "all"} onValueChange={handleOrgChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="All Organisations">
-                {initialOrgFilter ? initialOrgFilter : "All Organisations"}
+                {selectedOrg?.name ?? "All Organisations"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Organisations</SelectItem>
               {organizations.map((org) => (
-                <SelectItem key={org.id} value={org.name}>{org.name}</SelectItem>
+                <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>

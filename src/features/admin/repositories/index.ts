@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma/client";
-import type { Prisma } from "@prisma/client";
+import type { Prisma,MemberRole } from "@prisma/client";
 
 export type OrganizationOverview = {
   id: string;
@@ -118,14 +118,16 @@ export async function getUsersWithMemberships(params?: {
     ];
   }
 
-  if (orgId || role) {
-    where.memberships = {
-      some: {
-        ...(orgId ? { organizationId: orgId } : {}),
-        ...(role ? { role: role as never } : {}),
-      },
-    };
-  }
+ if (orgId || role) {
+  where.memberships = {
+    some: {
+      ...(orgId ? { organizationId: orgId } : {}),
+      ...(role
+        ? { role: role.toUpperCase() as MemberRole }
+        : {}),
+    },
+  };
+}
 
   const [users, total] = await Promise.all([
     prisma.user.findMany({
