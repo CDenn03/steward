@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { getOrganizationOverviews } from "@/features/admin/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
 import { OrgSettingsForm } from "./org-settings-form";
 
 export default async function OrgSettingsPage(props: { params: Promise<{ orgId: string }> }) {
@@ -18,7 +17,7 @@ export default async function OrgSettingsPage(props: { params: Promise<{ orgId: 
     <>
       <PageHeader
         title={org.name}
-        subtitle={`/${org.slug} · ${org.currency}`}
+        subtitle={`/${org.slug}`}
       >
         <Link href="/admin/organisations">
           <Button variant="ghost" size="sm"><ArrowLeft size={13} /> Back</Button>
@@ -57,10 +56,7 @@ export default async function OrgSettingsPage(props: { params: Promise<{ orgId: 
                 <span className="text-(--muted)">Approved Budgets</span>
                 <span className="font-medium">{org.approvedBudgetCount}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
-                <span className="text-(--muted)">Liquid Assets</span>
-                <span className="font-medium">{formatCurrency(org.totalLiquidity, org.currency, true)}</span>
-              </div>
+
             </CardBody>
           </Card>
         </div>

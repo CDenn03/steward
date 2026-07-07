@@ -12,6 +12,7 @@ model Organization {
   id               String              @id @default(cuid())
   name             String
   slug             String              @unique
+  description      String              @default("")
   logoUrl          String?
   currency         String              @default("KES")
   fiscalYearStart  String              @default("01-01")

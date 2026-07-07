@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { Users, DollarSign, Building2, Settings } from "lucide-react";
+import { Users, Settings } from "lucide-react";
 import { getOrganizationOverviews } from "@/features/admin/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
 import { NewOrgButton } from "./new-org-button";
 
 export default async function AdminOrgsPage() {
@@ -41,11 +40,10 @@ export default async function AdminOrgsPage() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5 mb-4">
+              <div className="grid grid-cols-2 gap-2.5 mb-4">
                 {[
                   { icon: Users, label: "Members", value: org.members.length },
-                  { icon: DollarSign, label: "Active Budgets", value: org.approvedBudgetCount },
-                  { icon: Building2, label: "Liquid Assets", value: formatCurrency(org.totalLiquidity, org.currency, true) },
+                  { label: "Active Budgets", value: org.approvedBudgetCount },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-(--bg) border border-(--border) rounded-[10px] px-2.5 py-2">
                     <p className="text-[10px] text-(--muted) mb-1">{stat.label}</p>
@@ -72,12 +70,6 @@ export default async function AdminOrgsPage() {
                     </div>
                   )}
                 </div>
-                <span
-                  className="text-[10px] font-medium px-2 py-0.5 rounded-md"
-                  style={{ background: org.primaryColor + "18", color: org.primaryColor }}
-                >
-                  {org.currency} · {org.fiscalYearStart}
-                </span>
               </div>
             </CardBody>
           </Card>

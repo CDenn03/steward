@@ -14,11 +14,7 @@ export const CreateOrganizationSchema = z.object({
     .min(1, "Slug is required")
     .max(50)
     .regex(/^[a-z0-9-]+$/, "Only lowercase letters, numbers, and hyphens"),
-  currency: z.string().length(3).default("KES"),
-  fiscalYearStart: z
-    .string()
-    .regex(/^\d{2}-\d{2}$/, "Must be in MM-DD format")
-    .default("01-01"),
+  description: z.string().min(1, "Description is required").max(500),
 });
 
 export const UpdateUserSchema = z.object({

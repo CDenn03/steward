@@ -67,7 +67,7 @@ export async function createOrganizationAction(formData: unknown) {
   const parsed = CreateOrganizationSchema.safeParse(formData);
   if (!parsed.success) return { error: { message: "Invalid input" } };
 
-  const { name, slug, currency, fiscalYearStart } = parsed.data;
+  const { name, slug, description } = parsed.data;
 
   try {
     const existing = await prisma.organization.findUnique({
@@ -79,7 +79,7 @@ export async function createOrganizationAction(formData: unknown) {
       };
 
     const org = await prisma.organization.create({
-      data: { name, slug, currency, fiscalYearStart },
+      data: { name, slug, description },
     });
 
     revalidatePath("/platform-admin/organisations");

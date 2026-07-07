@@ -1,9 +1,8 @@
-import { Plus } from "lucide-react";
 import { getOrganizationOverviews } from "@/features/admin/repositories";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { OnboardOrgButton } from "./onboard-org-button";
+
 
 export default async function PlatformOrgsPage() {
   const organizations = await getOrganizationOverviews();
@@ -11,9 +10,7 @@ export default async function PlatformOrgsPage() {
   return (
     <>
       <PageHeader title="Organisations" subtitle="All organisations on this Steward instance">
-        <Button size="sm">
-          <Plus size={13} /> Onboard Organisation
-        </Button>
+        <OnboardOrgButton />
       </PageHeader>
 
       <div className="grid grid-cols-2 gap-4">
@@ -33,14 +30,13 @@ export default async function PlatformOrgsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-3 text-center">
+              <div className="grid grid-cols-3 gap-3 text-center">
                 {[
                   { label: "Members", value: org.members.length },
                   { label: "Departments", value: org.departmentCount },
                   { label: "Budgets", value: org.budgetCount },
-                  { label: "Liquidity", value: formatCurrency(org.totalLiquidity, org.currency) },
                 ].map(({ label, value }) => (
-                  <div key={label} className="bg-(--bg) rounded-[8px] px-2 py-2">
+                  <div key={label} className="bg-(--bg) rounded-lg px-2 py-2">
                     <p className="text-[11px] text-(--muted) mb-0.5">{label}</p>
                     <p className="text-[13px] font-semibold">{value}</p>
                   </div>

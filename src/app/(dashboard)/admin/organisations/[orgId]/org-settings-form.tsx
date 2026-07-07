@@ -16,24 +16,11 @@ export async function OrgSettingsForm({ org }: { org: OrganizationOverview }) {
         <input type="text" name="slug" defaultValue={org.slug}
           className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) font-mono transition-colors" required />
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-[12px] font-medium mb-1.5">Currency</label>
-          <select name="currency" defaultValue={org.currency}
-            className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors">
-            <option value="KES">KES</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="UGX">UGX</option>
-            <option value="TZS">TZS</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-[12px] font-medium mb-1.5">Fiscal Year Start</label>
-          <input type="text" name="fiscalYearStart" defaultValue={org.fiscalYearStart}
-            className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) font-mono transition-colors" />
-        </div>
+      <div>
+        <label className="block text-[12px] font-medium mb-1.5">Description</label>
+        <textarea name="description" defaultValue={org.description}
+          className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors resize-none"
+          rows={3} />
       </div>
       <div className="flex justify-end pt-2">
         <button type="submit"

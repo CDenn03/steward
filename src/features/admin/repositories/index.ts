@@ -6,8 +6,6 @@ export type OrganizationOverview = {
   name: string;
   slug: string;
   description: string;
-  currency: string;
-  fiscalYearStart: string;
   primaryColor: string;
   logoInitials: string;
   members: Array<{ id: string; userId: string }>;
@@ -51,9 +49,7 @@ export async function getOrganizationOverviews(): Promise<OrganizationOverview[]
     id: string;
     name: string;
     slug: string;
-    currency: string;
-    fiscalYearStart: string;
-    timezone: string;
+    description: string;
     members: Array<{ id: string; userId: string }>;
     departments: Array<{ id: string }>;
     accounts: Array<{ balance: number }>;
@@ -62,9 +58,7 @@ export async function getOrganizationOverviews(): Promise<OrganizationOverview[]
     id: organization.id,
     name: organization.name,
     slug: organization.slug,
-    description: `${organization.timezone ?? "Africa/Nairobi"} · FY ${organization.fiscalYearStart}`,
-    currency: organization.currency,
-    fiscalYearStart: organization.fiscalYearStart,
+    description: organization.description,
     primaryColor: "#1F4B99",
     logoInitials: organization.name
       .split(" ")
