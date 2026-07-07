@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -7,12 +7,24 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
 }
 
+function generateId(label?: string) {
+  if (!label) return undefined;
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, icon, ...props }, ref) => {
+  ({ className, label, error, icon, id: idProp, ...props }, ref) => {
+    const fallbackId = useId();
+    const inputId = idProp || (label ? generateId(label) : fallbackId);
+    const errorId = error ? `${inputId}-error` : undefined;
+
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label className="text-[12px] font-medium text-(--text)">
+          <label htmlFor={inputId} className="text-[12px] font-medium text-(--text)">
             {label}
           </label>
         )}
@@ -23,7 +35,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </span>
           )}
           <input
+            id={inputId}
             ref={ref}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={errorId}
             className={cn(
               "w-full bg-(--surface) border border-(--border) rounded-(--r-input)",
               "px-3 py-2 text-[13px] text-(--text) placeholder:text-(--muted)",
@@ -36,7 +51,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
         </div>
-        {error && <p className="text-[11px] text-danger">{error}</p>}
+        {error && (
+          <p id={errorId} role="alert" className="text-[11px] text-(--danger)">
+            {error}
+          </p>
+        )}
       </div>
     );
   }

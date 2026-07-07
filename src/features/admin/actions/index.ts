@@ -62,37 +62,6 @@ export async function removeMembershipAction(membershipId: string) {
   return { success: true };
 }
 
-export async function createOrganizationAction(formData: unknown) {
-  const session = await requirePlatformAdmin();
-  const parsed = CreateOrganizationSchema.safeParse(formData);
-  if (!parsed.success) return { error: { message: "Invalid input" } };
-
-  const { name, slug, description } = parsed.data;
-
-  try {
-    const existing = await prisma.organization.findUnique({
-      where: { slug },
-    });
-    if (existing)
-      return {
-        error: { message: "An organisation with this slug already exists" },
-      };
-
-    const org = await prisma.organization.create({
-      data: { name, slug, description },
-    });
-
-    revalidatePath("/platform-admin/organisations");
-    revalidatePath("/admin/organisations");
-    return { data: org };
-  } catch (err) {
-    return {
-      error: {
-        message: err instanceof Error ? err.message : "Creation failed",
-      },
-    };
-  }
-}
 
 export async function updateUserAction(userId: string, formData: unknown) {
   await requirePlatformAdmin();
@@ -180,4 +149,45 @@ export async function createPlatformMembershipAction(formData: unknown) {
 
   revalidatePath("/platform-admin/users");
   return { success: true };
+}
+
+export type CreateOrganizationResult =
+  | { success: true }
+  | { success: false; error: { message: string } };
+
+export async function createOrganizationAction(
+  formData: unknown
+): Promise<CreateOrganizationResult> {
+  const session = await requirePlatformAdmin();
+  const parsed = CreateOrganizationSchema.safeParse(formData);
+  if (!parsed.success) return { success: false, error: { message: "Invalid input" } };
+
+  const { name, slug, description } = parsed.data;
+
+  try {
+    const existing = await prisma.organization.findUnique({
+      where: { slug },
+    });
+    if (existing)
+      return {
+        success: false,
+        error: { message: "An organisation with this slug already exists" },
+      };
+
+    await prisma.organization.create({
+      data: { name, slug, description },
+    });
+
+    revalidatePath("/platform-admin/organisations");
+    revalidatePath("/admin/organisations");
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message:
+          err instanceof Error ? err.message : "Failed to create organisation",
+      },
+    };
+  }
 }
