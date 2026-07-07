@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useOrg } from "@/lib/org/context";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FileUpload } from "@/components/shared/file-upload";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { FileUpload } from '@/components/shared/FileUpload';
 import {
   updateOrganizationAction,
   updateUserProfileAction,

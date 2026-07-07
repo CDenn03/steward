@@ -1,12 +1,12 @@
 import { Calendar } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { getEventsWithBudgets, getBudgetFormOptions } from "@/features/budgets/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/ui/badge";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardBody } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { StatusBadge } from '@/components/ui/Badge';
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { NewEventButton } from "./new-event-button";
+import { NewEventButton } from './NewEventButton';
 import type { BudgetStatus } from "@/types";
 
 type EventRow = {

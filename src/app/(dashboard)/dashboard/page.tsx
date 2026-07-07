@@ -9,13 +9,13 @@ import {
   getRecentAuditLogs,
   getUpcomingEvents,
 } from "@/features/finance/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { DashboardStats } from "./dashboard-stats";
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { StatusBadge, Badge } from "@/components/ui/badge";
-import { BudgetOverviewTable, type BudgetRow } from "./budget-overview-table";
-import { ExportCsvButton } from "@/components/shared/export-button";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { DashboardStats } from './DashboardStats';
+import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { StatusBadge, Badge } from '@/components/ui/Badge';
+import { BudgetOverviewTable, type BudgetRow } from './BudgetOverviewTable';
+import { ExportCsvButton } from '@/components/shared/ExportButton';
 import { formatCurrency, formatRelative } from "@/lib/utils";
 import type { BudgetStatus } from "@/types";
 

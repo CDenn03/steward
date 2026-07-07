@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { VerifyOtpForm } from "@/features/auth/components/verify-otp-form";
+import { VerifyOtpForm } from '@/features/auth/components/VerifyOtpForm';
 import { readOtpEmailCookie, OTP_EMAIL_COOKIE } from "@/features/auth/actions/otp";
 
 export default async function VerifyOtpPage({

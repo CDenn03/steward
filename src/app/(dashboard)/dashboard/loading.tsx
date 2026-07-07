@@ -1,4 +1,4 @@
-import { StatCardSkeleton } from "@/components/ui/skeleton";
+import { StatCardSkeleton } from '@/components/ui/Skeleton';
 export default function DashboardLoading() {
   return (
     <div>

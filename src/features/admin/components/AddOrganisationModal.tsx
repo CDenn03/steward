@@ -12,10 +12,10 @@ import {
   DialogTitle,
   DialogBody,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/Dialog';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Button } from '@/components/ui/Button';
 import { createOrganizationAction } from "@/features/admin/actions";
 import { CreateOrganizationSchema } from "@/features/admin/schemas";
 import type { CreateOrganizationInput } from "@/features/admin/schemas";

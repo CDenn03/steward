@@ -2,11 +2,11 @@ import { Building2 } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
 import { getDepartmentBudgetSummaries } from "@/features/budgets/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardBody } from "@/components/ui/card";
-import { ProgressBar } from "@/components/ui/progress";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardBody } from '@/components/ui/Card';
+import { ProgressBar } from '@/components/ui/Progress';
 import { formatCurrency, pct } from "@/lib/utils";
-import { AddDepartmentButton } from "./add-department-button";
+import { AddDepartmentButton } from './AddDepartmentButton';
 
 type DepartmentRow = {
   id: string;

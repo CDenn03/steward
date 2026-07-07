@@ -1,11 +1,11 @@
 import { Plus, Upload } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { getExpenditureReportsByOrg, getFinanceDashboard } from "@/features/finance/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { StatCard } from "@/components/ui/stat-card";
-import { ExpendituresTable, type ReportRow } from "./expenditures-table";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { StatCard } from '@/components/ui/StatCard';
+import { ExpendituresTable, type ReportRow } from './ExpendituresTable';
 import { formatCurrency } from "@/lib/utils";
 
 type RawReport = {

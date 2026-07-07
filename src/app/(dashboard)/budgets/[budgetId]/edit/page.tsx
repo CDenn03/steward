@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetById, getBudgetFormOptions } from "@/features/budgets/repositories";
-import { EditBudgetForm } from "./edit-budget-form";
+import { EditBudgetForm } from './EditBudgetForm';
 
 export default async function EditBudgetPage({
   params,

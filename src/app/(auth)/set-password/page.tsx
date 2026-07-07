@@ -1,4 +1,4 @@
-import { SetPasswordForm } from "@/features/auth/components/set-password-form";
+import { SetPasswordForm } from '@/features/auth/components/SetPasswordForm';
 
 export default function SetPasswordPage() {
   return <SetPasswordForm />;

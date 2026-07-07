@@ -1,7 +1,7 @@
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetFormOptions } from "@/features/budgets/repositories";
 import { getDepartmentAllocations } from "@/features/departments/services";
-import { NewBudgetForm } from "./new-budget-form";
+import { NewBudgetForm } from './NewBudgetForm';
 
 export default async function NewBudgetPage() {
   const session = await requireSession();

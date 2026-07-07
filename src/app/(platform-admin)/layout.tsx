@@ -1,7 +1,7 @@
 import { requirePlatformAdmin } from "@/lib/auth/session";
-import { PlatformSidebar } from "@/components/shared/platform-sidebar";
-import { PlatformTopbar } from "@/components/shared/platform-topbar";
-import { PlatformMobileSidebar } from "@/components/shared/platform-mobile-sidebar";
+import { PlatformSidebar } from '@/components/shared/PlatformSidebar';
+import { PlatformTopbar } from '@/components/shared/PlatformTopbar';
+import { PlatformMobileSidebar } from '@/components/shared/PlatformMobileSidebar';
 
 export default async function PlatformAdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   await requirePlatformAdmin();

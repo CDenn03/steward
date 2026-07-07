@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getOrganizationOverviews } from "@/features/admin/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { OrgSettingsForm } from "./org-settings-form";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { OrgSettingsForm } from './OrgSettingsForm';
 
 export default async function OrgSettingsPage(props: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await props.params;

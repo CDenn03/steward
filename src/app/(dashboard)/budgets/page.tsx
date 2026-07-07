@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetsByOrg } from "@/features/budgets/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
-import { BudgetsTable } from "@/features/budgets/components/budgets-table";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Button } from '@/components/ui/Button';
+import { BudgetsTable } from '@/features/budgets/components/BudgetsTable';
 
 export default async function BudgetsPage() {
   const session = await requireSession();

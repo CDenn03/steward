@@ -7,14 +7,14 @@ import {
   getFinancialAccountsByOrg,
 } from "@/features/finance/repositories";
 import { getBudgetFormOptions } from "@/features/budgets/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { StatCard } from "@/components/ui/stat-card";
-import { IncomeTable, type IncomeRecord } from "./income-table";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { StatCard } from '@/components/ui/StatCard';
+import { IncomeTable, type IncomeRecord } from './IncomeTable';
 import { formatCurrency } from "@/lib/utils";
-import { IncomeBreakdownChart } from "@/features/income/components/income-breakdown-chart";
-import { RecordIncomeActionButton } from "./record-income-button";
+import { IncomeBreakdownChart } from '@/features/income/components/IncomeBreakdownChart';
+import { RecordIncomeActionButton } from './RecordIncomeButton';
 
 type RawIncomeRecord = {
   id: string;
