@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { requireOrgSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
-import { SplashClient } from "./splash-client";
+import { SplashClient } from './SplashClient';
 
 function initials(name: string) {
   return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();

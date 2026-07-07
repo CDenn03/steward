@@ -4,14 +4,14 @@ import { ArrowLeft } from "lucide-react";
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetById } from "@/features/budgets/repositories";
 import { getAccountsForDisbursement } from "@/features/disbursements/services";
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
-import { StatusBadge } from "@/components/ui/badge";
-import { ProgressBar } from "@/components/ui/progress";
+import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
+import { StatusBadge } from '@/components/ui/Badge';
+import { ProgressBar } from '@/components/ui/Progress';
 import { formatCurrency, formatDate, formatRelative, pct } from "@/lib/utils";
-import { BudgetActions } from "@/features/budgets/components/budget-actions";
-import { BudgetAttachmentUpload } from "@/features/budgets/components/budget-attachment-upload";
-import { BudgetRevisionHistory } from "@/features/budgets/components/budget-revision-history";
-import { DisbursementRequestButton } from "@/features/disbursements/components/disbursement-request-button";
+import { BudgetActions } from '@/features/budgets/components/BudgetActions';
+import { BudgetAttachmentUpload } from '@/features/budgets/components/BudgetAttachmentUpload';
+import { BudgetRevisionHistory } from '@/features/budgets/components/BudgetRevisionHistory';
+import { DisbursementRequestButton } from '@/features/disbursements/components/DisbursementRequestButton';
 import type { BudgetStatus } from "@/types";
 
 type BudgetItemRow = {

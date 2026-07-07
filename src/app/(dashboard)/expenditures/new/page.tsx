@@ -1,6 +1,6 @@
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetsByOrg } from "@/features/budgets/repositories";
-import { NewExpenditureForm } from "./new-expenditure-form";
+import { NewExpenditureForm } from './NewExpenditureForm';
 
 export default async function NewExpenditurePage() {
   const session = await requireSession();

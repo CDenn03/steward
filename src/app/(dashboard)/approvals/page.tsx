@@ -4,12 +4,12 @@ import { requireSession } from "@/lib/auth/session";
 import { getBudgetsByOrg, getPendingApprovals } from "@/features/budgets/repositories";
 import { getExpenditureReportsByOrg } from "@/features/finance/repositories";
 import { getPendingDisbursements } from "@/features/disbursements/services";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/ui/badge";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { StatusBadge } from '@/components/ui/Badge';
 import { formatCurrency, formatRelative } from "@/lib/utils";
-import { ReleaseDisbursementButton } from "@/features/disbursements/components/release-disbursement-button";
+import { ReleaseDisbursementButton } from '@/features/disbursements/components/ReleaseDisbursementButton';
 import type { BudgetStatus } from "@/types";
 
 const status = (value: string) => value.toLowerCase() as BudgetStatus;

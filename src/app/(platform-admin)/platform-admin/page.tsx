@@ -1,7 +1,7 @@
 import { Building2, Users, ShieldCheck, Activity } from "lucide-react";
 import { getOrganizationOverviews, getPlatformStats } from "@/features/admin/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardBody } from "@/components/ui/card";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardBody } from '@/components/ui/Card';
 
 export default async function PlatformAdminPage() {
   const [stats, organizations] = await Promise.all([

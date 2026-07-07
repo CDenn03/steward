@@ -1,8 +1,8 @@
 import { requireOrgSession } from "@/lib/auth/session";
 import { OrgProvider, type ActiveOrg } from "@/lib/org/context";
-import { Sidebar } from "@/components/shared/sidebar";
-import { Topbar } from "@/components/shared/topbar";
-import { MobileSidebar } from "@/components/shared/mobile-sidebar";
+import { Sidebar } from '@/components/shared/Sidebar';
+import { Topbar } from '@/components/shared/Topbar';
+import { MobileSidebar } from '@/components/shared/MobileSidebar';
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma/client";
 

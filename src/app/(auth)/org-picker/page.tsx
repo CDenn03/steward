@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma/client";
-import { OrgPickerClient } from "@/features/auth/components/org-picker-client";
+import { OrgPickerClient } from '@/features/auth/components/OrgPickerClient';
 
 const ORG_COLORS = ["#1F4B99", "#15803D", "#7C3AED", "#B45309", "#0F766E"];
 function orgColor(name: string) {

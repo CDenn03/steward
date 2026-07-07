@@ -5,13 +5,13 @@ import {
   getIncomeSummary,
   getRecentAccountTransactions,
 } from "@/features/finance/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { StatCard } from "@/components/ui/stat-card";
-import { TransactionsTable, type TransactionRow } from "./transactions-table";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { StatCard } from '@/components/ui/StatCard';
+import { TransactionsTable, type TransactionRow } from './TransactionsTable';
 import { formatCurrency } from "@/lib/utils";
-import { AddAccountButton } from "./add-account-button";
+import { AddAccountButton } from './AddAccountButton';
 
 type AccountRow = {
   id: string;

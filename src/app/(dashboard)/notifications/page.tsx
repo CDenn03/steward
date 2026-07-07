@@ -1,9 +1,9 @@
 import { requireSession } from "@/lib/auth/session";
 import { getNotificationsForUser } from "@/features/finance/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card } from "@/components/ui/card";
-import { NotificationList } from "./notification-list";
-import { MarkAllReadButton } from "./mark-all-read-button";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card } from '@/components/ui/Card';
+import { NotificationList } from './NotificationList';
+import { MarkAllReadButton } from './MarkAllReadButton';
 
 type NotificationRow = {
   id: string;

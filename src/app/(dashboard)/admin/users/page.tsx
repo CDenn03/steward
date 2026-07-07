@@ -1,11 +1,11 @@
 import { Plus } from "lucide-react";
 import { getPlatformStats, getUsersWithMemberships } from "@/features/admin/repositories";
 import { prisma } from "@/lib/prisma/client";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AdminUserTable } from "@/features/admin/components/admin-users-table";
-import type { MembershipRow } from "@/features/admin/components/admin-users-table";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { AdminUserTable } from '@/features/admin/components/AdminUsersTable';
+import type { MembershipRow } from '@/features/admin/components/AdminUsersTable';
 
 export default async function AdminUsersPage() {
   const [{ users }, stats, allDepartments] = await Promise.all([

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Users, Settings } from "lucide-react";
 import { getOrganizationOverviews } from "@/features/admin/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardBody } from "@/components/ui/card";
-import { NewOrgButton } from "./new-org-button";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card, CardBody } from '@/components/ui/Card';
+import { NewOrgButton } from './NewOrgButton';
 
 export default async function AdminOrgsPage() {
   const organizations = await getOrganizationOverviews();

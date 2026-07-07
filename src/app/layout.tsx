@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { ToastProvider } from "@/components/ui/toast";
+import { ToastProvider } from '@/components/ui/Toast';
 
 export const metadata: Metadata = {
   title: "Steward — Financial Governance Platform",

@@ -1,7 +1,7 @@
 import { requireSession } from "@/lib/auth/session";
 import { getBudgetAnalytics } from "@/features/budgets/repositories";
 import { getIncomeMonthlyBreakdown } from "@/features/finance/repositories";
-import { AnalyticsClient } from "./analytics-client";
+import { AnalyticsClient } from './AnalyticsClient';
 
 type BudgetAnalyticsRow = {
   id: string;

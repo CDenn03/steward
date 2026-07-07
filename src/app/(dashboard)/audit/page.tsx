@@ -2,9 +2,9 @@
 import { requireSession } from "@/lib/auth/session";
 import { getAuditFilterOptions } from "@/features/audit/services";
 import { getAuditLogsByOrg } from "@/features/finance/repositories";
-import { PageHeader } from "@/components/shared/page-header";
-import { Card } from "@/components/ui/card";
-import { AuditClient } from "./audit-client";
+import { PageHeader } from '@/components/shared/PageHeader';
+import { Card } from '@/components/ui/Card';
+import { AuditClient } from './AuditClient';
 
 const ACTIONS = ["submitted", "approved", "rejected", "needs_changes", "created", "updated", "uploaded", "recorded", "allocated"];
 
@@ -31,7 +31,7 @@ export default async function AuditPage(props: { searchParams?: Promise<Record<s
       <PageHeader title="Audit Log" subtitle="Immutable record of all financial actions and state changes" />
       <Card>
         <AuditClient
-          data={filtered as import("./audit-table").AuditRow[]}
+          data={filtered as import("./AuditTable").AuditRow[]}
           entityTypes={filterOptions.entityTypes}
           actors={filterOptions.actors}
           actions={ACTIONS}
