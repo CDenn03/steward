@@ -15,6 +15,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import type { AdminUser } from "@/features/admin/repositories";
+import { CreateUserButton } from "./create-user-button";
 
 const roleLabels: Record<string, string> = {
   platform_admin: "Platform Admin",
@@ -243,6 +244,9 @@ export function PlatformUsersTable({
             </SelectContent>
           </Select>
         </div>
+        <CreateUserButton
+        organizations={organizations}
+        />
       </div>
 
       <div className="hidden sm:block px-2 pb-2">

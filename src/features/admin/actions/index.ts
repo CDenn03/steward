@@ -3,11 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { requirePlatformAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
+import bcrypt from "bcryptjs";
 import {
   UpdateMembershipSchema,
   UpdateUserSchema,
   CreateMembershipSchema,
   CreateOrganizationSchema,
+  CreatePlatformUserSchema
 } from "../schemas";
 
 export async function updateMembershipAction(
@@ -180,4 +182,55 @@ export async function createPlatformMembershipAction(formData: unknown) {
 
   revalidatePath("/platform-admin/users");
   return { success: true };
+}
+
+export async function createPlatformUserAction(formData: unknown) {
+  await requirePlatformAdmin();
+
+  const parsed = CreatePlatformUserSchema.safeParse(formData);
+
+  if (!parsed.success) {
+    return { error: "Invalid input" };
+  }
+
+  try {
+    // Check whether email already exists
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: parsed.data.email,
+      },
+    });
+
+    if (existingUser) {
+      return {
+        error: "A user with this email already exists",
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
+    const user = await prisma.user.create({
+  data: {
+    name: parsed.data.name,
+    email: parsed.data.email,
+    password: hashedPassword,
+  },
+});
+
+await prisma.membership.create({
+  data: {
+    userId: user.id,
+    organizationId: parsed.data.organizationId,
+    role: parsed.data.role,
+  },
+});
+    revalidatePath("/platform-admin/users");
+
+    return {
+      success: true,
+    };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to create user",
+    };
+  }
 }

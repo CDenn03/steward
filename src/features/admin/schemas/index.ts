@@ -32,7 +32,28 @@ export const CreateMembershipSchema = z.object({
   role: z.enum(["PLATFORM_ADMIN", "ADMIN", "CHAIRPERSON", "FINANCE", "DEPARTMENT_HEAD", "MEMBER"]),
 });
 
+export const CreatePlatformUserSchema = z.object({
+    name: z.string().min(2, "Name is required"),
+    email: z.string().email("Invalid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+    organizationId: z.string().min(1, "Organisation is required"),
+    role: z.enum([
+      "PLATFORM_ADMIN",
+      "ADMIN",
+      "CHAIRPERSON",
+      "FINANCE",
+      "DEPARTMENT_HEAD",
+      "MEMBER",
+    ]),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
+
 export type UpdateMembershipInput = z.infer<typeof UpdateMembershipSchema>;
 export type CreateOrganizationInput = z.infer<typeof CreateOrganizationSchema>;
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 export type CreateMembershipInput = z.infer<typeof CreateMembershipSchema>;
+export type CreatePlatformUserSchema =z.infer<typeof CreatePlatformUserSchema>
