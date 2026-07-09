@@ -188,6 +188,132 @@ export async function getUsersWithMemberships(params?: {
   };
 }
 
+export type OrganizationDetail = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  logoUrl: string | null;
+  timezone: string;
+  createdAt: Date;
+  initials: string;
+  members: Array<{
+    id: string;
+    userId: string;
+    name: string;
+    email: string;
+    role: string;
+    department: { id: string; name: string } | null;
+    isActive: boolean;
+    joinedAt: Date;
+    initials: string;
+  }>;
+  departments: Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    head: { id: string; name: string } | null;
+    isActive: boolean;
+    memberCount: number;
+  }>;
+  invites: Array<{
+    id: string;
+    email: string;
+    role: string;
+    invitedBy: { id: string; name: string };
+    expiresAt: Date;
+    createdAt: Date;
+  }>;
+};
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+export async function getOrganizationDetail(id: string): Promise<OrganizationDetail | null> {
+  const org = await prisma.organization.findUnique({
+    where: { id },
+    include: {
+      members: {
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+          department: { select: { id: true, name: true } },
+        },
+        orderBy: { joinedAt: "desc" },
+      },
+      departments: {
+        include: {
+          head: { select: { id: true, name: true } },
+          memberships: { select: { id: true, isActive: true } },
+        },
+        orderBy: { name: "asc" },
+      },
+      invites: {
+        include: {
+          invitedBy: { select: { id: true, name: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  if (!org) return null;
+
+  return {
+    id: org.id,
+    name: org.name,
+    slug: org.slug,
+    description: org.description,
+    logoUrl: org.logoUrl,
+    timezone: org.timezone,
+    createdAt: org.createdAt,
+    initials: getInitials(org.name),
+    members: org.members.map((m: {
+      id: string; userId: string; role: string; isActive: boolean; joinedAt: Date;
+      user: { id: string; name: string; email: string };
+      department: { id: string; name: string } | null;
+    }) => ({
+      id: m.id,
+      userId: m.userId,
+      name: m.user.name,
+      email: m.user.email,
+      role: m.role.toLowerCase(),
+      department: m.department,
+      isActive: m.isActive,
+      joinedAt: m.joinedAt,
+      initials: getInitials(m.user.name),
+    })),
+    departments: org.departments.map((d: {
+      id: string; name: string; description: string | null; isActive: boolean;
+      head: { id: string; name: string } | null;
+      memberships: Array<{ id: string; isActive: boolean }>;
+    }) => ({
+      id: d.id,
+      name: d.name,
+      description: d.description,
+      head: d.head,
+      isActive: d.isActive,
+      memberCount: d.memberships.filter((m: { isActive: boolean }) => m.isActive).length,
+    })),
+    invites: org.invites.map((i: {
+      id: string; email: string; role: string; expiresAt: Date; createdAt: Date;
+      invitedBy: { id: string; name: string };
+    }) => ({
+      id: i.id,
+      email: i.email,
+      role: i.role.toLowerCase(),
+      invitedBy: i.invitedBy,
+      expiresAt: i.expiresAt,
+      createdAt: i.createdAt,
+    })),
+  };
+}
+
 export async function getInviteOptions() {
   const [organizations, departments] = await Promise.all([
     prisma.organization.findMany({

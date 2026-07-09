@@ -4,8 +4,8 @@ import { prisma } from "@/lib/prisma/client";
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { AdminUserTable } from '@/features/admin/components/AdminUsersTable';
-import type { MembershipRow } from '@/features/admin/components/AdminUsersTable';
+import { AdminUserTable } from '@/features/admin/components/users/AdminUsersTable';
+import type { MembershipRow } from '@/features/admin/components/users/AdminUsersTable';
 
 export default async function AdminUsersPage() {
   const [{ users }, stats, allDepartments] = await Promise.all([

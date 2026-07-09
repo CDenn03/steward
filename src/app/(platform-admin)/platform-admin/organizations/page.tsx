@@ -1,7 +1,7 @@
 import { getOrganizationOverviews } from "@/features/admin/repositories";
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Card, CardBody } from '@/components/ui/Card';
-import { OnboardOrgButton } from '../../../../features/admin/components/OnboardOrgButton';
+import { OnboardOrgButton } from '../../../../features/admin/components/organizations/OnboardOrgButton';
 
 
 export default async function PlatformOrgsPage() {

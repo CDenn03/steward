@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Eye, Edit2, Trash2, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { DataTable, createColumnHelper, type ColumnDef } from '@/components/shared/DataTable';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
-import { UserDetailModal } from '@/features/admin/components/UserDetailModal';
+import { UserDetailModal } from '@/features/admin/components/users/UserDetailModal';
 import { deleteUserAction } from "@/features/admin/actions";
 import {
   Select,

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma/client";
 import { getUsersWithMemberships } from "@/features/admin/repositories";
 import { PageHeader } from '@/components/shared/PageHeader';
-import { PlatformUsersTable } from '@/features/admin/components/PlatformUsersTable';
+import { PlatformUsersTable } from '@/features/admin/components/users/PlatformUsersTable';
 
 function computeOrgMeta(org: { id: string; name: string; slug: string }) {
   const initials = org.name

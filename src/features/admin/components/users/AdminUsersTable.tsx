@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { DataTable, createColumnHelper, type ColumnDef } from '@/components/shared/DataTable';
 import { Badge } from '@/components/ui/Badge';
-import { UserActions } from '@/features/admin/components/UserActions';
+import { UserActions } from '@/features/admin/components/users/UserActions';
 
 export type MembershipRow = {
   membershipId: string;
