@@ -248,21 +248,33 @@ export async function getOrganizationDetail(id: string): Promise<OrganizationDet
       },
       departments: {
         include: {
-          head: { select: { id: true, name: true } },
           memberships: { select: { id: true, isActive: true } },
         },
         orderBy: { name: "asc" },
       },
       invites: {
-        include: {
-          invitedBy: { select: { id: true, name: true } },
-        },
         orderBy: { createdAt: "desc" },
       },
     },
   });
 
   if (!org) return null;
+
+  const headIds = org.departments
+    .map((d: { headId: string | null }) => d.headId)
+    .filter((id: string | null): id is string => id !== null);
+  const headUsers = headIds.length > 0
+    ? await prisma.user.findMany({ where: { id: { in: headIds } }, select: { id: true, name: true } })
+    : [];
+  const headMap = new Map(headUsers.map((u: { id: string; name: string }) => [u.id, u]));
+
+  const invitedByIds = org.invites
+    .map((i: { invitedById: string }) => i.invitedById)
+    .filter((id: string | null): id is string => id !== null);
+  const invitedByUsers = invitedByIds.length > 0
+    ? await prisma.user.findMany({ where: { id: { in: invitedByIds } }, select: { id: true, name: true } })
+    : [];
+  const invitedByMap = new Map(invitedByUsers.map((u: { id: string; name: string }) => [u.id, u]));
 
   return {
     id: org.id,
@@ -289,25 +301,23 @@ export async function getOrganizationDetail(id: string): Promise<OrganizationDet
       initials: getInitials(m.user.name),
     })),
     departments: org.departments.map((d: {
-      id: string; name: string; description: string | null; isActive: boolean;
-      head: { id: string; name: string } | null;
+      id: string; name: string; description: string | null; headId: string | null; isActive: boolean;
       memberships: Array<{ id: string; isActive: boolean }>;
     }) => ({
       id: d.id,
       name: d.name,
       description: d.description,
-      head: d.head,
+      head: d.headId ? (headMap.get(d.headId) ?? null) : null,
       isActive: d.isActive,
       memberCount: d.memberships.filter((m: { isActive: boolean }) => m.isActive).length,
     })),
     invites: org.invites.map((i: {
-      id: string; email: string; role: string; expiresAt: Date; createdAt: Date;
-      invitedBy: { id: string; name: string };
+      id: string; email: string; role: string; invitedById: string; expiresAt: Date; createdAt: Date;
     }) => ({
       id: i.id,
       email: i.email,
       role: i.role.toLowerCase(),
-      invitedBy: i.invitedBy,
+      invitedBy: invitedByMap.get(i.invitedById) ?? { id: i.invitedById, name: "Unknown" },
       expiresAt: i.expiresAt,
       createdAt: i.createdAt,
     })),

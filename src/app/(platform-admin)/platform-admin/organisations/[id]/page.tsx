@@ -1,9 +1,12 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { getOrganizationDetail } from "@/features/admin/repositories";
-import { OrgProfileHeader } from "@/features/admin/components/organizations/OrgProfileHeader";
-import { OrgStatsCards } from "@/features/admin/components/organizations/OrgStatsCards";
-import { MembersSection } from "@/features/admin/components/organizations/MembersSection";
-import { DepartmentsSection } from "@/features/admin/components/organizations/DepartmentsSection";
-import { InvitesSection } from "@/features/admin/components/organizations/InvitesSection";
+import { OrgProfileHeader } from "@/features/admin/components/organisations/OrgProfileHeader";
+import { OrgStatsCards } from "@/features/admin/components/organisations/OrgStatsCards";
+import { MembersSection } from "@/features/admin/components/organisations/MembersSection";
+import { DepartmentsSection } from "@/features/admin/components/organisations/DepartmentsSection";
+import { InvitesSection } from "@/features/admin/components/organisations/InvitesSection";
+import { Button } from '@/components/ui/Button';
 
 export default async function OrganizationProfilePage(props: {
   params: Promise<{ id: string }>;
@@ -29,6 +32,16 @@ export default async function OrganizationProfilePage(props: {
       <h2 className="sr-only">
         Organization profile page for {org.name}
       </h2>
+
+      <div className="flex justify-between">
+        <h3>Organisation Profile</h3>
+      <Link href="/platform-admin/organisations">
+        <Button variant="ghost" size="sm" className="mb-4">
+          <ArrowLeft size={13} className="mr-1" />
+          Back to organisations
+        </Button>
+      </Link>
+      </div>
 
       <OrgProfileHeader
         name={org.name}
