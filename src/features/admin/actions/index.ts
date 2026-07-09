@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { requirePlatformAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
+import { getSignedUploadUrl } from "@/lib/storage/r2";
+import { validateFileMeta } from "@/lib/storage/validation";
 import {
   UpdateMembershipSchema,
   UpdateUserSchema,
@@ -160,9 +162,9 @@ export async function createOrganizationAction(
 ): Promise<CreateOrganizationResult> {
   const session = await requirePlatformAdmin();
   const parsed = CreateOrganizationSchema.safeParse(formData);
-  if (!parsed.success) return { success: false, error: { message: "Invalid input" } };
+  if (!parsed.success) return { success: false, error: { message: parsed.error.errors.map(e => e.message).join(", ") } };
 
-  const { name, slug, description } = parsed.data;
+  const { name, slug, description, currency, fiscalYearStart, logoUrl, timezone } = parsed.data;
 
   try {
     const existing = await prisma.organization.findUnique({
@@ -175,7 +177,7 @@ export async function createOrganizationAction(
       };
 
     await prisma.organization.create({
-      data: { name, slug, description },
+      data: { name, slug, description, currency, fiscalYearStart, logoUrl, timezone },
     });
 
     revalidatePath("/platform-admin/organisations");
@@ -190,4 +192,30 @@ export async function createOrganizationAction(
       },
     };
   }
+}
+
+export async function getOrgLogoUploadUrlAction(
+  fileName: string,
+  mimeType: string
+) {
+  const session = await requirePlatformAdmin();
+
+  const validationError = validateFileMeta(fileName, mimeType);
+  if (validationError) return { error: { message: validationError } };
+
+  try {
+    const storageKey = `temp/org-creation/${session.userId}/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+    const uploadUrl = await getSignedUploadUrl(storageKey, mimeType);
+    return { data: { storageKey, uploadUrl } };
+  } catch (err) {
+    return {
+      error: {
+        message: err instanceof Error ? err.message : "Failed to get upload URL",
+      },
+    };
+  }
+}
+
+export async function saveOrgCreationUploadAction(_storageKey: string) {
+  return { success: true };
 }

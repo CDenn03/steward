@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -16,20 +17,26 @@ import {
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
-import { createOrganizationAction } from "@/features/admin/actions";
+import { FileUpload } from '@/components/shared/FileUpload';
+import { createOrganizationAction, getOrgLogoUploadUrlAction, saveOrgCreationUploadAction } from "@/features/admin/actions";
 import { CreateOrganizationSchema } from "@/features/admin/schemas";
-import type { CreateOrganizationInput } from "@/features/admin/schemas";
 import type { CreateOrganizationResult } from "@/features/admin/actions";
+
+type FormValues = z.input<typeof CreateOrganizationSchema>;
 
 interface AddOrganizationModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const defaultValues: CreateOrganizationInput = {
+const defaultValues: FormValues = {
   name: "",
   slug: "",
   description: "",
+  currency: "KES",
+  fiscalYearStart: "01-01",
+  logoUrl: null,
+  timezone: "Africa/Nairobi",
 };
 
 export default function AddOrganizationModal({
@@ -38,13 +45,14 @@ export default function AddOrganizationModal({
 }: AddOrganizationModalProps) {
   const router = useRouter();
   const [formError, setFormError] = useState("");
+  const [logoKey, setLogoKey] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateOrganizationInput>({
+  } = useForm<FormValues>({
     resolver: zodResolver(CreateOrganizationSchema),
     defaultValues,
     mode: "onBlur",
@@ -55,15 +63,16 @@ export default function AddOrganizationModal({
     if (isSubmitting) return;
     reset(defaultValues);
     setFormError("");
+    setLogoKey(null);
     onClose();
   };
 
-  const onSubmit = async (data: CreateOrganizationInput) => {
+  const onSubmit = async (data: FormValues) => {
     setFormError("");
 
     try {
       const result: CreateOrganizationResult =
-        await createOrganizationAction(data);
+        await createOrganizationAction({ ...data, ...(logoKey ? { logoUrl: logoKey } : {}) });
 
       if (!result.success) {
         setFormError(result.error.message);
@@ -72,6 +81,7 @@ export default function AddOrganizationModal({
 
       reset(defaultValues);
       setFormError("");
+      setLogoKey(null);
       onClose();
       router.refresh();
     } catch {
@@ -102,6 +112,15 @@ export default function AddOrganizationModal({
                 {formError}
               </div>
             )}
+
+            <FileUpload
+              accept="image/png,image/jpeg,image/webp"
+              label="Upload Logo"
+              description="PNG, JPEG or WebP, max 10 MB"
+              getUploadUrl={getOrgLogoUploadUrlAction}
+              saveKey={saveOrgCreationUploadAction}
+              onCompleted={(key) => setLogoKey(key)}
+            />
 
             <Input
               label="Organisation Name"
