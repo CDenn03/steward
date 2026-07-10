@@ -26,7 +26,7 @@ interface DataTableProps<TData extends Record<string, unknown>> {
   emptyMessage?: string;
   className?: string;
   pageSize?: number;
-  /** Server-side pagination */
+
   manualPagination?: boolean;
   pageCount?: number;
   currentPage?: number;
