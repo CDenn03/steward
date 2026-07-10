@@ -15,6 +15,7 @@ import {
   SelectItem,
 } from '@/components/ui/Select';
 import type { AdminUser } from "@/features/admin/repositories";
+import { CreateUserButton } from "./CreateUserButton";
 
 const roleLabels: Record<string, string> = {
   platform_admin: "Platform Admin",
@@ -194,6 +195,10 @@ export function PlatformUsersTable({
     setDeleteTarget(null);
     router.refresh();
   };
+  const selectedOrg = organizations.find(
+  (org) => org.id === initialOrgFilter
+);
+
   return (
     <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 p-5 border-b border-(--border) flex-wrap">
@@ -211,7 +216,9 @@ export function PlatformUsersTable({
         <div className="w-full sm:w-44">
           <Select value={initialOrgFilter || "all"} onValueChange={handleOrgChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All Organisations" />
+              <SelectValue placeholder="All Organisations">
+                {selectedOrg?.name ?? "All Organisations"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Organisations</SelectItem>
@@ -235,6 +242,9 @@ export function PlatformUsersTable({
             </SelectContent>
           </Select>
         </div>
+        <CreateUserButton
+        organizations={organizations}
+        />
       </div>
 
       <div className="hidden sm:block">
