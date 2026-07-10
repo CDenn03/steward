@@ -10,6 +10,7 @@ import {
   UpdateUserSchema,
   CreateMembershipSchema,
   CreateOrganizationSchema,
+  UpdateOrganizationSchema,
 } from "../schemas";
 
 export async function updateMembershipAction(
@@ -189,6 +190,47 @@ export async function createOrganizationAction(
       error: {
         message:
           err instanceof Error ? err.message : "Failed to create organisation",
+      },
+    };
+  }
+}
+
+export type UpdateOrganizationResult =
+  | { success: true }
+  | { success: false; error: { message: string } };
+
+export async function updateOrganizationAction(
+  organizationId: string,
+  formData: unknown
+): Promise<UpdateOrganizationResult> {
+  await requirePlatformAdmin();
+  const parsed = UpdateOrganizationSchema.safeParse(formData);
+  if (!parsed.success) return { success: false, error: { message: parsed.error.errors.map(e => e.message).join(", ") } };
+
+  const { name, description, currency, fiscalYearStart, logoUrl, timezone } = parsed.data;
+
+  try {
+    await prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        ...(name ? { name } : {}),
+        ...(description !== undefined ? { description } : {}),
+        ...(currency ? { currency } : {}),
+        ...(fiscalYearStart ? { fiscalYearStart } : {}),
+        ...(logoUrl !== undefined ? { logoUrl } : {}),
+        ...(timezone ? { timezone } : {}),
+      },
+    });
+
+    revalidatePath("/platform-admin/organisations");
+    revalidatePath(`/platform-admin/organisations/${organizationId}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message:
+          err instanceof Error ? err.message : "Failed to update organisation",
       },
     };
   }

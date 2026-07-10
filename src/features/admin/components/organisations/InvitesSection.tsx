@@ -65,18 +65,16 @@ export function InvitesSection({ invites }: InvitesSectionProps) {
   ] as ColumnDef<Invite>[], []);
 
   return (
-    <div>
-      <div className="flex justify-between items-center pb-2.5">
-        <p className="text-[12px] font-semibold text-(--muted) uppercase tracking-[0.03em] mb-2.5">Pending invites</p>
-        <div className="flex items-center mb-2.5">
-          <Button variant="ghost" size="sm">
-            <Plus size={13} className="mr-1.5" />
-            New invite
-          </Button>
-        </div>
+    <div className="mb-9">
+      <div className="flex justify-between items-center mb-3">
+        <p className="text-[13px] font-semibold text-(--text) uppercase tracking-wider">Pending invites</p>
+        <Button variant="ghost" size="sm">
+          <Plus size={13} className="mr-1.5" />
+          New invite
+        </Button>
       </div>
 
-      <div className="mb-7">
+      <div className="bg-white border border-(--border) rounded-2xl overflow-hidden">
         <DataTable
           columns={columns}
           data={invites}

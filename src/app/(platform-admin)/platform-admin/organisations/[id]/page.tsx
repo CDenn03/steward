@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { getOrganizationDetail } from "@/features/admin/repositories";
 import { OrgProfileHeader } from "@/features/admin/components/organisations/OrgProfileHeader";
 import { OrgStatsCards } from "@/features/admin/components/organisations/OrgStatsCards";
@@ -25,6 +24,7 @@ export default async function OrganizationProfilePage(props: {
   }
 
   const activeMemberCount = org.members.filter((m) => m.isActive).length;
+  const inactiveMemberCount = org.members.filter((m) => !m.isActive).length;
   const departmentOptions = org.departments
     .filter((d) => d.isActive)
     .map((d) => ({ id: d.id, name: d.name }));
@@ -52,24 +52,31 @@ export default async function OrganizationProfilePage(props: {
         Organization profile page for {org.name}
       </h2>
 
+      <nav className="flex items-center gap-1.5 text-[13px] text-(--muted) mb-5" aria-label="Breadcrumb">
+        <Link href="/platform-admin" className="hover:text-(--text) transition-colors">Platform Console</Link>
+        <span aria-hidden>›</span>
+        <span className="text-(--text) font-medium">Organisations</span>
+      </nav>
+
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-[20px] font-semibold tracking-tight text-(--text)">
-          Organisation Profile
+        <h1 className="font-display text-[28px] font-semibold text-(--text)">
+          Organisation profile
         </h1>
         <Link href="/platform-admin/organisations">
           <Button variant="ghost" size="sm">
-            <ArrowLeft size={13} className="mr-1" />
-            Back to organisations
+            ← Back to organisations
           </Button>
         </Link>
       </div>
 
       <OrgProfileHeader
+        organizationId={org.id}
         name={org.name}
         slug={org.slug}
         description={org.description}
         initials={org.initials}
         timezone={org.timezone}
+        logoUrl={org.logoUrl}
         createdAt={org.createdAt}
       />
 
@@ -91,6 +98,11 @@ export default async function OrganizationProfilePage(props: {
         currentPage={currentPage}
         totalPages={totalPages}
         totalMembers={filteredMembers.length}
+        tabCounts={{
+          active: activeMemberCount,
+          inactive: inactiveMemberCount,
+          all: org.members.length,
+        }}
       />
 
       <InvitesSection invites={org.invites} />

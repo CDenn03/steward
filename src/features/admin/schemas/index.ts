@@ -28,6 +28,18 @@ export const CreateOrganizationSchema = z.object({
   timezone: z.string().default("Africa/Nairobi"),
 });
 
+export const UpdateOrganizationSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  description: z.string().max(500).optional(),
+  currency: z.enum(currencyCodes).optional(),
+  fiscalYearStart: z
+    .string()
+    .regex(/^\d{2}-\d{2}$/, "Must be in MM-DD format")
+    .optional(),
+  logoUrl: z.string().nullable().optional(),
+  timezone: z.string().optional(),
+});
+
 export const UpdateUserSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
   email: z.string().email("Invalid email"),
@@ -41,5 +53,6 @@ export const CreateMembershipSchema = z.object({
 
 export type UpdateMembershipInput = z.infer<typeof UpdateMembershipSchema>;
 export type CreateOrganizationInput = z.infer<typeof CreateOrganizationSchema>;
+export type UpdateOrganizationInput = z.infer<typeof UpdateOrganizationSchema>;
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 export type CreateMembershipInput = z.infer<typeof CreateMembershipSchema>;

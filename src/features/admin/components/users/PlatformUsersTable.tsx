@@ -237,7 +237,7 @@ export function PlatformUsersTable({
         </div>
       </div>
 
-      <div className="hidden sm:block px-2 pb-2">
+      <div className="hidden sm:block">
         <DataTable
           columns={columns}
           data={data}

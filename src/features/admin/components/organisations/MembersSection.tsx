@@ -3,10 +3,10 @@
 import { useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MoreHorizontal } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/utils";
 import { DataTable, createColumnHelper, type ColumnDef } from "@/components/shared/DataTable";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/Select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 type Member = {
   id: string;
@@ -28,37 +28,86 @@ interface MembersSectionProps {
   currentPage: number;
   totalPages: number;
   totalMembers: number;
+  /** Counts for each tab — passed from the parent that has full member list */
+  tabCounts?: { active: number; inactive: number; all: number };
 }
-
-const roleLabels: Record<string, string> = {
-  admin: "Admin",
-  member: "Member",
-  finance: "Finance",
-  chairperson: "Chairperson",
-  department_head: "Dept. Head",
-};
 
 const helper = createColumnHelper<Member>();
 
+// ── RoleBadge ─────────────────────────────────────────────────────────────────
+// Three visual tiers matching the HTML mockup:
+//   org-level  (admin, chairperson) → dark fill
+//   dept-level (department_head)    → gold
+//   functional (finance, member…)   → green
+const roleBadgeClass: Record<string, string> = {
+  admin:           "bg-ink text-white",
+  chairperson:     "bg-ink text-white",
+  department_head: "bg-[#F1EAE0] text-[#A6672E]",
+  finance:         "bg-linen text-[#4B6650]",
+  member:          "bg-linen text-[#4B6650]",
+};
+
+const roleLabels: Record<string, string> = {
+  admin:           "Admin",
+  chairperson:     "Chairperson",
+  department_head: "Dept. head",
+  finance:         "Finance",
+  member:          "Member",
+};
+
 function RoleBadge({ role }: { role: string }) {
-  const roleBadgeClass: Record<string, string> = {
-    chairperson: "bg-ink text-white",
-    department_head: "bg-clay-light text-clay",
-    finance: "bg-moss-light text-moss",
-    default: "bg-linen text-ink",
-  };
-
-  const cls = roleBadgeClass[role] || roleBadgeClass.default;
-  const displayName = role === "department_head" ? "Dept. Head" : role.charAt(0).toUpperCase() + role.slice(1);
-
+  const cls = roleBadgeClass[role] ?? "bg-linen text-ink";
+  const label = roleLabels[role] ?? (role.charAt(0).toUpperCase() + role.slice(1));
   return (
-    <span className={`${cls} text-xs font-semibold px-2.5 py-1 rounded-full w-fit`}>
-      {displayName}
+    <span className={cn("text-[11.5px] font-medium px-2.5 py-1 rounded-full inline-block", cls)}>
+      {label}
     </span>
   );
 }
 
-export function MembersSection({ members, departments, currentTab, currentDept, currentRole, currentPage, totalPages, totalMembers }: MembersSectionProps) {
+// ── Pill tab strip ─────────────────────────────────────────────────────────────
+interface PillTabsProps {
+  value: string;
+  onChange: (v: string) => void;
+  tabs: Array<{ value: string; label: string; count: number }>;
+}
+
+function PillTabs({ value, onChange, tabs }: PillTabsProps) {
+  return (
+    <div className="inline-flex items-center gap-1 bg-(--border) p-[3px] rounded-[10px]">
+      {tabs.map((t) => (
+        <button
+          key={t.value}
+          type="button"
+          onClick={() => onChange(t.value)}
+          className={cn(
+            "px-4 py-[7px] text-[13px] font-medium rounded-[8px] transition-colors cursor-pointer",
+            value === t.value
+              ? "bg-white text-(--text) shadow-sm"
+              : "text-(--muted) hover:text-(--text)"
+          )}
+        >
+          {t.label}{" "}
+          <span className={cn("font-normal", value === t.value ? "text-(--muted)" : "text-(--muted)")}>
+            ({t.count})
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export function MembersSection({
+  members,
+  departments,
+  currentTab,
+  currentDept,
+  currentRole,
+  currentPage,
+  totalPages,
+  totalMembers,
+  tabCounts,
+}: MembersSectionProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -80,10 +129,16 @@ export function MembersSection({ members, departments, currentTab, currentDept, 
     navigate({ tab: currentTab, dept: currentDept, role: currentRole, page: page > 1 ? String(page) : "" });
   };
 
+  const tabs = [
+    { value: "active",   label: "Active",   count: tabCounts?.active   ?? 0 },
+    { value: "inactive", label: "Inactive", count: tabCounts?.inactive ?? 0 },
+    { value: "all",      label: "All",      count: tabCounts?.all      ?? 0 },
+  ];
+
   const columns = useMemo(() => [
     helper.accessor("name", {
       header: "Name",
-      cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+      cell: ({ row }) => <span className="font-medium text-(--text)">{row.original.name}</span>,
     }),
     helper.accessor("role", {
       header: "Role",
@@ -92,25 +147,34 @@ export function MembersSection({ members, departments, currentTab, currentDept, 
     helper.display({
       id: "department",
       header: "Department",
-      cell: ({ row }) => <span className="text-(--muted)">{row.original.department?.name ?? "—"}</span>,
+      cell: ({ row }) => row.original.department
+        ? <span className="text-(--muted)">{row.original.department.name}</span>
+        : <span className="text-[#B3B0A5]">—</span>,
     }),
     helper.accessor("isActive", {
       header: "Status",
-      cell: ({ row }) => (
-        <span className={`text-sm font-semibold ${row.original.isActive ? "text-moss" : "text-warmgray"}`}>
-          {row.original.isActive ? "Active" : "Inactive"}
-        </span>
-      ),
+      cell: ({ row }) => row.original.isActive
+        ? (
+          <span className="flex items-center gap-1.5 text-[#4B6650] font-medium text-[13.5px]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4B6650] shrink-0" aria-hidden />
+            Active
+          </span>
+        ) : (
+          <span className="text-(--muted) text-[13.5px]">Inactive</span>
+        ),
     }),
     helper.accessor("joinedAt", {
       header: "Joined",
-      cell: ({ row }) => <span className="font-mono text-(--muted)">{formatDate(row.original.joinedAt)}</span>,
+      cell: ({ row }) => <span className="text-(--muted)">{formatDate(row.original.joinedAt)}</span>,
     }),
     helper.display({
       id: "actions",
       header: "",
       cell: () => (
-        <button className="border-none bg-none cursor-pointer text-(--muted) hover:text-(--text) transition-colors">
+        <button
+          className="w-7 h-7 flex items-center justify-center rounded-md text-(--muted) hover:bg-(--bg) hover:text-(--text) transition-colors cursor-pointer"
+          aria-label="More options"
+        >
           <MoreHorizontal size={16} aria-hidden />
         </button>
       ),
@@ -118,52 +182,46 @@ export function MembersSection({ members, departments, currentTab, currentDept, 
   ] as ColumnDef<Member>[], []);
 
   return (
-    <div>
-      <p className="text-[12px] font-semibold text-(--muted) uppercase tracking-[0.03em] mb-2.5">Members</p>
-      <div className="flex items-center justify-between gap-3 mb-2.5 border-b border-(--border)">
-        <Tabs value={currentTab} onValueChange={(v) => navigate({ tab: v, dept: currentDept, role: currentRole, page: "" })}>
-          <TabsList>
-            <TabsTrigger value="active">Active</TabsTrigger>
-            <TabsTrigger value="inactive">Inactive</TabsTrigger>
-            <TabsTrigger value="all">All</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <div className="flex items-center gap-2">
-          <Select value={currentDept} onValueChange={(v) => navigate({ tab: currentTab, dept: v, role: currentRole, page: "" })}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="All departments" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All departments</SelectItem>
-              {departments.map((d) => (
-                <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={currentRole} onValueChange={(v) => navigate({ tab: currentTab, dept: currentDept, role: v, page: "" })}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="All roles" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All roles</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="member">Member</SelectItem>
-              <SelectItem value="finance">Finance</SelectItem>
-              <SelectItem value="chairperson">Chairperson</SelectItem>
-              <SelectItem value="department_head">Dept. Head</SelectItem>
-            </SelectContent>
-          </Select>
+    <div className="mb-9">
+      <p className="text-[13px] font-semibold text-(--text) uppercase tracking-wider mb-3">Members</p>
+
+      <div className="bg-white border border-(--border) rounded-2xl overflow-hidden">
+        {/* Filters row */}
+        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-(--border)">
+          <PillTabs
+            value={currentTab}
+            onChange={(v) => navigate({ tab: v, dept: currentDept, role: currentRole, page: "" })}
+            tabs={tabs}
+          />
+          <div className="flex items-center gap-2">
+            <Select value={currentDept} onValueChange={(v) => navigate({ tab: currentTab, dept: v, role: currentRole, page: "" })}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="All departments" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All departments</SelectItem>
+                {departments.map((d) => (
+                  <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={currentRole} onValueChange={(v) => navigate({ tab: currentTab, dept: currentDept, role: v, page: "" })}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="All roles" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="member">Member</SelectItem>
+                <SelectItem value="finance">Finance</SelectItem>
+                <SelectItem value="chairperson">Chairperson</SelectItem>
+                <SelectItem value="department_head">Dept. Head</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between mb-2.5">
-        <p className="text-[13px] text-(--muted)">
-          {totalMembers} member{totalMembers !== 1 ? "s" : ""}
-          {totalPages > 1 && <> &middot; Page {currentPage} of {totalPages}</>}
-        </p>
-      </div>
-
-      <div className="mb-7">
+        {/* Table */}
         <DataTable
           columns={columns}
           data={members}

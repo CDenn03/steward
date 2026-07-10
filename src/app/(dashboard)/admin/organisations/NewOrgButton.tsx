@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from '@/components/ui/Button';
-import AddOrganizationModal from "@/features/admin/components/organisations/AddOrganisationModal";
+import OrganisationModal from "@/features/admin/components/organisations/OrganisationModal";
 
 export function NewOrgButton() {
   const [open, setOpen] = useState(false);
@@ -13,7 +13,7 @@ export function NewOrgButton() {
       <Button size="sm" onClick={() => setOpen(true)}>
         <Plus size={13} /> New Organisation
       </Button>
-      <AddOrganizationModal open={open} onClose={() => setOpen(false)} />
+      <OrganisationModal open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

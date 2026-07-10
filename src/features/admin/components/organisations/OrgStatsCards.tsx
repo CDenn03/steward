@@ -12,7 +12,7 @@ export function OrgStatsCards({
   activeMemberCount,
 }: OrgStatsCardsProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
       <StatCard label="Members" value={memberCount} />
       <StatCard label="Departments" value={departmentCount} />
       <StatCard label="Pending invites" value={inviteCount} />
@@ -23,9 +23,9 @@ export function OrgStatsCards({
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-white rounded-2xl p-4 text-center">
-      <p className="text-[12px] font-semibold text-warmgray uppercase tracking-wide mb-1.5 m-0">{label}</p>
-      <p className="font-display text-2xl font-semibold text-ink m-0">{value}</p>
+    <div className="bg-white border border-(--border) rounded-2xl px-5 py-4.5">
+      <p className="text-[11px] font-semibold text-(--muted) uppercase tracking-wider mb-2">{label}</p>
+      <p className="font-display text-[30px] font-semibold text-ink leading-none">{value}</p>
     </div>
   );
 }

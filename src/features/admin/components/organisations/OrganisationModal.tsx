@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -18,18 +18,32 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 import { FileUpload } from '@/components/shared/FileUpload';
-import { createOrganizationAction, getOrgLogoUploadUrlAction, saveOrgCreationUploadAction } from "@/features/admin/actions";
-import { CreateOrganizationSchema } from "@/features/admin/schemas";
-import type { CreateOrganizationResult } from "@/features/admin/actions";
+import {
+  createOrganizationAction,
+  updateOrganizationAction,
+  getOrgLogoUploadUrlAction,
+  saveOrgCreationUploadAction,
+} from "@/features/admin/actions";
+import { CreateOrganizationSchema, UpdateOrganizationSchema } from "@/features/admin/schemas";
+import type { CreateOrganizationResult, UpdateOrganizationResult } from "@/features/admin/actions";
 
-type FormValues = z.input<typeof CreateOrganizationSchema>;
+type AddFormValues = z.input<typeof CreateOrganizationSchema>;
+type EditFormValues = z.input<typeof UpdateOrganizationSchema>;
 
-interface AddOrganizationModalProps {
+interface OrganisationModalProps {
   open: boolean;
   onClose: () => void;
+  mode?: "add" | "edit";
+  organizationId?: string;
+  initialData?: {
+    name: string;
+    description: string;
+    logoUrl: string | null;
+    timezone: string;
+  };
 }
 
-const defaultValues: FormValues = {
+const addDefaults: AddFormValues = {
   name: "",
   slug: "",
   description: "",
@@ -39,11 +53,15 @@ const defaultValues: FormValues = {
   timezone: "Africa/Nairobi",
 };
 
-export default function AddOrganizationModal({
+export default function OrganisationModal({
   open,
   onClose,
-}: AddOrganizationModalProps) {
+  mode = "add",
+  organizationId,
+  initialData,
+}: OrganisationModalProps) {
   const router = useRouter();
+  const isEdit = mode === "edit";
   const [formError, setFormError] = useState("");
   const [logoKey, setLogoKey] = useState<string | null>(null);
 
@@ -52,34 +70,69 @@ export default function AddOrganizationModal({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    resolver: zodResolver(CreateOrganizationSchema),
-    defaultValues,
+  } = useForm<AddFormValues | EditFormValues>({
+    resolver: zodResolver(isEdit ? UpdateOrganizationSchema : CreateOrganizationSchema),
+    defaultValues: isEdit
+      ? {
+          name: initialData?.name ?? "",
+          description: initialData?.description ?? "",
+          logoUrl: initialData?.logoUrl ?? null,
+          timezone: initialData?.timezone ?? "Africa/Nairobi",
+        }
+      : addDefaults,
     mode: "onBlur",
     reValidateMode: "onChange",
   });
 
+  useEffect(() => {
+    if (open) {
+      if (isEdit && initialData) {
+        reset({
+          name: initialData.name,
+          description: initialData.description,
+          logoUrl: initialData.logoUrl,
+          timezone: initialData.timezone,
+        });
+      } else {
+        reset(addDefaults);
+      }
+      setFormError("");
+      setLogoKey(null);
+    }
+  }, [open, isEdit, initialData, reset]);
+
   const handleClose = () => {
     if (isSubmitting) return;
-    reset(defaultValues);
+    reset(isEdit ? { name: "", description: "", logoUrl: null, timezone: "Africa/Nairobi" } : addDefaults);
     setFormError("");
     setLogoKey(null);
     onClose();
   };
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: AddFormValues | EditFormValues) => {
     setFormError("");
 
     try {
-      const result: CreateOrganizationResult =
-        await createOrganizationAction({ ...data, ...(logoKey ? { logoUrl: logoKey } : {}) });
+      let result: CreateOrganizationResult | UpdateOrganizationResult;
+
+      if (isEdit && organizationId) {
+        result = await updateOrganizationAction(organizationId, {
+          ...data,
+          ...(logoKey ? { logoUrl: logoKey } : {}),
+        });
+      } else {
+        result = await createOrganizationAction({
+          ...data,
+          ...(logoKey ? { logoUrl: logoKey } : {}),
+        });
+      }
 
       if (!result.success) {
         setFormError(result.error.message);
         return;
       }
 
-      reset(defaultValues);
+      reset(isEdit ? { name: "", description: "", logoUrl: null, timezone: "Africa/Nairobi" } : addDefaults);
       setFormError("");
       setLogoKey(null);
       onClose();
@@ -99,7 +152,7 @@ export default function AddOrganizationModal({
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Onboard Organisation</DialogTitle>
+            <DialogTitle>{isEdit ? "Edit Organisation" : "Onboard Organisation"}</DialogTitle>
           </DialogHeader>
 
           <DialogBody>
@@ -129,13 +182,15 @@ export default function AddOrganizationModal({
               error={errors.name?.message}
             />
 
-            <Input
-              label="Slug"
-              placeholder="grace-community"
-              className="font-mono"
-              {...register("slug")}
-              error={errors.slug?.message}
-            />
+            {!isEdit && (
+              <Input
+                label="Slug"
+                placeholder="grace-community"
+                className="font-mono"
+                {...register("slug" as keyof AddFormValues)}
+                error={(errors as Record<string, { message?: string }>).slug?.message}
+              />
+            )}
 
             <Textarea
               label="Description"
@@ -158,8 +213,8 @@ export default function AddOrganizationModal({
             </Button>
 
             <Button type="submit" size="sm" loading={isSubmitting}>
-              <Plus size={13} />
-              Onboard
+              {isEdit ? <Pencil size={13} /> : <Plus size={13} />}
+              {isEdit ? "Save Changes" : "Onboard"}
             </Button>
           </DialogFooter>
         </form>
