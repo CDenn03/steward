@@ -20,18 +20,18 @@ export function OrgProfileHeader({
   createdAt,
 }: OrgProfileHeaderProps) {
   return (
-    <div className="flex items-start justify-between gap-4 p-5 bg-(--surface) rounded-(--r-card) mb-6">
+    <div className="flex items-start justify-between gap-4 p-5 bg-white rounded-2xl mb-6">
       <div className="flex gap-3.5">
-        <div className="w-14 h-14 rounded-xl bg-(--bg-accent) flex items-center justify-center font-medium text-[18px] text-(--primary) shrink-0">
+        <div className="w-13 h-13 rounded-full bg-linen flex items-center justify-center font-display font-semibold text-ink shrink-0">
           {initials}
         </div>
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="text-[18px] font-medium text-(--text)">{name}</span>
-            <span className="font-mono text-[12px] text-(--muted)">/{slug}</span>
+            <span className="font-display text-xl font-semibold text-ink">{name}</span>
+            <span className="font-mono text-[13px] text-warmgray">/{slug}</span>
           </div>
-          <p className="text-[13px] text-(--muted) mt-1 max-w-105">{description}</p>
-          <div className="flex gap-3.5 mt-2 text-[12px] text-(--muted)">
+          <p className="text-[14px] text-warmgray mt-1 max-w-105">{description}</p>
+          <div className="flex gap-3.5 mt-2 text-[13px] text-warmgray">
             <span>
               <Clock size={14} className="inline align-[-2px] mr-1" aria-hidden />
               {timezone}

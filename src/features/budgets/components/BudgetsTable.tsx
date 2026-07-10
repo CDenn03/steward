@@ -54,7 +54,7 @@ export function BudgetsTable({ budgets }: Readonly<{ budgets: BudgetRow[] }>) {
         <div>
           <p className="font-medium">{info.row.original.title}</p>
           {info.row.original.department && (
-            <p className="text-[11px] text-(--muted)">{info.row.original.department.name}</p>
+            <p className="text-[12px] text-(--muted)">{info.row.original.department.name}</p>
           )}
         </div>
       ),
@@ -85,7 +85,7 @@ export function BudgetsTable({ budgets }: Readonly<{ budgets: BudgetRow[] }>) {
       id: "actions",
       header: "",
       cell: (info) => (
-        <Button variant="ghost" size="sm" className="text-[11px] px-2 py-1"
+        <Button variant="ghost" size="sm" className="text-[12px] px-2 py-1"
           onClick={(e) => { e.stopPropagation(); router.push(`/budgets/${info.row.original.id}`); }}>
           {info.row.original.status === "draft" ? "Edit" : "View"}
         </Button>
@@ -99,7 +99,7 @@ export function BudgetsTable({ budgets }: Readonly<{ budgets: BudgetRow[] }>) {
         {FILTERS.map((f) => (
           <button key={f.value} onClick={() => setFilter(f.value)}
             className={cn(
-              "px-3 py-1.5 text-[12px] font-medium rounded-[var(--r-btn)] border transition-all",
+              "px-3 py-1.5 text-[13px] font-medium rounded-[var(--r-btn)] border transition-all",
               filter === f.value
                 ? "bg-(--primary) text-white border-(--primary)"
                 : "bg-transparent text-(--muted) border-(--border) hover:bg-(--bg) hover:text-(--text)"
@@ -111,7 +111,7 @@ export function BudgetsTable({ budgets }: Readonly<{ budgets: BudgetRow[] }>) {
           <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--muted)" />
           <input type="text" placeholder="Search budgets…" value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-7 pr-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-48 focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors" />
+            className="pl-7 pr-3 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-48 focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors" />
         </div>
       </div>
       <Card>

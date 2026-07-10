@@ -52,7 +52,7 @@ export function DialogTitle({
 }: Readonly<DialogPrimitive.DialogTitleProps>) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-[15px] font-semibold", className)}
+      className={cn("text-[16px] font-semibold", className)}
       {...props}
     />
   );

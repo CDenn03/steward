@@ -10,7 +10,7 @@ function initials(name: string) {
   return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
 }
 
-const ORG_COLORS = ["#1F4B99", "#15803D", "#7C3AED", "#B45309", "#0F766E"];
+const ORG_COLORS = ["#4B6650", "#A6672E", "#79766B", "#B94A3F", "#1E2A24"];
 function orgColor(name: string) {
   let n = 0;
   for (const c of name) n += c.charCodeAt(0);

@@ -36,7 +36,7 @@ export function LoginForm() {
       <div className="flex items-center gap-2.5 justify-center mb-8">
         <div className="flex flex-col items-center">
           <p className="text-[17px] font-semibold tracking-tight">Steward</p>
-          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">
+          <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px]">
             Financial Governance
           </p>
         </div>
@@ -44,12 +44,12 @@ export function LoginForm() {
 
       <div className="bg-(--surface) border border-(--border) rounded-(--r-dialog) p-7">
         <h1 className="text-[18px] font-semibold mb-1">Welcome back</h1>
-        <p className="text-[13px] text-(--muted) mb-6">Sign in to your account</p>
+        <p className="text-[14px] text-(--muted) mb-6">Sign in to your account</p>
 
         <div
           role="tablist"
           aria-label="Sign-in method"
-          className="flex rounded-[var(--r-btn)] border border-(--border) overflow-hidden mb-5 text-[12px]"
+          className="flex rounded-[var(--r-btn)] border border-(--border) overflow-hidden mb-5 text-[13px]"
         >
           {MODES.map((m) => (
             <button
@@ -71,7 +71,7 @@ export function LoginForm() {
 
         <form className="space-y-3.5" onSubmit={handleSubmit} noValidate>
           <div>
-            <label htmlFor="email" className="block text-[12px] font-medium mb-1.5">
+            <label htmlFor="email" className="block text-[13px] font-medium mb-1.5">
               Email address
             </label>
             <div className="relative">
@@ -85,7 +85,7 @@ export function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.org"
-                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors border-(--border)"
+                className="w-full pl-8 pr-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors border-(--border)"
                 style={fieldErrors.email ? { borderColor: "#f87171" } : undefined}
               />
             </div>
@@ -94,10 +94,10 @@ export function LoginForm() {
           {mode === "password" && (
             <div>
               <div className="flex justify-between mb-1.5">
-                <label htmlFor="password" className="text-[12px] font-medium">
+                <label htmlFor="password" className="text-[13px] font-medium">
                   Password
                 </label>
-                <Link href="/forgot-password" className="text-[12px] text-(--primary) hover:underline">
+                <Link href="/forgot-password" className="text-[13px] text-(--primary) hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -111,7 +111,7 @@ export function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-8 pr-9 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors border-(--border)"
+                  className="w-full pl-8 pr-9 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors border-(--border)"
                   style={fieldErrors.password ? { borderColor: "#f87171" } : undefined}
                 />
                 <button
@@ -141,14 +141,14 @@ export function LoginForm() {
 
         <div className="flex items-center gap-3 my-5">
           <div className="flex-1 h-px bg-(--border)" />
-          <span className="text-[11px] text-(--muted)">or</span>
+          <span className="text-[12px] text-(--muted)">or</span>
           <div className="flex-1 h-px bg-(--border)" />
         </div>
 
         <GoogleButton onClick={handleGoogle} disabled={loading} />
       </div>
 
-      <p className="text-center text-[12px] text-(--muted) mt-5">
+      <p className="text-center text-[13px] text-(--muted) mt-5">
         Have an invite?{" "}
         <Link href="/invite" className="text-(--primary) hover:underline font-medium">
           Accept invitation

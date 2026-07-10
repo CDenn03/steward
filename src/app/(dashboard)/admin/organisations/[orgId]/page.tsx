@@ -11,7 +11,7 @@ export default async function OrgSettingsPage(props: { params: Promise<{ orgId: 
   const orgs = await getOrganizationOverviews();
   const org = orgs.find((o) => o.id === orgId);
 
-  if (!org) return <div className="p-7 text-[13px] text-(--muted)">Organisation not found</div>;
+  if (!org) return <div className="p-7 text-[14px] text-(--muted)">Organisation not found</div>;
 
   return (
     <>
@@ -40,19 +40,19 @@ export default async function OrgSettingsPage(props: { params: Promise<{ orgId: 
               <CardTitle><p className="text-[14px] font-medium">Overview</p></CardTitle>
             </CardHeader>
             <CardBody className="space-y-3">
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Members</span>
                 <span className="font-medium">{org.members.length}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Departments</span>
                 <span className="font-medium">{org.departmentCount}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Budgets</span>
                 <span className="font-medium">{org.budgetCount}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Approved Budgets</span>
                 <span className="font-medium">{org.approvedBudgetCount}</span>
               </div>

@@ -107,7 +107,7 @@ export default function AddOrganizationModal({
               <div
                 role="alert"
                 aria-live="polite"
-                className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[13px] text-danger"
+                className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[14px] text-danger"
               >
                 {formError}
               </div>

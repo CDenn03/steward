@@ -28,7 +28,7 @@ export default async function PlatformOrgsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-semibold truncate">{org.name}</p>
-                    <p className="text-[11px] text-(--muted)">{org.description}</p>
+                    <p className="text-[12px] text-(--muted)">{org.description}</p>
                   </div>
                 </div>
 
@@ -39,8 +39,8 @@ export default async function PlatformOrgsPage() {
                     { label: "Budgets", value: org.budgetCount },
                   ].map(({ label, value }) => (
                     <div key={label} className="bg-(--bg) rounded-lg px-2 py-2">
-                      <p className="text-[11px] text-(--muted) mb-0.5">{label}</p>
-                      <p className="text-[13px] font-semibold">{value}</p>
+                      <p className="text-[12px] text-(--muted) mb-0.5">{label}</p>
+                      <p className="text-[14px] font-semibold">{value}</p>
                     </div>
                   ))}
                 </div>

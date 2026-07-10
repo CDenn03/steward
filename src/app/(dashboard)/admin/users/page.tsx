@@ -54,7 +54,7 @@ export default async function AdminUsersPage() {
           { label: "Total Memberships", value: stats.memberships },
         ].map((stat) => (
           <div key={stat.label} className="bg-(--surface) border border-(--border) rounded-(--r-card) px-4 py-3.5">
-            <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px] font-medium mb-1">{stat.label}</p>
+            <p className="text-[12px] text-(--muted) uppercase tracking-[0.5px] font-medium mb-1">{stat.label}</p>
             <p className="text-[22px] font-semibold tracking-tight">{stat.value}</p>
           </div>
         ))}

@@ -13,9 +13,9 @@ const ToastContext = createContext<ToastCtx>({ toast: () => {} });
 export function useToast() { return useContext(ToastContext); }
 
 const ICONS = {
-  success: <CheckCircle2 size={15} className="shrink-0 text-emerald-500" />,
-  error:   <AlertCircle  size={15} className="shrink-0 text-red-500" />,
-  info:    <Info         size={15} className="shrink-0 text-blue-500" />,
+  success: <CheckCircle2 size={15} className="shrink-0 text-(--success)" />,
+  error:   <AlertCircle  size={15} className="shrink-0 text-(--danger)" />,
+  info:    <Info         size={15} className="shrink-0 text-(--primary)" />,
 };
 
 const DURATION = 4000;
@@ -72,14 +72,14 @@ export function ToastProvider({ children }: Readonly<{ children: React.ReactNode
             role="alert"
             onMouseEnter={() => handleMouseEnter(t.id)}
             onMouseLeave={() => handleMouseLeave(t.id)}
-            className="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-lg shadow-black/8 dark:shadow-black/40 text-[13px] text-zinc-800 dark:text-zinc-100 w-full"
+            className="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl bg-(--surface) border border-(--border) shadow-lg shadow-black/8 dark:shadow-black/40 text-[14px] text-(--text) w-full"
           >
             {ICONS[t.type]}
             <span className="flex-1 leading-snug">{t.message}</span>
             <button
               onClick={() => dismiss(t.id)}
               aria-label="Dismiss"
-              className="shrink-0 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+              className="shrink-0 text-(--muted) hover:text-(--text) transition-colors"
             >
               <X size={13} />
             </button>

@@ -36,7 +36,7 @@ export function NotificationList({ notifications }: { notifications: Notificatio
   return (
     <div className="divide-y divide-(--border)">
       {notifications.length === 0 ? (
-        <div className="px-5 py-12 text-center text-[13px] text-(--muted)">No notifications</div>
+        <div className="px-5 py-12 text-center text-[14px] text-(--muted)">No notifications</div>
       ) : (
         notifications.map((n) => (
           <div
@@ -54,11 +54,11 @@ export function NotificationList({ notifications }: { notifications: Notificatio
               <Bell size={14} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className={cn("text-[13px]", !n.read ? "font-semibold" : "font-medium")}>{n.title}</p>
-              <p className="text-[12px] text-(--muted) mt-0.5">{n.message}</p>
+              <p className={cn("text-[14px]", !n.read ? "font-semibold" : "font-medium")}>{n.title}</p>
+              <p className="text-[13px] text-(--muted) mt-0.5">{n.message}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-[11px] text-(--muted)">{formatRelative(n.createdAt)}</span>
+              <span className="text-[12px] text-(--muted)">{formatRelative(n.createdAt)}</span>
               {!n.read && <span className="w-2 h-2 rounded-full bg-(--primary)" />}
             </div>
           </div>

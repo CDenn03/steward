@@ -23,9 +23,9 @@ export function OrgStatsCards({
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-(--surface) rounded-(--r-card) p-4">
-      <p className="text-[13px] text-(--muted) m-0 mb-1">{label}</p>
-      <p className="text-[24px] font-medium m-0">{value}</p>
+    <div className="bg-white rounded-2xl p-4 text-center">
+      <p className="text-[12px] font-semibold text-warmgray uppercase tracking-wide mb-1.5 m-0">{label}</p>
+      <p className="font-display text-2xl font-semibold text-ink m-0">{value}</p>
     </div>
   );
 }

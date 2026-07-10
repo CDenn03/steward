@@ -35,8 +35,8 @@ export function ConfirmDialog({
               <AlertTriangle size={15} className="text-danger" />
             </div>
           )}
-          <p className="text-[15px] font-semibold mb-1">{title}</p>
-          <p className="text-[13px] text-(--muted) leading-relaxed">{message}</p>
+          <p className="text-[16px] font-semibold mb-1">{title}</p>
+          <p className="text-[14px] text-(--muted) leading-relaxed">{message}</p>
         </div>
         <div className="flex justify-end gap-2 px-5 py-4 border-t border-(--border)">
           <Button variant="ghost" size="sm" onClick={onCancel} disabled={loading}>Cancel</Button>

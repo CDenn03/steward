@@ -84,7 +84,7 @@ export default async function ApprovalsPage() {
           { label: "Expenditure Reports", value: pendingReports.length, color: "text-(--muted)" },
         ].map((item) => (
           <div key={item.label} className="bg-(--surface) border border-(--border) rounded-(--r-card) px-5 py-4">
-            <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-2">{item.label}</p>
+            <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-2">{item.label}</p>
             <p className={`text-[24px] font-semibold ${item.color}`}>{item.value}</p>
           </div>
         ))}
@@ -96,22 +96,22 @@ export default async function ApprovalsPage() {
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Finance Review Queue</p>
-                <p className="text-[12px] text-(--muted)">{approvalRows.length} pending items</p>
+                <p className="text-[13px] text-(--muted)">{approvalRows.length} pending items</p>
               </CardTitle>
             </CardHeader>
             <div className="divide-y divide-(--border)">
               {approvalRows.length === 0 ? (
-                <div className="px-5 py-10 text-center text-[13px] text-(--muted)">No pending items</div>
+                <div className="px-5 py-10 text-center text-[14px] text-(--muted)">No pending items</div>
               ) : (
                 approvalRows.map((approval: ApprovalRow) => {
                   const total = approval.budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
                   return (
                     <div key={approval.id} className="px-5 py-4">
                       <div className="flex items-start gap-3 mb-3">
-                        <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[10px] font-semibold shrink-0">KES</div>
+                        <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold shrink-0">KES</div>
                         <div className="flex-1">
-                          <p className="text-[13px] font-medium">{approval.budget.title}</p>
-                          <p className="text-[11px] text-(--muted)">
+                          <p className="text-[14px] font-medium">{approval.budget.title}</p>
+                          <p className="text-[12px] text-(--muted)">
                             {formatCurrency(total)} · {approval.budget.department?.name ?? "General"} · Submitted {formatRelative(approval.createdAt)}
                           </p>
                         </div>
@@ -145,29 +145,29 @@ export default async function ApprovalsPage() {
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Disbursement Queue</p>
-                <p className="text-[12px] text-(--muted)">{disbursementRows.length} pending</p>
+                <p className="text-[13px] text-(--muted)">{disbursementRows.length} pending</p>
               </CardTitle>
             </CardHeader>
             <div className="divide-y divide-(--border)">
               {disbursementRows.length === 0 ? (
-                <div className="px-5 py-10 text-center text-[13px] text-(--muted)">No pending disbursements</div>
+                <div className="px-5 py-10 text-center text-[14px] text-(--muted)">No pending disbursements</div>
               ) : (
                 disbursementRows.map((d: DisbursementRow) => (
                   <div key={d.id} className="px-5 py-4">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-[10px] bg-success-bg flex items-center justify-center text-[10px] font-semibold shrink-0 text-success">
+                      <div className="w-9 h-9 rounded-[10px] bg-success-bg flex items-center justify-center text-[11px] font-semibold shrink-0 text-success">
                         <DollarSign size={14} />
                       </div>
                       <div className="flex-1">
-                        <p className="text-[13px] font-medium">{d.description}</p>
-                        <p className="text-[11px] text-(--muted)">
+                        <p className="text-[14px] font-medium">{d.description}</p>
+                        <p className="text-[12px] text-(--muted)">
                           {formatCurrency(d.totalAmount)} · {d.budget.title}
                           {d.budget.department && ` · ${d.budget.department.name}`}
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-2 items-center">
-                      <span className="text-[11px] text-(--muted)">From: {d.account.name}</span>
+                      <span className="text-[12px] text-(--muted)">From: {d.account.name}</span>
                       <span className="ml-auto">
                         <ReleaseDisbursementButton disbursementId={d.id} />
                       </span>
@@ -183,22 +183,22 @@ export default async function ApprovalsPage() {
           <CardHeader>
             <CardTitle>
               <p className="text-[14px] font-medium">Expenditure Reports</p>
-              <p className="text-[12px] text-(--muted)">{pendingReports.length} pending review</p>
+              <p className="text-[13px] text-(--muted)">{pendingReports.length} pending review</p>
             </CardTitle>
           </CardHeader>
           <div className="divide-y divide-(--border)">
             {pendingReports.length === 0 ? (
-              <div className="px-5 py-10 text-center text-[13px] text-(--muted)">No pending reports</div>
+              <div className="px-5 py-10 text-center text-[14px] text-(--muted)">No pending reports</div>
             ) : (
               pendingReports.map((report: ReportRow) => (
                 <div key={report.id} className="px-5 py-4">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-[10px] bg-draft-bg flex items-center justify-center text-[10px] font-semibold shrink-0">REP</div>
+                    <div className="w-9 h-9 rounded-[10px] bg-draft-bg flex items-center justify-center text-[11px] font-semibold shrink-0">REP</div>
                     <div className="flex-1">
-                      <p className="text-[13px] font-medium">
+                      <p className="text-[14px] font-medium">
                         {report.title}
                       </p>
-                      <p className="text-[11px] text-(--muted)">
+                      <p className="text-[12px] text-(--muted)">
                         {formatCurrency(report.totalClaimed)} claimed · {report.submittedAt ? formatRelative(report.submittedAt) : "Not submitted"}
                       </p>
                     </div>
@@ -217,17 +217,17 @@ export default async function ApprovalsPage() {
             {pendingChair.length > 0 && (
               <>
                 <div className="px-5 py-3 bg-(--bg)">
-                  <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.6px]">Chairperson Approvals</p>
+                  <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.6px]">Chairperson Approvals</p>
                 </div>
                 {pendingChair.map((budget: BudgetRow) => {
                   const total = budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
                   return (
                     <div key={budget.id} className="px-5 py-4">
                       <div className="flex items-start gap-3 mb-3">
-                        <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[10px] font-semibold shrink-0">OK</div>
+                        <div className="w-9 h-9 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold shrink-0">OK</div>
                         <div className="flex-1">
-                          <p className="text-[13px] font-medium">{budget.title}</p>
-                          <p className="text-[11px] text-(--muted)">{formatCurrency(total)} · Finance Approved</p>
+                          <p className="text-[14px] font-medium">{budget.title}</p>
+                          <p className="text-[12px] text-(--muted)">{formatCurrency(total)} · Finance Approved</p>
                         </div>
                         <StatusBadge status={status(budget.status)} />
                       </div>

@@ -122,43 +122,43 @@ export function UserDetailModal({ user, organizations, open, onClose, defaultEdi
       <DialogContent aria-label={user.name}>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[12px] font-semibold text-(--primary)">
+            <div className="w-8 h-8 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[13px] font-semibold text-(--primary)">
               {user.initials}
             </div>
             <div>
               <DialogTitle>{user.name}</DialogTitle>
-              <p className="text-[11px] text-(--muted)">{user.email}</p>
+              <p className="text-[12px] text-(--muted)">{user.email}</p>
             </div>
           </div>
         </DialogHeader>
 
         <DialogBody>
           {error && (
-            <div className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[13px] text-danger">{error}</div>
+            <div className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[14px] text-danger">{error}</div>
           )}
 
           <div>
-            <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-3">Account Details</p>
+            <p className="text-[13px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-3">Account Details</p>
             {editing ? (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[12px] font-medium mb-1">Name</label>
+                  <label className="block text-[13px] font-medium mb-1">Name</label>
                   <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors" />
+                    className="w-full px-3 py-2 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium mb-1">Email</label>
+                  <label className="block text-[13px] font-medium mb-1">Email</label>
                   <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors" />
+                    className="w-full px-3 py-2 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors" />
                 </div>
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="flex items-center gap-3 text-[13px]">
+                <div className="flex items-center gap-3 text-[14px]">
                   <span className="text-(--muted) w-16">Name</span>
                   <span className="font-medium">{user.name}</span>
                 </div>
-                <div className="flex items-center gap-3 text-[13px]">
+                <div className="flex items-center gap-3 text-[14px]">
                   <span className="text-(--muted) w-16">Email</span>
                   <span>{user.email}</span>
                 </div>
@@ -167,7 +167,7 @@ export function UserDetailModal({ user, organizations, open, onClose, defaultEdi
           </div>
 
           <div>
-            <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-3">
+            <p className="text-[13px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-3">
               Memberships ({user.memberships.length})
             </p>
             <div className="space-y-2">
@@ -176,19 +176,19 @@ export function UserDetailModal({ user, organizations, open, onClose, defaultEdi
                 return (
                   <div key={membership.id} className="flex items-center gap-3 bg-(--bg) border border-(--border) rounded-[10px] px-3.5 py-3">
                     <div
-                      className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                      className="w-7 h-7 rounded-[7px] flex items-center justify-center text-white text-[11px] font-bold shrink-0"
                       style={{ background: membership.org.primaryColor }}
                     >
                       {membership.org.logoInitials}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium">{membership.org.name}</p>
+                      <p className="text-[14px] font-medium">{membership.org.name}</p>
                       {editing ? (
                         <div className="flex items-center gap-2 mt-1">
                           <select
                             value={currentRole}
                             onChange={(e) => handleRoleChange(membership.id, e.target.value)}
-                            className="px-2 py-1 text-[11px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text)"
+                            className="px-2 py-1 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text)"
                           >
                             {ROLE_OPTIONS.map((r) => (
                               <option key={r} value={r}>{roleLabels[r.toLowerCase()] ?? r}</option>
@@ -196,7 +196,7 @@ export function UserDetailModal({ user, organizations, open, onClose, defaultEdi
                           </select>
                         </div>
                       ) : (
-                        <p className="text-[11px] text-(--muted)">{roleLabels[membership.role] ?? membership.role}</p>
+                        <p className="text-[12px] text-(--muted)">{roleLabels[membership.role] ?? membership.role}</p>
                       )}
                     </div>
                     <Badge variant={roleVariants[membership.role] ?? "draft"}>
@@ -219,14 +219,14 @@ export function UserDetailModal({ user, organizations, open, onClose, defaultEdi
 
           {editing && availableOrgs.length > 0 && (
             <div>
-              <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-3">Add Membership</p>
+              <p className="text-[13px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-3">Add Membership</p>
               <div className="flex items-end gap-2">
                 <div className="flex-1">
-                  <label className="block text-[12px] font-medium mb-1">Organisation</label>
+                  <label className="block text-[13px] font-medium mb-1">Organisation</label>
                   <select
                     value={newOrgId}
                     onChange={(e) => setNewOrgId(e.target.value)}
-                    className="w-full px-3 py-2 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+                    className="w-full px-3 py-2 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   >
                     <option value="">Select organisation…</option>
                     {availableOrgs.map((o) => (
@@ -235,11 +235,11 @@ export function UserDetailModal({ user, organizations, open, onClose, defaultEdi
                   </select>
                 </div>
                 <div className="w-36">
-                  <label className="block text-[12px] font-medium mb-1">Role</label>
+                  <label className="block text-[13px] font-medium mb-1">Role</label>
                   <select
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value)}
-                    className="w-full px-3 py-2 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+                    className="w-full px-3 py-2 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   >
                     {ROLE_OPTIONS.map((r) => (
                       <option key={r} value={r}>{roleLabels[r.toLowerCase()] ?? r}</option>

@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma/client";
 import { OrgPickerClient } from '@/features/auth/components/OrgPickerClient';
 
-const ORG_COLORS = ["#1F4B99", "#15803D", "#7C3AED", "#B45309", "#0F766E"];
+const ORG_COLORS = ["#4B6650", "#A6672E", "#79766B", "#B94A3F", "#1E2A24"];
 function orgColor(name: string) {
   let n = 0;
   for (const c of name) n += c.charCodeAt(0);
@@ -27,16 +27,13 @@ export default async function OrgPickerPage() {
     redirect("/platform-admin");
   }
 
-  try {
-    const cookieStore = await cookies();
-    const orgSlug = cookieStore.get("org_slug")?.value;
-    if (orgSlug) {
-      const match = memberships.find((m: (typeof memberships)[number]) => m.organization.slug === orgSlug);
-      if (match) {
-        redirect(`/splash/${match.organizationId}`);
-      }
+  const cookieStore = await cookies();
+  const orgSlug = cookieStore.get("org_slug")?.value;
+  if (orgSlug) {
+    const match = memberships.find((m: (typeof memberships)[number]) => m.organization.slug === orgSlug);
+    if (match) {
+      redirect(`/splash/${match.organizationId}`);
     }
-  } catch {
   }
 
   const data = memberships.map((m: (typeof memberships)[number]) => ({

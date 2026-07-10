@@ -29,7 +29,7 @@ export function ReleaseDisbursementButton({ disbursementId }: { disbursementId: 
       <Button size="sm" onClick={handleRelease} loading={loading}>
         <CheckCircle2 size={13} /> Release Funds
       </Button>
-      {error && <p className="text-[11px] text-danger mt-1">{error}</p>}
+      {error && <p className="text-[12px] text-danger mt-1">{error}</p>}
     </div>
   );
 }

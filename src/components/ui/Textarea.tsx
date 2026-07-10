@@ -23,7 +23,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={textareaId} className="text-[12px] font-medium text-(--text)">
+          <label htmlFor={textareaId} className="text-[13px] font-medium text-(--text)">
             {label}
           </label>
         )}
@@ -34,7 +34,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           aria-describedby={errorId}
           className={cn(
             "w-full bg-(--surface) border border-(--border) rounded-(--r-input)",
-            "px-3 py-2 text-[13px] text-(--text) placeholder:text-(--muted)",
+            "px-3 py-2 text-[14px] text-(--text) placeholder:text-(--muted)",
             "outline-none transition-all duration-150 resize-none",
             "focus:border-(--primary) focus:ring-2 focus:ring-(--primary) focus:ring-opacity-20",
             error && "border-danger",
@@ -43,7 +43,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {error && (
-          <p id={errorId} role="alert" className="text-[11px] text-(--danger)">
+          <p id={errorId} role="alert" className="text-[12px] text-(--danger)">
             {error}
           </p>
         )}

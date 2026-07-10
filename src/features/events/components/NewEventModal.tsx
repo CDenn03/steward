@@ -87,8 +87,8 @@ export function NewEventModal({
           <div className="flex items-center gap-2">
             <Calendar size={16} className="text-(--muted)" />
             <div>
-              <p className="text-[15px] font-semibold">New Event</p>
-              <p className="text-[12px] text-(--muted)">Create a new church event</p>
+              <p className="text-[16px] font-semibold">New Event</p>
+              <p className="text-[13px] text-(--muted)">Create a new church event</p>
             </div>
           </div>
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-(--bg) transition-colors">
@@ -98,21 +98,21 @@ export function NewEventModal({
 
         <div className="p-5 space-y-4">
           {formError && (
-            <div className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[13px] text-danger">{formError}</div>
+            <div className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[14px] text-danger">{formError}</div>
           )}
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Event Name <span className="text-danger">*</span></label>
+            <label className="block text-[13px] font-medium mb-1.5">Event Name <span className="text-danger">*</span></label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Youth Annual Camp 2025"
-              className={cn("w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors", errors.name ? "border-danger" : "border-(--border)")} />
-            {errors.name && <p className="text-[11px] text-danger mt-1">{errors.name}</p>}
+              className={cn("w-full px-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors", errors.name ? "border-danger" : "border-(--border)")} />
+            {errors.name && <p className="text-[12px] text-danger mt-1">{errors.name}</p>}
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Department</label>
+            <label className="block text-[13px] font-medium mb-1.5">Department</label>
             <select value={departmentId} onChange={(e) => setDepartmentId(e.target.value)}
-              className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors">
+              className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors">
               <option value="">None</option>
               {departments.map((d) => (
                 <option key={d.id} value={d.id}>{d.name}</option>
@@ -121,29 +121,29 @@ export function NewEventModal({
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Description</label>
+            <label className="block text-[13px] font-medium mb-1.5">Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Event description..." rows={2}
-              className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none" />
+              className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[12px] font-medium mb-1.5">Start Date <span className="text-danger">*</span></label>
+              <label className="block text-[13px] font-medium mb-1.5">Start Date <span className="text-danger">*</span></label>
               <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-                className={cn("w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors", errors.startDate ? "border-danger" : "border-(--border)")} />
-              {errors.startDate && <p className="text-[11px] text-danger mt-1">{errors.startDate}</p>}
+                className={cn("w-full px-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors", errors.startDate ? "border-danger" : "border-(--border)")} />
+              {errors.startDate && <p className="text-[12px] text-danger mt-1">{errors.startDate}</p>}
             </div>
             <div>
-              <label className="block text-[12px] font-medium mb-1.5">End Date</label>
+              <label className="block text-[13px] font-medium mb-1.5">End Date</label>
               <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors" />
+                className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors" />
             </div>
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Status</label>
+            <label className="block text-[13px] font-medium mb-1.5">Status</label>
             <select value={status} onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors">
+              className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors">
               {STATUS_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
@@ -153,15 +153,15 @@ export function NewEventModal({
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)}
               className="w-4 h-4 rounded border-(--border) text-(--primary) focus:ring-(--primary)" />
-            <span className="text-[12px] font-medium">Recurring event</span>
+            <span className="text-[13px] font-medium">Recurring event</span>
           </label>
 
           {isRecurring && (
             <div>
-              <label className="block text-[12px] font-medium mb-1.5">Recurrence Rule</label>
+              <label className="block text-[13px] font-medium mb-1.5">Recurrence Rule</label>
               <input type="text" value={recurrenceRule} onChange={(e) => setRecurrenceRule(e.target.value)}
                 placeholder="e.g. yearly, monthly"
-                className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors" />
+                className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors" />
             </div>
           )}
         </div>

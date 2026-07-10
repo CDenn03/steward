@@ -59,7 +59,7 @@ export async function getOrganizationOverviews(): Promise<OrganizationOverview[]
     name: organization.name,
     slug: organization.slug,
     description: organization.description,
-    primaryColor: "#1F4B99",
+    primaryColor: "#4B6650",
     logoInitials: organization.name
       .split(" ")
       .map((part: string) => part[0])
@@ -171,7 +171,7 @@ export async function getUsersWithMemberships(params?: {
           id: membership.organization.id,
           name: membership.organization.name,
           slug: membership.organization.slug,
-          primaryColor: "#1F4B99",
+    primaryColor: "#4B6650",
           logoInitials: membership.organization.name
             .split(" ")
             .map((part: string) => part[0])
@@ -248,7 +248,9 @@ export async function getOrganizationDetail(id: string): Promise<OrganizationDet
       },
       departments: {
         include: {
-          memberships: { select: { id: true, isActive: true } },
+          memberships: {
+            select: { id: true, isActive: true, role: true, userId: true },
+          },
         },
         orderBy: { name: "asc" },
       },
@@ -263,10 +265,20 @@ export async function getOrganizationDetail(id: string): Promise<OrganizationDet
   const headIds = org.departments
     .map((d: { headId: string | null }) => d.headId)
     .filter((id: string | null): id is string => id !== null);
-  const headUsers = headIds.length > 0
-    ? await prisma.user.findMany({ where: { id: { in: headIds } }, select: { id: true, name: true } })
+  const headUserIds = new Set(headIds);
+
+  for (const d of org.departments) {
+    const deptHeadMember = (d as { memberships: Array<{ role: string; userId: string; isActive: boolean }> }).memberships
+      .find((m) => m.role === "DEPARTMENT_HEAD" && m.isActive);
+    if (deptHeadMember && !headUserIds.has(deptHeadMember.userId)) {
+      headUserIds.add(deptHeadMember.userId);
+    }
+  }
+
+  const headUsers = headUserIds.size > 0
+    ? await prisma.user.findMany({ where: { id: { in: [...headUserIds] } }, select: { id: true, name: true } })
     : [];
-  const headMap = new Map(headUsers.map((u: { id: string; name: string }) => [u.id, u]));
+  const headMap = new Map<string, { id: string; name: string }>(headUsers.map((u: { id: string; name: string }) => [u.id, u]));
 
   const invitedByIds = org.invites
     .map((i: { invitedById: string }) => i.invitedById)
@@ -302,15 +314,27 @@ export async function getOrganizationDetail(id: string): Promise<OrganizationDet
     })),
     departments: org.departments.map((d: {
       id: string; name: string; description: string | null; headId: string | null; isActive: boolean;
-      memberships: Array<{ id: string; isActive: boolean }>;
-    }) => ({
-      id: d.id,
-      name: d.name,
-      description: d.description,
-      head: d.headId ? (headMap.get(d.headId) ?? null) : null,
-      isActive: d.isActive,
-      memberCount: d.memberships.filter((m: { isActive: boolean }) => m.isActive).length,
-    })),
+      memberships: Array<{ id: string; isActive: boolean; role: string; userId: string }>;
+    }) => {
+      let headUser: { id: string; name: string } | null = null;
+      if (d.headId) {
+        headUser = headMap.get(d.headId) ?? null;
+      }
+      if (!headUser) {
+        const deptHeadMember = d.memberships.find((m) => m.role === "DEPARTMENT_HEAD" && m.isActive);
+        if (deptHeadMember) {
+          headUser = headMap.get(deptHeadMember.userId) ?? null;
+        }
+      }
+      return {
+        id: d.id,
+        name: d.name,
+        description: d.description,
+        head: headUser,
+        isActive: d.isActive,
+        memberCount: d.memberships.filter((m) => m.isActive).length,
+      };
+    }),
     invites: org.invites.map((i: {
       id: string; email: string; role: string; invitedById: string; expiresAt: Date; createdAt: Date;
     }) => ({

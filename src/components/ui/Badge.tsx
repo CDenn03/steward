@@ -25,7 +25,7 @@ export function StatusBadge({ status, className }: Readonly<StatusBadgeProps>) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium",
+        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[12px] font-medium",
         config.className,
         className
       )}
@@ -56,7 +56,7 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium",
+        "inline-flex items-center px-2 py-0.5 rounded-md text-[12px] font-medium",
         variantClasses[variant],
         className
       )}

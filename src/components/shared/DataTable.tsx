@@ -80,7 +80,7 @@ export function DataTable<TData extends Record<string, unknown>>({
   if (isMobile) {
     if (rows.length === 0) {
       return (
-        <div className={cn("px-4 py-12 text-center text-[13px] text-(--muted)", className)}>
+        <div className={cn("px-4 py-12 text-center text-[14px] text-(--muted)", className)}>
           {emptyMessage}
         </div>
       );
@@ -114,10 +114,10 @@ export function DataTable<TData extends Record<string, unknown>>({
                   const label = typeof h === "string" ? h : cell.column.id;
                   return (
                     <div key={cell.id} className="flex items-center justify-between gap-3 py-1.5 first:pt-0 last:pb-0">
-                      <span className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] shrink-0">
+                      <span className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] shrink-0">
                         {label}
                       </span>
-                      <span className="text-[13px] text-(--text) text-right">
+                      <span className="text-[14px] text-(--text) text-right">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </span>
                     </div>
@@ -138,7 +138,7 @@ export function DataTable<TData extends Record<string, unknown>>({
         })}
 
         {pageSize && totalPages > 1 && (
-          <div className="flex items-center justify-between px-2 py-3 text-[13px] text-(--muted)">
+          <div className="flex items-center justify-between px-2 py-3 text-[14px] text-(--muted)">
             <span>
               Page {pagination.pageIndex + 1} of {totalPages}
             </span>
@@ -177,7 +177,7 @@ export function DataTable<TData extends Record<string, unknown>>({
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
                   className={cn(
-                    "text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 select-none",
+                    "text-left text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 select-none",
                     sortable && "cursor-pointer hover:text-(--text)"
                   )}
                 >
@@ -199,7 +199,7 @@ export function DataTable<TData extends Record<string, unknown>>({
             <tr>
               <td
                 colSpan={headerGroup.headers.length}
-                className="px-4 py-12 text-center text-[13px] text-(--muted)"
+                className="px-4 py-12 text-center text-[14px] text-(--muted)"
               >
                 {emptyMessage}
               </td>
@@ -211,13 +211,14 @@ export function DataTable<TData extends Record<string, unknown>>({
                 onClick={() => onRowClick?.(row.original)}
                 className={cn(
                   "border-b border-(--border) last:border-0 transition-colors duration-100",
-                  onRowClick && "cursor-pointer hover:bg-(--bg)"
+                  "odd:bg-(--surface) even:bg-(--bg)",
+                  onRowClick && "cursor-pointer hover:!bg-(--bg)"
                 )}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-4 py-3 text-[13px] text-(--text) align-middle"
+                    className="px-4 py-3 text-[14px] text-(--text) align-middle"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
@@ -229,7 +230,7 @@ export function DataTable<TData extends Record<string, unknown>>({
       </table>
 
       {pageSize && totalPages > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-(--border) text-[13px] text-(--muted)">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-(--border) text-[14px] text-(--muted)">
           <span>
             Page {pagination.pageIndex + 1} of {totalPages}
           </span>

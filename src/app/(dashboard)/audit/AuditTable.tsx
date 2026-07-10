@@ -35,12 +35,12 @@ const columns = [
       const name = actor?.name ?? "Unknown user";
       return (
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary)">
+          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[12px] font-semibold text-(--primary)">
             {name.split(" ").map((p) => p[0]).join("").slice(0, 2)}
           </div>
           <div>
-            <p className="text-[13px] font-medium">{name}</p>
-            <p className="text-[11px] text-(--muted) capitalize">{(actor?.role ?? "member").replace("_", " ")}</p>
+            <p className="text-[14px] font-medium">{name}</p>
+            <p className="text-[12px] text-(--muted) capitalize">{(actor?.role ?? "member").replace("_", " ")}</p>
           </div>
         </div>
       );
@@ -51,8 +51,8 @@ const columns = [
     header: "Entity",
     cell: (info) => (
       <div>
-        <p className="text-[13px]">{info.row.original.entityType}</p>
-        <p className="text-[11px] text-(--muted) font-mono">{info.row.original.entityId}</p>
+        <p className="text-[14px]">{info.row.original.entityType}</p>
+        <p className="text-[12px] text-(--muted) font-mono">{info.row.original.entityId}</p>
       </div>
     ),
   }),
@@ -68,7 +68,7 @@ const columns = [
     id: "detail",
     header: "Detail",
     cell: (info) => (
-      <span className="text-[12px] text-(--muted) font-mono">
+      <span className="text-[13px] text-(--muted) font-mono">
         {info.row.original.after ? JSON.stringify(info.row.original.after) : "-"}
       </span>
     ),

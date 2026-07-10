@@ -88,8 +88,8 @@ export default function SettingsPage() {
               ].map((s) => (
                 <div key={s.label} className="flex items-start justify-between gap-4 py-2 border-b border-(--border) last:border-0">
                   <div>
-                    <p className="text-[13px] font-medium">{s.label}</p>
-                    <p className="text-[12px] text-(--muted)">{s.desc}</p>
+                    <p className="text-[14px] font-medium">{s.label}</p>
+                    <p className="text-[13px] text-(--muted)">{s.desc}</p>
                   </div>
                   <div
                     role="switch"
@@ -111,12 +111,12 @@ export default function SettingsPage() {
             <CardHeader><CardTitle><p className="text-[14px] font-medium">Your Profile</p></CardTitle></CardHeader>
             <CardBody className="space-y-4">
               <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[16px] font-semibold text-(--primary)">
+                <div className="w-12 h-12 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[17px] font-semibold text-(--primary)">
                   {active?.userInitials ?? "?"}
                 </div>
                 <div>
                   <p className="text-[14px] font-medium">{active?.userName ?? "—"}</p>
-                  <p className="text-[12px] text-(--muted)">{active?.userEmail ?? "—"}</p>
+                  <p className="text-[13px] text-(--muted)">{active?.userEmail ?? "—"}</p>
                 </div>
               </div>
               <Input label="Full Name" value={userName} onChange={(e) => setUserName(e.target.value)} />
@@ -138,7 +138,7 @@ export default function SettingsPage() {
             <CardBody className="space-y-3">
               {Object.keys(notifPrefs).map((label) => (
                 <div key={label} className="flex items-center justify-between py-2 border-b border-(--border) last:border-0">
-                  <p className="text-[13px]">{label}</p>
+                  <p className="text-[14px]">{label}</p>
                   <div
                     role="switch"
                     aria-checked={notifPrefs[label]}
@@ -163,7 +163,7 @@ export default function SettingsPage() {
                 </div>
               ))}
               {notifMsg && (
-                <p className="text-[11px] text-(--muted) text-right">{notifMsg}</p>
+                <p className="text-[12px] text-(--muted) text-right">{notifMsg}</p>
               )}
             </CardBody>
           </Card>

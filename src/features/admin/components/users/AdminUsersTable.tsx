@@ -74,12 +74,12 @@ export function AdminUserTable({
       header: "User",
       cell: ({ row }) => (
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
+          <div className="w-7 h-7 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[12px] font-semibold text-(--primary) shrink-0">
             {row.original.userInitials}
           </div>
           <div>
             <p className="font-medium text-(--text)">{row.original.userName}</p>
-            <p className="text-[11px] text-(--muted)">{row.original.userEmail}</p>
+            <p className="text-[12px] text-(--muted)">{row.original.userEmail}</p>
           </div>
         </div>
       ),
@@ -138,13 +138,13 @@ export function AdminUserTable({
             placeholder="Search by name or email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-7 pr-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-full sm:w-56 focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
+            className="pl-7 pr-3 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none w-full sm:w-56 focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
           />
         </div>
         <select
           value={orgFilter}
           onChange={(e) => setOrgFilter(e.target.value)}
-          className="px-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors flex-1 sm:flex-none min-w-[140px]"
+          className="px-3 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors flex-1 sm:flex-none min-w-[140px]"
         >
           <option value="all">All Organisations</option>
           {orgOptions.map((org) => (
@@ -154,7 +154,7 @@ export function AdminUserTable({
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="px-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors flex-1 sm:flex-none min-w-[140px]"
+          className="px-3 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors flex-1 sm:flex-none min-w-[140px]"
         >
           <option value="all">All Roles</option>
           {Object.entries(roleLabels).map(([value, label]) => (
@@ -171,7 +171,7 @@ export function AdminUserTable({
       {/* Mobile stacked cards */}
       <div className="sm:hidden space-y-3">
         {filtered.length === 0 ? (
-          <p className="text-center text-[13px] text-(--muted) py-8">No users match your filters</p>
+          <p className="text-center text-[14px] text-(--muted) py-8">No users match your filters</p>
         ) : (
           filtered.map((row) => (
             <div
@@ -180,12 +180,12 @@ export function AdminUserTable({
             >
               {/* User */}
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[12px] font-semibold text-(--primary) shrink-0">
+                <div className="w-9 h-9 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[13px] font-semibold text-(--primary) shrink-0">
                   {row.userInitials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-(--text) text-[13.5px] truncate">{row.userName}</p>
-                  <p className="text-[11px] text-(--muted) truncate">{row.userEmail}</p>
+                  <p className="text-[12px] text-(--muted) truncate">{row.userEmail}</p>
                 </div>
                 <Badge variant={roleVariants[row.role] ?? "draft"}>
                   {roleLabels[row.role] ?? row.role}
@@ -198,7 +198,7 @@ export function AdminUserTable({
               {/* Org + Department */}
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
-                  <p className="text-[10px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-1">
+                  <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-1">
                     Organisation
                   </p>
                   <div className="flex items-center gap-1.5">
@@ -212,7 +212,7 @@ export function AdminUserTable({
                   </div>
                 </div>
                 <div>
-                  <p className="text-[10px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-1">
+                  <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-1">
                     Department
                   </p>
                   <p className="text-[12.5px] text-(--muted)">{row.departmentName ?? "—"}</p>

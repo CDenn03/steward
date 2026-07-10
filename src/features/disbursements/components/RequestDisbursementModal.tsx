@@ -110,8 +110,8 @@ export function RequestDisbursementModal({
       <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 py-4 border-b border-(--border)">
           <div>
-            <p className="text-[15px] font-semibold">Request Disbursement</p>
-            <p className="text-[12px] text-(--muted)">Request funds from this budget</p>
+            <p className="text-[16px] font-semibold">Request Disbursement</p>
+            <p className="text-[13px] text-(--muted)">Request funds from this budget</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-(--bg) transition-colors">
             <X size={16} />
@@ -120,20 +120,20 @@ export function RequestDisbursementModal({
 
         <div className="p-5 space-y-4">
           {formError && (
-            <div className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[13px] text-danger">
+            <div className="rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[14px] text-danger">
               {formError}
             </div>
           )}
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">
+            <label className="block text-[13px] font-medium mb-1.5">
               Account <span className="text-danger">*</span>
             </label>
             <select
               value={accountId}
               onChange={(e) => setAccountId(e.target.value)}
               className={cn(
-                "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors",
+                "w-full px-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors",
                 errors.accountId ? "border-danger" : "border-(--border)"
               )}
             >
@@ -144,11 +144,11 @@ export function RequestDisbursementModal({
                 </option>
               ))}
             </select>
-            {errors.accountId && <p className="text-[11px] text-danger mt-1">{errors.accountId}</p>}
+            {errors.accountId && <p className="text-[12px] text-danger mt-1">{errors.accountId}</p>}
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">
+            <label className="block text-[13px] font-medium mb-1.5">
               Description <span className="text-danger">*</span>
             </label>
             <input
@@ -157,32 +157,32 @@ export function RequestDisbursementModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What is this disbursement for?"
               className={cn(
-                "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
+                "w-full px-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
                 errors.description ? "border-danger" : "border-(--border)"
               )}
             />
-            {errors.description && <p className="text-[11px] text-danger mt-1">{errors.description}</p>}
+            {errors.description && <p className="text-[12px] text-danger mt-1">{errors.description}</p>}
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Notes (optional)</label>
+            <label className="block text-[13px] font-medium mb-1.5">Notes (optional)</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Additional details..."
               rows={2}
-              className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
+              className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[12px] font-medium">Line Items</label>
+              <label className="text-[13px] font-medium">Line Items</label>
               <Button variant="ghost" size="sm" onClick={() => setItems((prev) => [...prev, newLineItem()])}>
                 <Plus size={12} /> Add Item
               </Button>
             </div>
-            {errors.items && <p className="text-[11px] text-danger mb-2">{errors.items}</p>}
+            {errors.items && <p className="text-[12px] text-danger mb-2">{errors.items}</p>}
             <div className="space-y-2">
               {items.map((item, idx) => (
                 <div key={item.id} className="flex gap-2 items-start">
@@ -232,8 +232,8 @@ export function RequestDisbursementModal({
           </div>
 
           <div className="flex items-center justify-between py-2.5 px-3 bg-(--bg) border border-(--border) rounded-(--r-input)">
-            <span className="text-[12px] text-(--muted)">Total</span>
-            <span className="text-[15px] font-semibold font-mono">{formatCurrency(totalAmount)}</span>
+            <span className="text-[13px] text-(--muted)">Total</span>
+            <span className="text-[16px] font-semibold font-mono">{formatCurrency(totalAmount)}</span>
           </div>
         </div>
 

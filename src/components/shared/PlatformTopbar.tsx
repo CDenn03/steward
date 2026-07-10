@@ -26,7 +26,7 @@ export function PlatformTopbar() {
 
   return (
     <header className="sticky top-0 z-40 h-14 bg-(--surface) border-b border-(--border) flex items-center gap-4 px-4 md:px-7">
-      <div className="flex items-center gap-2 text-[13px] min-w-0">
+      <div className="flex items-center gap-2 text-[14px] min-w-0">
         <Shield size={13} className="text-(--primary) shrink-0" />
         <span className="text-(--muted) hidden sm:inline">Platform Console</span>
         <span className="text-(--muted) hidden sm:inline">›</span>
@@ -43,7 +43,7 @@ export function PlatformTopbar() {
                   placeholder="Search…"
                   autoFocus
                   className={cn(
-                    "w-full h-8 pl-3 pr-3 text-[12px] bg-(--surface) border border-(--border)",
+                    "w-full h-8 pl-3 pr-3 text-[13px] bg-(--surface) border border-(--border)",
                     "rounded-(--r-input) outline-none text-(--text) placeholder:text-(--muted)",
                     "focus:border-(--primary) transition-colors"
                   )}
@@ -70,7 +70,7 @@ export function PlatformTopbar() {
               type="text"
               placeholder="Search…"
               className={cn(
-                "w-full h-8 pl-3 pr-3 text-[12px] bg-(--surface) border border-(--border)",
+                "w-full h-8 pl-3 pr-3 text-[13px] bg-(--surface) border border-(--border)",
                 "rounded-(--r-input) outline-none text-(--text) placeholder:text-(--muted)",
                 "focus:border-(--primary) transition-colors"
               )}

@@ -56,17 +56,17 @@ export function SetPasswordForm() {
         </div>
         <div>
           <p className="text-[17px] font-semibold tracking-tight">Steward</p>
-          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Secure access</p>
+          <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px]">Secure access</p>
         </div>
       </div>
 
       <div className="bg-(--surface) border border-(--border) rounded-(--r-dialog) p-7">
         <h1 className="text-[18px] font-semibold mb-1">Set your password</h1>
-        <p className="text-[13px] text-(--muted) mb-6">Create a password to finish your first sign-in.</p>
+        <p className="text-[14px] text-(--muted) mb-6">Create a password to finish your first sign-in.</p>
 
         <div className="space-y-3.5">
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Password</label>
+            <label className="block text-[13px] font-medium mb-1.5">Password</label>
             <div className="relative">
               <Lock size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-(--muted)" />
               <input
@@ -74,7 +74,7 @@ export function SetPasswordForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full pl-8 pr-9 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
+                className="w-full pl-8 pr-9 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
               />
               <button
                 type="button"
@@ -87,7 +87,7 @@ export function SetPasswordForm() {
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium mb-1.5">Confirm password</label>
+            <label className="block text-[13px] font-medium mb-1.5">Confirm password</label>
             <div className="relative">
               <Lock size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-(--muted)" />
               <input
@@ -96,12 +96,12 @@ export function SetPasswordForm() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 placeholder="Repeat password"
-                className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
+                className="w-full pl-8 pr-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
               />
             </div>
           </div>
 
-          {error && <p className="text-[12px] text-danger">{error}</p>}
+          {error && <p className="text-[13px] text-danger">{error}</p>}
 
           <Button className="w-full justify-center" onClick={handleSubmit} loading={loading}>
             <ArrowRight size={13} /> Save password
@@ -109,7 +109,7 @@ export function SetPasswordForm() {
         </div>
       </div>
 
-      <p className="text-center text-[12px] text-(--muted) mt-5">
+      <p className="text-center text-[13px] text-(--muted) mt-5">
         <Link href="/login" className="text-(--primary) hover:underline font-medium">Back to sign in</Link>
       </p>
     </div>

@@ -22,14 +22,14 @@ export function PlatformSidebar({ onNavClick }: { onNavClick?: () => void }) {
       {/* Brand */}
       <div className="px-5 py-5 border-b border-(--border) flex items-center gap-2.5">
         <div>
-          <p className="text-[16px] font-semibold tracking-tight text-(--text) leading-tight">Steward</p>
-          <p className="text-[10px] text-(--muted) uppercase tracking-[0.6px] mt-0.5">Platform Console</p>
+          <p className="font-display text-[17px] font-semibold tracking-tight text-(--text) leading-tight">Steward</p>
+          <p className="text-[11px] text-(--muted) uppercase tracking-[0.6px] mt-0.5">Platform Console</p>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-2">
-        <p className="px-5 pt-5 pb-2 text-[10px] font-medium text-(--muted) uppercase tracking-[0.8px]">
+        <p className="px-5 pt-5 pb-2 text-[11px] font-medium text-(--muted) uppercase tracking-[0.8px]">
           Platform
         </p>
         <div className="space-y-0.5 px-2.5">
