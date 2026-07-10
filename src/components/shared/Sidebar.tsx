@@ -91,8 +91,7 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
   };
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[232px] bg-(--surface) border-r border-(--border) flex flex-col z-50">
-      {/* Brand */}
+    <aside className="fixed left-0 top-0 bottom-0 w-58 bg-(--surface) border-r border-(--border) flex flex-col z-50">
       <div className="px-5 py-5 border-b border-(--border) flex items-center gap-2.5">
         <div>
           <p className="font-display text-[17px] font-semibold tracking-tight text-(--text) leading-tight">Steward</p>
@@ -100,7 +99,6 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
         </div>
       </div>
 
-      {/* Org switcher */}
       <div className="relative mx-3 mt-4 mb-2">
         <button
           onClick={() => setOrgMenuOpen(v => !v)}
@@ -108,7 +106,7 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
           style={{ background: active ? active.orgColor + "18" : "var(--primary-light)" }}
         >
           <div
-            className="w-7 h-7 rounded-[8px] flex items-center justify-center text-white text-[10.5px] font-bold shrink-0"
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-[10.5px] font-bold shrink-0"
             style={{ background: active?.orgColor ?? "var(--primary)" }}
           >
             {active?.orgInitials ?? "?"}
@@ -141,7 +139,7 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
                   className="w-full flex items-center gap-3 px-3.5 py-2.5 hover:bg-(--bg) transition-colors text-left"
                 >
                   <div
-                    className="w-7 h-7 rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold shrink-0"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-[11px] font-bold shrink-0"
                     style={{ background: m.orgColor }}
                   >
                     {m.orgInitials}
@@ -168,7 +166,6 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
         )}
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-2">
         {navItems.map((group) => (
           <div key={group.section}>
@@ -196,7 +193,7 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
                     <Icon size={16} className={cn("shrink-0", active_link ? "opacity-100" : "opacity-60")} />
                     <span className="flex-1">{item.label}</span>
                     {!!item.badge && (
-                      <span className="bg-(--primary) text-white text-[11px] font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-tight">
+                      <span className="bg-(--primary) text-white text-[11px] font-semibold px-1.5 py-0.5 rounded-full min-w-4.5 text-center leading-tight">
                         {item.badge}
                       </span>
                     )}
@@ -208,10 +205,9 @@ export function Sidebar({ onNavClick }: { onNavClick?: () => void }) {
         ))}
       </nav>
 
-      {/* User footer */}
       <div className="border-t border-(--border) p-3.5">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[11.5px] font-semibold text-(--primary) shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-(--primary-light) flex items-center justify-center text-[11.5px] font-semibold text-(--primary) shrink-0">
             {active?.userInitials ?? "?"}
           </div>
           <div className="flex-1 min-w-0">

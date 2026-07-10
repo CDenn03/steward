@@ -8,24 +8,20 @@ import OrganisationModal from "./OrganisationModal";
 interface OrgProfileHeaderProps {
   organizationId: string;
   name: string;
-  slug: string;
   description: string;
   initials: string;
   timezone: string;
   logoUrl: string | null;
-  createdAt: Date;
 }
 
 export function OrgProfileHeader({
   organizationId,
   name,
-  slug,
   description,
   initials,
   timezone,
   logoUrl,
-  createdAt,
-}: OrgProfileHeaderProps) {
+}: Readonly<OrgProfileHeaderProps>) {
   const [editOpen, setEditOpen] = useState(false);
 
   return (
@@ -38,7 +34,6 @@ export function OrgProfileHeader({
           <div>
             <div className="flex items-baseline gap-2">
               <span className="font-display text-[19px] font-semibold text-ink">{name}</span>
-              <span className="font-mono text-[13px] text-(--muted)">/{slug}</span>
             </div>
             {description ? (
               <p className="text-[13px] text-(--muted) italic mt-1 max-w-prose">{description}</p>
@@ -47,7 +42,6 @@ export function OrgProfileHeader({
             )}
             <div className="flex gap-4 mt-2 text-[13px] text-(--muted)">
               <span>Timezone: {timezone}</span>
-              <span>Created {formatDate(createdAt)}</span>
             </div>
           </div>
         </div>

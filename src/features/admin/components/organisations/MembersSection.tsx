@@ -1,15 +1,19 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatDate } from "@/lib/utils";
+import { Eye, Plus } from "lucide-react";
+import { cn ,formatDate } from "@/lib/utils";
 import { DataTable, createColumnHelper, type ColumnDef } from "@/components/shared/DataTable";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/Select";
+import { Button } from "@/components/ui/Button";
+import { UserDetailModal } from "@/features/admin/components/users/UserDetailModal";
+import { AddMemberModal } from "./AddMemberModal";
+import type { AdminUser } from "@/features/admin/repositories";
 
 type Member = {
   id: string;
+  userId: string;
   name: string;
   email: string;
   role: string;
@@ -17,6 +21,14 @@ type Member = {
   isActive: boolean;
   joinedAt: Date;
   initials: string;
+};
+
+type OrgInfo = {
+  id: string;
+  name: string;
+  slug: string;
+  primaryColor: string;
+  logoInitials: string;
 };
 
 interface MembersSectionProps {
@@ -28,17 +40,13 @@ interface MembersSectionProps {
   currentPage: number;
   totalPages: number;
   totalMembers: number;
-  /** Counts for each tab — passed from the parent that has full member list */
   tabCounts?: { active: number; inactive: number; all: number };
+  orgInfo: OrgInfo;
+  organizations: OrgInfo[];
 }
 
 const helper = createColumnHelper<Member>();
 
-// ── RoleBadge ─────────────────────────────────────────────────────────────────
-// Three visual tiers matching the HTML mockup:
-//   org-level  (admin, chairperson) → dark fill
-//   dept-level (department_head)    → gold
-//   functional (finance, member…)   → green
 const roleBadgeClass: Record<string, string> = {
   admin:           "bg-ink text-white",
   chairperson:     "bg-ink text-white",
@@ -55,7 +63,7 @@ const roleLabels: Record<string, string> = {
   member:          "Member",
 };
 
-function RoleBadge({ role }: { role: string }) {
+function RoleBadge({ role }: Readonly<{ role: string }>) {
   const cls = roleBadgeClass[role] ?? "bg-linen text-ink";
   const label = roleLabels[role] ?? (role.charAt(0).toUpperCase() + role.slice(1));
   return (
@@ -65,23 +73,22 @@ function RoleBadge({ role }: { role: string }) {
   );
 }
 
-// ── Pill tab strip ─────────────────────────────────────────────────────────────
 interface PillTabsProps {
   value: string;
   onChange: (v: string) => void;
   tabs: Array<{ value: string; label: string; count: number }>;
 }
 
-function PillTabs({ value, onChange, tabs }: PillTabsProps) {
+function PillTabs({ value, onChange, tabs }: Readonly<PillTabsProps>) {
   return (
-    <div className="inline-flex items-center gap-1 bg-(--border) p-[3px] rounded-[10px]">
+    <div className="inline-flex items-center gap-1 bg-(--border) p-0.75 rounded-[10px]">
       {tabs.map((t) => (
         <button
           key={t.value}
           type="button"
           onClick={() => onChange(t.value)}
           className={cn(
-            "px-4 py-[7px] text-[13px] font-medium rounded-[8px] transition-colors cursor-pointer",
+            "px-4 py-1.75 text-[13px] font-medium rounded-lg transition-colors cursor-pointer",
             value === t.value
               ? "bg-white text-(--text) shadow-sm"
               : "text-(--muted) hover:text-(--text)"
@@ -97,6 +104,23 @@ function PillTabs({ value, onChange, tabs }: PillTabsProps) {
   );
 }
 
+function memberToAdminUser(member: Member, org: OrgInfo): AdminUser {
+  return {
+    id: member.userId,
+    name: member.name,
+    email: member.email,
+    initials: member.initials,
+    memberships: [
+      {
+        id: member.id,
+        role: member.role,
+        department: member.department,
+        org,
+      },
+    ],
+  };
+}
+
 export function MembersSection({
   members,
   departments,
@@ -107,9 +131,14 @@ export function MembersSection({
   totalPages,
   totalMembers,
   tabCounts,
-}: MembersSectionProps) {
+  orgInfo,
+  organizations,
+}: Readonly<MembersSectionProps>) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const buildUrl = (overrides: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -155,7 +184,7 @@ export function MembersSection({
       header: "Status",
       cell: ({ row }) => row.original.isActive
         ? (
-          <span className="flex items-center gap-1.5 text-[#4B6650] font-medium text-[13.5px]">
+          <span className="flex items-center gap-1.5 text-moss font-medium text-[13.5px]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4B6650] shrink-0" aria-hidden />
             Active
           </span>
@@ -169,24 +198,30 @@ export function MembersSection({
     }),
     helper.display({
       id: "actions",
-      header: "",
-      cell: () => (
+      header: "actions",
+      cell: ({ row }) => (
         <button
+          onClick={() => setSelectedUser(memberToAdminUser(row.original, orgInfo))}
           className="w-7 h-7 flex items-center justify-center rounded-md text-(--muted) hover:bg-(--bg) hover:text-(--text) transition-colors cursor-pointer"
-          aria-label="More options"
+          aria-label={`Manage ${row.original.name}`}
         >
-          <MoreHorizontal size={16} aria-hidden />
+          <Eye size={16} aria-hidden />
         </button>
       ),
     }),
-  ] as ColumnDef<Member>[], []);
+  ] as ColumnDef<Member>[], [orgInfo]);
 
   return (
     <div className="mb-9">
-      <p className="text-[13px] font-semibold text-(--text) uppercase tracking-wider mb-3">Members</p>
+      <div className="flex justify-between items-center mb-3.5">
+        <p className="text-[13px] font-semibold text-(--text) uppercase tracking-wider">Members</p>
+        <Button variant="primary" size="sm" onClick={() => setAddOpen(true)}>
+          <Plus size={13} className="mr-1.5" />
+          New Member
+        </Button>
+      </div>
 
       <div className="bg-white border border-(--border) rounded-2xl overflow-hidden">
-        {/* Filters row */}
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-(--border)">
           <PillTabs
             value={currentTab}
@@ -221,7 +256,6 @@ export function MembersSection({
           </div>
         </div>
 
-        {/* Table */}
         <DataTable
           columns={columns}
           data={members}
@@ -232,6 +266,22 @@ export function MembersSection({
           onPageChange={handlePageChange}
         />
       </div>
+
+      {selectedUser && (
+        <UserDetailModal
+          user={selectedUser}
+          organizations={organizations}
+          open={selectedUser !== null}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
+
+      <AddMemberModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        organizationId={orgInfo.id}
+        departments={departments}
+      />
     </div>
   );
 }

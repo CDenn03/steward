@@ -11,6 +11,10 @@ import {
   CreateMembershipSchema,
   CreateOrganizationSchema,
   UpdateOrganizationSchema,
+  CreateDepartmentSchema,
+  UpdateDepartmentSchema,
+  AddMemberSchema,
+  UpdateMemberSchema,
 } from "../schemas";
 
 export async function updateMembershipAction(
@@ -260,4 +264,188 @@ export async function getOrgLogoUploadUrlAction(
 
 export async function saveOrgCreationUploadAction(_storageKey: string) {
   return { success: true };
+}
+
+export type DepartmentActionResult =
+  | { success: true }
+  | { success: false; error: { message: string } };
+
+export async function createDepartmentAction(
+  organizationId: string,
+  formData: unknown
+): Promise<DepartmentActionResult> {
+  await requirePlatformAdmin();
+  const parsed = CreateDepartmentSchema.safeParse(formData);
+  if (!parsed.success) return { success: false, error: { message: parsed.error.errors.map(e => e.message).join(", ") } };
+
+  try {
+    await prisma.department.create({
+      data: {
+        organizationId,
+        name: parsed.data.name,
+        description: parsed.data.description ?? null,
+      },
+    });
+
+    revalidatePath(`/platform-admin/organisations/${organizationId}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message: err instanceof Error ? err.message : "Failed to create department",
+      },
+    };
+  }
+}
+
+export async function updateDepartmentAction(
+  departmentId: string,
+  organizationId: string,
+  formData: unknown
+): Promise<DepartmentActionResult> {
+  await requirePlatformAdmin();
+  const parsed = UpdateDepartmentSchema.safeParse(formData);
+  if (!parsed.success) return { success: false, error: { message: parsed.error.errors.map(e => e.message).join(", ") } };
+
+  try {
+    await prisma.department.update({
+      where: { id: departmentId },
+      data: {
+        ...(parsed.data.name !== undefined ? { name: parsed.data.name } : {}),
+        ...(parsed.data.description !== undefined ? { description: parsed.data.description } : {}),
+        ...(parsed.data.headId !== undefined ? { headId: parsed.data.headId } : {}),
+        ...(parsed.data.isActive !== undefined ? { isActive: parsed.data.isActive } : {}),
+      },
+    });
+
+    revalidatePath(`/platform-admin/organisations/${organizationId}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message: err instanceof Error ? err.message : "Failed to update department",
+      },
+    };
+  }
+}
+
+export type DeleteDepartmentResult =
+  | { success: true }
+  | { success: false; error: { message: string } };
+
+export async function deleteDepartmentAction(
+  departmentId: string,
+  organizationId: string
+): Promise<DeleteDepartmentResult> {
+  await requirePlatformAdmin();
+
+  try {
+    await prisma.$transaction([
+      prisma.membership.updateMany({
+        where: { departmentId },
+        data: { departmentId: null },
+      }),
+
+      prisma.department.delete({
+        where: { id: departmentId },
+      }),
+    ]);
+
+    revalidatePath(`/platform-admin/organisations/${organizationId}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message: err instanceof Error ? err.message : "Failed to delete department",
+      },
+    };
+  }
+}
+
+export type MemberActionResult =
+  | { success: true }
+  | { success: false; error: { message: string } };
+
+export async function addMemberAction(
+  organizationId: string,
+  formData: unknown
+): Promise<MemberActionResult> {
+  await requirePlatformAdmin();
+  const parsed = AddMemberSchema.safeParse(formData);
+  if (!parsed.success) return { success: false, error: { message: parsed.error.errors.map(e => e.message).join(", ") } };
+
+  try {
+    let user = await prisma.user.findUnique({
+      where: { email: parsed.data.email },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name: parsed.data.name,
+          email: parsed.data.email,
+        },
+      });
+    }
+
+    const existing = await prisma.membership.findUnique({
+      where: { userId_organizationId: { userId: user.id, organizationId } },
+    });
+    if (existing) {
+      return { success: false, error: { message: "User is already a member of this organisation" } };
+    }
+
+    await prisma.membership.create({
+      data: {
+        userId: user.id,
+        organizationId,
+        role: parsed.data.role,
+        departmentId: parsed.data.departmentId ?? null,
+      },
+    });
+
+    revalidatePath(`/platform-admin/organisations/${organizationId}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message: err instanceof Error ? err.message : "Failed to add member",
+      },
+    };
+  }
+}
+
+export async function updateMemberAction(
+  membershipId: string,
+  organizationId: string,
+  formData: unknown
+): Promise<MemberActionResult> {
+  await requirePlatformAdmin();
+  const parsed = UpdateMemberSchema.safeParse(formData);
+  if (!parsed.success) return { success: false, error: { message: parsed.error.errors.map(e => e.message).join(", ") } };
+
+  try {
+    await prisma.membership.update({
+      where: { id: membershipId },
+      data: {
+        ...(parsed.data.role !== undefined ? { role: parsed.data.role } : {}),
+        ...(parsed.data.departmentId !== undefined ? { departmentId: parsed.data.departmentId } : {}),
+        ...(parsed.data.isActive !== undefined ? { isActive: parsed.data.isActive } : {}),
+      },
+    });
+
+    revalidatePath(`/platform-admin/organisations/${organizationId}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        message: err instanceof Error ? err.message : "Failed to update member",
+      },
+    };
+  }
 }

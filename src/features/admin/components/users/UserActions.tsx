@@ -40,7 +40,7 @@ export function UserActions({
             await removeMembershipAction(membershipId);
             router.refresh();
           }}
-          className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors"
+          className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-(--danger) hover:bg-(--danger-bg) transition-colors"
           title="Remove from org"
         >
           <Trash2 size={11} />

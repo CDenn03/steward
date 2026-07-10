@@ -24,6 +24,18 @@ export function DialogContent({
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           className
         )}
+        onPointerDownOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest("[data-radix-popper-content-wrapper]")) {
+            e.preventDefault();
+          }
+        }}
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest("[data-radix-popper-content-wrapper]")) {
+            e.preventDefault();
+          }
+        }}
         {...props}
       >
         {children}

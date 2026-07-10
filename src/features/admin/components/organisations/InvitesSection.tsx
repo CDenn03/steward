@@ -66,12 +66,8 @@ export function InvitesSection({ invites }: InvitesSectionProps) {
 
   return (
     <div className="mb-9">
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-start items-center mb-3">
         <p className="text-[13px] font-semibold text-(--text) uppercase tracking-wider">Pending invites</p>
-        <Button variant="ghost" size="sm">
-          <Plus size={13} className="mr-1.5" />
-          New invite
-        </Button>
       </div>
 
       <div className="bg-white border border-(--border) rounded-2xl overflow-hidden">

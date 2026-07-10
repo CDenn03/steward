@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { getOrganizationDetail } from "@/features/admin/repositories";
+import { getOrganizationDetail, getOrganizationOverviews } from "@/features/admin/repositories";
 import { OrgProfileHeader } from "@/features/admin/components/organisations/OrgProfileHeader";
 import { OrgStatsCards } from "@/features/admin/components/organisations/OrgStatsCards";
 import { MembersSection } from "@/features/admin/components/organisations/MembersSection";
 import { DepartmentsSection } from "@/features/admin/components/organisations/DepartmentsSection";
 import { InvitesSection } from "@/features/admin/components/organisations/InvitesSection";
-import { Button } from '@/components/ui/Button';
+import { ChevronLeft } from "lucide-react";
 
 export default async function OrganizationProfilePage(props: {
   params: Promise<{ id: string }>;
@@ -13,7 +13,11 @@ export default async function OrganizationProfilePage(props: {
 }) {
   const { id } = await props.params;
   const sp = await props.searchParams;
-  const org = await getOrganizationDetail(id);
+
+  const [org, allOrgs] = await Promise.all([
+    getOrganizationDetail(id),
+    getOrganizationOverviews(),
+  ]);
 
   if (!org) {
     return (
@@ -46,38 +50,47 @@ export default async function OrganizationProfilePage(props: {
   const currentPage = Math.min(Math.max(1, Number(sp.page) || 1), totalPages);
   const paginatedMembers = filteredMembers.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
+  const orgInfo = {
+    id: org.id,
+    name: org.name,
+    slug: org.slug,
+    primaryColor: "#4B6650",
+    logoInitials: org.initials,
+  };
+
+  const organizations = allOrgs.map((o) => ({
+    id: o.id,
+    name: o.name,
+    slug: o.slug,
+    primaryColor: "#4B6650",
+    logoInitials: o.logoInitials,
+  }));
+
   return (
     <div className="min-h-screen">
       <h2 className="sr-only">
         Organization profile page for {org.name}
       </h2>
 
-      <nav className="flex items-center gap-1.5 text-[13px] text-(--muted) mb-5" aria-label="Breadcrumb">
-        <Link href="/platform-admin" className="hover:text-(--text) transition-colors">Platform Console</Link>
-        <span aria-hidden>›</span>
-        <span className="text-(--text) font-medium">Organisations</span>
-      </nav>
-
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-[28px] font-semibold text-(--text)">
-          Organisation profile
-        </h1>
-        <Link href="/platform-admin/organisations">
-          <Button variant="ghost" size="sm">
-            ← Back to organisations
-          </Button>
+      <div className="flex items-center gap-2 mb-6">
+        <Link
+          href="/platform-admin/organisations"
+          className="inline-flex items-center gap-1.5 text-[13px] text-(--muted) hover:text-(--text) transition-colors"
+        >
+          <ChevronLeft size={14} />
+          Organisations
         </Link>
+        <span className="text-(--muted) text-[13px]">/</span>
+        <span className="text-[13px] text-(--text) font-medium">{org.name}</span>
       </div>
 
       <OrgProfileHeader
         organizationId={org.id}
         name={org.name}
-        slug={org.slug}
         description={org.description}
         initials={org.initials}
         timezone={org.timezone}
         logoUrl={org.logoUrl}
-        createdAt={org.createdAt}
       />
 
       <OrgStatsCards
@@ -87,7 +100,10 @@ export default async function OrganizationProfilePage(props: {
         activeMemberCount={activeMemberCount}
       />
 
-      <DepartmentsSection departments={org.departments} />
+      <DepartmentsSection
+        organizationId={org.id}
+        departments={org.departments}
+      />
 
       <MembersSection
         members={paginatedMembers}
@@ -103,6 +119,8 @@ export default async function OrganizationProfilePage(props: {
           inactive: inactiveMemberCount,
           all: org.members.length,
         }}
+        orgInfo={orgInfo}
+        organizations={organizations}
       />
 
       <InvitesSection invites={org.invites} />
