@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, Plus, Eye } from "lucide-react";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
@@ -22,7 +22,7 @@ import {
   DialogBody,
   DialogFooter,
 } from "@/components/ui/Dialog";
-import { ViewUserModal } from "./ViewUserModal";
+
 import {
   updateUserAction,
   updatePlatformMembershipAction,

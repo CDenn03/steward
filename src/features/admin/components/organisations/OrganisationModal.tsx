@@ -85,19 +85,16 @@ export default function OrganisationModal({
   });
 
   useEffect(() => {
-    if (open) {
-      if (isEdit && initialData) {
-        reset({
-          name: initialData.name,
-          description: initialData.description,
-          logoUrl: initialData.logoUrl,
-          timezone: initialData.timezone,
-        });
-      } else {
-        reset(addDefaults);
-      }
-      setFormError("");
-      setLogoKey(null);
+    if (!open) return;
+    if (isEdit && initialData) {
+      reset({
+        name: initialData.name,
+        description: initialData.description,
+        logoUrl: initialData.logoUrl,
+        timezone: initialData.timezone,
+      });
+    } else {
+      reset(addDefaults);
     }
   }, [open, isEdit, initialData, reset]);
 
