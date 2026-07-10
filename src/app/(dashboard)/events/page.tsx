@@ -46,15 +46,15 @@ export default async function EventsPage() {
                   </div>
                   <StatusBadge status={(budget?.status.toLowerCase() ?? "draft") as BudgetStatus} />
                 </div>
-                <h3 className="text-[15px] font-medium mb-1">{event.name}</h3>
-                <p className="text-[12px] text-(--muted) mb-4">
+                <h3 className="text-[16px] font-medium mb-1">{event.name}</h3>
+                <p className="text-[13px] text-(--muted) mb-4">
                   {event.department?.name ?? "No department"} · {formatDate(event.startDate)}
                   {event.endDate ? ` - ${formatDate(event.endDate)}` : ""}
                 </p>
                 <div className="border-t border-(--border) pt-3 flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] text-(--muted) mb-0.5">Budget</p>
-                    <p className="text-[13px] font-mono font-medium">
+                    <p className="text-[12px] text-(--muted) mb-0.5">Budget</p>
+                    <p className="text-[14px] font-mono font-medium">
                       {budget ? formatCurrency(total, session.organization.currency) : "Not started"}
                     </p>
                   </div>

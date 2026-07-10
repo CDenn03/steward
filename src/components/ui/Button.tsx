@@ -2,25 +2,27 @@ import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "ghost" | "danger" | "outline";
+  variant?: "primary" | "ghost" | "danger" | "warning" | "outline";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }
 
 const variantClasses = {
   primary:
-    "bg-(--primary) text-white border border-(--primary) hover:bg-[#1a3e85] active:scale-[0.98]",
+    "bg-(--primary) text-white border border-(--primary) hover:bg-[#3A5240] active:scale-[0.98]",
   ghost:
     "bg-transparent text-(--muted) border border-(--border) hover:bg-(--bg) hover:text-(--text) active:scale-[0.98]",
   danger:
-    "bg-transparent text-danger border border-danger hover:bg-danger-bg active:scale-[0.98]",
+    "bg-(--danger) text-white border border-(--danger) hover:opacity-90 active:scale-[0.98]",
+  warning:
+    "bg-[#D97706] text-white border border-[#D97706] hover:opacity-90 active:scale-[0.98]",
   outline:
-    "bg-transparent text-(--primary) border border-(--primary) hover:bg-[var(--primary-light)] active:scale-[0.98]",
+    "bg-transparent text-(--primary) border border-(--primary) hover:bg-(--primary-light) active:scale-[0.98]",
 };
 
 const sizeClasses = {
-  sm: "px-3 py-1.5 text-[12px] gap-1.5",
-  md: "px-3.5 py-1.5 text-[13px] gap-2",
+  sm: "px-3 py-1.5 text-[13px] gap-1.5",
+  md: "px-3.5 py-1.5 text-[14px] gap-2",
   lg: "px-4 py-2 text-[14px] gap-2",
 };
 
@@ -42,7 +44,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          "inline-flex items-center justify-center font-medium rounded-[var(--r-btn)] transition-all duration-150 cursor-pointer whitespace-nowrap select-none",
+          "inline-flex items-center justify-center font-medium rounded-(--r-btn) transition-all duration-150 cursor-pointer whitespace-nowrap select-none",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           variantClasses[variant],
           sizeClasses[size],

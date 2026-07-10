@@ -24,6 +24,18 @@ export function DialogContent({
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           className
         )}
+        onPointerDownOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest("[data-radix-popper-content-wrapper]")) {
+            e.preventDefault();
+          }
+        }}
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest("[data-radix-popper-content-wrapper]")) {
+            e.preventDefault();
+          }
+        }}
         {...props}
       >
         {children}
@@ -52,7 +64,7 @@ export function DialogTitle({
 }: Readonly<DialogPrimitive.DialogTitleProps>) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-[15px] font-semibold", className)}
+      className={cn("text-[16px] font-semibold", className)}
       {...props}
     />
   );

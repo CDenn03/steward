@@ -33,7 +33,7 @@ const columns = [
     cell: (info) => (
       <div>
         <p className="font-medium">{info.getValue()}</p>
-        <p className="text-[11px] text-(--muted)">{info.row.original.account}</p>
+        <p className="text-[12px] text-(--muted)">{info.row.original.account}</p>
       </div>
     ),
   }),
@@ -50,7 +50,7 @@ const columns = [
     cell: (info) => {
       const type = info.row.original.type;
       return (
-        <span className={`font-mono text-[13px] font-medium ${type === "credit" ? "text-success" : "text-danger"}`}>
+        <span className={`font-mono text-[14px] font-medium ${type === "credit" ? "text-success" : "text-danger"}`}>
           {type === "credit" ? "+" : "-"}{formatCurrency(info.getValue())}
         </span>
       );

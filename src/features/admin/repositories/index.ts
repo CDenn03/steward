@@ -59,7 +59,7 @@ export async function getOrganizationOverviews(): Promise<OrganizationOverview[]
     name: organization.name,
     slug: organization.slug,
     description: organization.description,
-    primaryColor: "#1F4B99",
+    primaryColor: "#4B6650",
     logoInitials: organization.name
       .split(" ")
       .map((part: string) => part[0])
@@ -171,7 +171,7 @@ export async function getUsersWithMemberships(params?: {
           id: membership.organization.id,
           name: membership.organization.name,
           slug: membership.organization.slug,
-          primaryColor: "#1F4B99",
+    primaryColor: "#4B6650",
           logoInitials: membership.organization.name
             .split(" ")
             .map((part: string) => part[0])
@@ -185,6 +185,166 @@ export async function getUsersWithMemberships(params?: {
     page,
     pageSize,
     totalPages: Math.ceil(total / pageSize),
+  };
+}
+
+export type OrganizationDetail = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  logoUrl: string | null;
+  timezone: string;
+  createdAt: Date;
+  initials: string;
+  members: Array<{
+    id: string;
+    userId: string;
+    name: string;
+    email: string;
+    role: string;
+    department: { id: string; name: string } | null;
+    isActive: boolean;
+    joinedAt: Date;
+    initials: string;
+  }>;
+  departments: Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    head: { id: string; name: string } | null;
+    isActive: boolean;
+    memberCount: number;
+  }>;
+  invites: Array<{
+    id: string;
+    email: string;
+    role: string;
+    invitedBy: { id: string; name: string };
+    expiresAt: Date;
+    createdAt: Date;
+  }>;
+};
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+export async function getOrganizationDetail(id: string): Promise<OrganizationDetail | null> {
+  const org = await prisma.organization.findUnique({
+    where: { id },
+    include: {
+      members: {
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+          department: { select: { id: true, name: true } },
+        },
+        orderBy: { joinedAt: "desc" },
+      },
+      departments: {
+        include: {
+          memberships: {
+            select: { id: true, isActive: true, role: true, userId: true },
+          },
+        },
+        orderBy: { name: "asc" },
+      },
+      invites: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  if (!org) return null;
+
+  const headIds = org.departments
+    .map((d: { headId: string | null }) => d.headId)
+    .filter((id: string | null): id is string => id !== null);
+  const headUserIds = new Set(headIds);
+
+  for (const d of org.departments) {
+    const deptHeadMember = (d as { memberships: Array<{ role: string; userId: string; isActive: boolean }> }).memberships
+      .find((m) => m.role === "DEPARTMENT_HEAD" && m.isActive);
+    if (deptHeadMember && !headUserIds.has(deptHeadMember.userId)) {
+      headUserIds.add(deptHeadMember.userId);
+    }
+  }
+
+  const headUsers = headUserIds.size > 0
+    ? await prisma.user.findMany({ where: { id: { in: [...headUserIds] } }, select: { id: true, name: true } })
+    : [];
+  const headMap = new Map<string, { id: string; name: string }>(headUsers.map((u: { id: string; name: string }) => [u.id, u]));
+
+  const invitedByIds = org.invites
+    .map((i: { invitedById: string }) => i.invitedById)
+    .filter((id: string | null): id is string => id !== null);
+  const invitedByUsers = invitedByIds.length > 0
+    ? await prisma.user.findMany({ where: { id: { in: invitedByIds } }, select: { id: true, name: true } })
+    : [];
+  const invitedByMap = new Map(invitedByUsers.map((u: { id: string; name: string }) => [u.id, u]));
+
+  return {
+    id: org.id,
+    name: org.name,
+    slug: org.slug,
+    description: org.description,
+    logoUrl: org.logoUrl,
+    timezone: org.timezone,
+    createdAt: org.createdAt,
+    initials: getInitials(org.name),
+    members: org.members.map((m: {
+      id: string; userId: string; role: string; isActive: boolean; joinedAt: Date;
+      user: { id: string; name: string; email: string };
+      department: { id: string; name: string } | null;
+    }) => ({
+      id: m.id,
+      userId: m.userId,
+      name: m.user.name,
+      email: m.user.email,
+      role: m.role.toLowerCase(),
+      department: m.department,
+      isActive: m.isActive,
+      joinedAt: m.joinedAt,
+      initials: getInitials(m.user.name),
+    })),
+    departments: org.departments.map((d: {
+      id: string; name: string; description: string | null; headId: string | null; isActive: boolean;
+      memberships: Array<{ id: string; isActive: boolean; role: string; userId: string }>;
+    }) => {
+      let headUser: { id: string; name: string } | null = null;
+      if (d.headId) {
+        headUser = headMap.get(d.headId) ?? null;
+      }
+      if (!headUser) {
+        const deptHeadMember = d.memberships.find((m) => m.role === "DEPARTMENT_HEAD" && m.isActive);
+        if (deptHeadMember) {
+          headUser = headMap.get(deptHeadMember.userId) ?? null;
+        }
+      }
+      return {
+        id: d.id,
+        name: d.name,
+        description: d.description,
+        head: headUser,
+        isActive: d.isActive,
+        memberCount: d.memberships.filter((m) => m.isActive).length,
+      };
+    }),
+    invites: org.invites.map((i: {
+      id: string; email: string; role: string; invitedById: string; expiresAt: Date; createdAt: Date;
+    }) => ({
+      id: i.id,
+      email: i.email,
+      role: i.role.toLowerCase(),
+      invitedBy: invitedByMap.get(i.invitedById) ?? { id: i.invitedById, name: "Unknown" },
+      expiresAt: i.expiresAt,
+      createdAt: i.createdAt,
+    })),
   };
 }
 

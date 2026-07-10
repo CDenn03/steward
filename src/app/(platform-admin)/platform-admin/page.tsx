@@ -28,7 +28,7 @@ export default async function PlatformAdminPage() {
           <Card key={label}>
             <CardBody>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[12px] text-(--muted)">{label}</span>
+                <span className="text-[13px] text-(--muted)">{label}</span>
                 <Icon size={14} className="text-(--muted)" />
               </div>
               <p className="text-[22px] font-semibold tracking-tight">{value}</p>
@@ -39,23 +39,23 @@ export default async function PlatformAdminPage() {
 
       <Card>
         <CardBody>
-          <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.6px] mb-4">
+          <p className="text-[13px] font-medium text-(--muted) uppercase tracking-[0.6px] mb-4">
             Organisations
           </p>
           <div className="space-y-3">
             {organizations.map((org) => (
               <div key={org.id} className="flex items-center gap-3">
                 <div
-                  className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold shrink-0"
+                  className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[12px] font-bold shrink-0"
                   style={{ background: org.primaryColor }}
                 >
                   {org.logoInitials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium truncate">{org.name}</p>
-                  <p className="text-[11px] text-(--muted)">{org.description}</p>
+                  <p className="text-[14px] font-medium truncate">{org.name}</p>
+                  <p className="text-[12px] text-(--muted)">{org.description}</p>
                 </div>
-                <span className="text-[11px] text-(--muted)">{org.members.length} members</span>
+                <span className="text-[12px] text-(--muted)">{org.members.length} members</span>
               </div>
             ))}
           </div>

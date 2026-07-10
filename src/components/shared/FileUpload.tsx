@@ -85,14 +85,14 @@ export function FileUpload({
         type="button"
         onClick={handleClick}
         disabled={uploading}
-        className="inline-flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium rounded-(--r-btn) border border-(--border) bg-(--surface) hover:bg-(--bg) transition-colors disabled:opacity-50"
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-(--r-btn) border border-(--border) bg-(--surface) hover:bg-(--bg) transition-colors disabled:opacity-50"
         aria-label={uploading ? `Uploading ${label}` : `Upload ${label}`}
       >
         <Upload size={12} />
         {uploading ? "Uploading…" : label}
       </button>
       {description && (
-        <p className="text-[11px] text-(--muted) mt-1">{description}</p>
+        <p className="text-[12px] text-(--muted) mt-1">{description}</p>
       )}
     </div>
   );

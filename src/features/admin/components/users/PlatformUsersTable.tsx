@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Eye, Edit2, Trash2, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { DataTable, createColumnHelper, type ColumnDef } from '@/components/shared/DataTable';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
-import { UserDetailModal } from '@/features/admin/components/UserDetailModal';
+import { UserDetailModal } from '@/features/admin/components/users/UserDetailModal';
 import { deleteUserAction } from "@/features/admin/actions";
 import {
   Select,
@@ -119,7 +119,7 @@ export function PlatformUsersTable({
         return (
           <div className="flex items-center gap-3 py-1">
             <div
-              className="w-9 h-9 rounded-[10px] flex items-center justify-center text-[12px] font-semibold shrink-0"
+              className="w-9 h-9 rounded-[10px] flex items-center justify-center text-[13px] font-semibold shrink-0"
               style={{ background: c.bg, color: c.fg }}
             >
               {row.original.initials}
@@ -131,7 +131,7 @@ export function PlatformUsersTable({
     }),
     helper.accessor("email", {
       header: "Email",
-      cell: ({ row }) => <span className="text-(--muted) text-[13px]">{row.original.email}</span>,
+      cell: ({ row }) => <span className="text-(--muted) text-[14px]">{row.original.email}</span>,
     }),
     helper.display({
       id: "orgs",
@@ -141,7 +141,7 @@ export function PlatformUsersTable({
           {row.original.memberships.map((membership) => (
             <span
               key={membership.id}
-              className="inline-flex items-center gap-1.5 text-[11px] font-medium bg-(--bg) border border-(--border) rounded-full pl-1.5 pr-2.5 py-1"
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium bg-(--bg) border border-(--border) rounded-full pl-1.5 pr-2.5 py-1"
             >
               <span
                 className="w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-bold text-white shrink-0"
@@ -194,10 +194,6 @@ export function PlatformUsersTable({
     setDeleteTarget(null);
     router.refresh();
   };
-  const selectedOrg = organizations.find(
-  (org) => org.id === initialOrgFilter
-);
-
   return (
     <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 p-5 border-b border-(--border) flex-wrap">
@@ -208,16 +204,14 @@ export function PlatformUsersTable({
             placeholder="Search by name or email…"
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9 pr-3 py-2 text-[13px] bg-(--bg) border border-(--border) rounded-(--r-input) outline-none w-full focus:border-(--primary) focus:bg-(--surface) text-(--text) placeholder:text-(--muted) transition-colors"
+            className="pl-9 pr-3 py-2 text-[14px] bg-(--bg) border border-(--border) rounded-(--r-input) outline-none w-full focus:border-(--primary) focus:bg-(--surface) text-(--text) placeholder:text-(--muted) transition-colors"
           />
         </div>
 
         <div className="w-full sm:w-44">
           <Select value={initialOrgFilter || "all"} onValueChange={handleOrgChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All Organisations">
-                {selectedOrg?.name ?? "All Organisations"}
-              </SelectValue>
+              <SelectValue placeholder="All Organisations" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Organisations</SelectItem>
@@ -231,9 +225,7 @@ export function PlatformUsersTable({
         <div className="w-full sm:w-44">
           <Select value={initialRoleFilter || "all"} onValueChange={handleRoleChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="All Roles">
-                {initialRoleFilter ? roleLabels[initialRoleFilter] ?? initialRoleFilter : "All Roles"}
-              </SelectValue>
+              <SelectValue placeholder="All Roles" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Roles</SelectItem>
@@ -245,7 +237,7 @@ export function PlatformUsersTable({
         </div>
       </div>
 
-      <div className="hidden sm:block px-2 pb-2">
+      <div className="hidden sm:block">
         <DataTable
           columns={columns}
           data={data}
@@ -261,7 +253,7 @@ export function PlatformUsersTable({
         {data.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-(--muted)">
             <Users size={28} className="mb-2 opacity-40" />
-            <p className="text-[13px]">No users match your filters</p>
+            <p className="text-[14px]">No users match your filters</p>
           </div>
         ) : (
           data.map((user) => {
@@ -270,14 +262,14 @@ export function PlatformUsersTable({
               <div key={user.id} className="p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <div
-                    className="w-10 h-10 rounded-[10px] flex items-center justify-center text-[13px] font-semibold shrink-0"
+                    className="w-10 h-10 rounded-[10px] flex items-center justify-center text-[14px] font-semibold shrink-0"
                     style={{ background: c.bg, color: c.fg }}
                   >
                     {user.initials}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-(--text) text-[14px] truncate">{user.name}</p>
-                    <p className="text-[12px] text-(--muted) truncate">{user.email}</p>
+                    <p className="text-[13px] text-(--muted) truncate">{user.email}</p>
                   </div>
                 </div>
 
@@ -285,7 +277,7 @@ export function PlatformUsersTable({
                   {user.memberships.map((membership) => (
                     <span
                       key={membership.id}
-                      className="inline-flex items-center gap-1.5 text-[11px] font-medium bg-(--bg) border border-(--border) rounded-full pl-1.5 pr-2.5 py-1"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-medium bg-(--bg) border border-(--border) rounded-full pl-1.5 pr-2.5 py-1"
                     >
                       <span
                         className="w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-bold text-white shrink-0"
@@ -323,7 +315,7 @@ export function PlatformUsersTable({
           })
         )}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 text-[13px] text-(--muted)">
+          <div className="flex items-center justify-between px-4 py-3 text-[14px] text-(--muted)">
             <span>Page {page + 1} of {totalPages}</span>
             <div className="flex items-center gap-1">
               <button

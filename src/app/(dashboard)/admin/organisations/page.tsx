@@ -24,15 +24,15 @@ export default async function AdminOrgsPage() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-[12px] flex items-center justify-center text-white font-bold text-[16px]"
+                    className="w-12 h-12 rounded-[12px] flex items-center justify-center text-white font-bold text-[17px]"
                     style={{ background: org.primaryColor }}
                   >
                     {org.logoInitials}
                   </div>
                   <div>
                     <h3 className="text-[14px] font-semibold">{org.name}</h3>
-                    <p className="text-[12px] text-(--muted)">{org.description}</p>
-                    <p className="text-[10px] text-(--muted) font-mono mt-0.5">/{org.slug}</p>
+                    <p className="text-[13px] text-(--muted)">{org.description}</p>
+                    <p className="text-[11px] text-(--muted) font-mono mt-0.5">/{org.slug}</p>
                   </div>
                 </div>
                 <Link href={`/admin/organisations/${org.id}`} className="w-7 h-7 flex items-center justify-center rounded-lg border border-(--border) text-(--muted) hover:bg-(--bg) transition-colors">
@@ -46,8 +46,8 @@ export default async function AdminOrgsPage() {
                   { label: "Active Budgets", value: org.approvedBudgetCount },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-(--bg) border border-(--border) rounded-[10px] px-2.5 py-2">
-                    <p className="text-[10px] text-(--muted) mb-1">{stat.label}</p>
-                    <p className="text-[13px] font-semibold">{stat.value}</p>
+                    <p className="text-[11px] text-(--muted) mb-1">{stat.label}</p>
+                    <p className="text-[14px] font-semibold">{stat.value}</p>
                   </div>
                 ))}
               </div>

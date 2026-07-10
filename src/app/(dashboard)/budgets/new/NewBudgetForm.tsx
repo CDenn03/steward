@@ -153,14 +153,14 @@ export function NewBudgetForm({
 
   return (
     <div>
-      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-(--text) transition-colors mb-5">
+      <Link href="/budgets" className="inline-flex items-center gap-1.5 text-[13px] text-(--muted) hover:text-(--text) transition-colors mb-5">
         <ArrowLeft size={13} /> Back to Budgets
       </Link>
 
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-[20px] font-semibold tracking-tight">New Budget</h1>
-          <p className="text-[13px] text-(--muted) mt-0.5">Create a new budget for a department or event</p>
+          <p className="text-[14px] text-(--muted) mt-0.5">Create a new budget for a department or event</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={() => handleSave(false)} loading={saving}>
@@ -173,7 +173,7 @@ export function NewBudgetForm({
       </div>
 
       {formError && (
-        <div className="mb-4 rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[13px] text-danger">
+        <div className="mb-4 rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[14px] text-danger">
           {formError}
         </div>
       )}
@@ -186,7 +186,7 @@ export function NewBudgetForm({
             </CardHeader>
             <CardBody className="space-y-4">
               <div>
-                <label className="block text-[12px] font-medium mb-1.5">
+                <label className="block text-[13px] font-medium mb-1.5">
                   Budget Title <span className="text-danger">*</span>
                 </label>
                 <input
@@ -195,23 +195,23 @@ export function NewBudgetForm({
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Youth Annual Camp 2025"
                   className={cn(
-                    "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
+                    "w-full px-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors",
                     errors.title ? "border-danger" : "border-(--border)"
                   )}
                 />
-                {errors.title && <p className="text-[11px] text-danger mt-1">{errors.title}</p>}
+                {errors.title && <p className="text-[12px] text-danger mt-1">{errors.title}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-medium mb-1.5">
+                  <label className="block text-[13px] font-medium mb-1.5">
                     Department <span className="text-danger">*</span>
                   </label>
                   <select
                     value={departmentId}
                     onChange={(e) => setDepartmentId(e.target.value)}
                     className={cn(
-                      "w-full px-3 py-2.5 text-[13px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors",
+                      "w-full px-3 py-2.5 text-[14px] bg-(--surface) border rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors",
                       errors.departmentId ? "border-danger" : "border-(--border)"
                     )}
                   >
@@ -220,21 +220,21 @@ export function NewBudgetForm({
                       <option key={d.id} value={d.id}>{d.name}</option>
                     ))}
                   </select>
-                  {errors.departmentId && <p className="text-[11px] text-danger mt-1">{errors.departmentId}</p>}
+                  {errors.departmentId && <p className="text-[12px] text-danger mt-1">{errors.departmentId}</p>}
                   {departmentId && total > 0 && (
                     <>
                       {overAllocation && selectedAllocation && (
-                        <p className="text-[11px] text-danger mt-1.5">
+                        <p className="text-[12px] text-danger mt-1.5">
                           Total ({formatCurrency(total)}) exceeds {formatCurrency(selectedAllocation.amount)} allocation for this department
                         </p>
                       )}
                       {!overAllocation && overSoftLimit && deptInfo?.softLimit && (
-                        <p className="text-[11px] text-amber-600 mt-1.5">
+                        <p className="text-[12px] text-amber-600 mt-1.5">
                           Total ({formatCurrency(total)}) exceeds {formatCurrency(deptInfo.softLimit)} soft limit for this department
                         </p>
                       )}
                       {selectedAllocation && total <= selectedAllocation.amount && total > selectedAllocation.amount * 0.8 && (
-                        <p className="text-[11px] text-amber-600 mt-1.5">
+                        <p className="text-[12px] text-amber-600 mt-1.5">
                           Approaching allocation limit — {formatCurrency(total)} of {formatCurrency(selectedAllocation.amount)} used ({pct(total, selectedAllocation.amount)}%)
                         </p>
                       )}
@@ -242,13 +242,13 @@ export function NewBudgetForm({
                   )}
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium mb-1.5">
+                  <label className="block text-[13px] font-medium mb-1.5">
                     Link to Event <span className="text-(--muted) font-normal">(optional)</span>
                   </label>
                   <select
                     value={eventId}
                     onChange={(e) => setEventId(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+                    className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   >
                     <option value="">None</option>
                     {events.map((ev) => (
@@ -260,27 +260,27 @@ export function NewBudgetForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-medium mb-1.5">Period Start</label>
+                  <label className="block text-[13px] font-medium mb-1.5">Period Start</label>
                   <input
                     type="date"
                     value={periodStart}
                     onChange={(e) => setPeriodStart(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+                    className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-medium mb-1.5">Period End</label>
+                  <label className="block text-[13px] font-medium mb-1.5">Period End</label>
                   <input
                     type="date"
                     value={periodEnd}
                     onChange={(e) => setPeriodEnd(e.target.value)}
-                    className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+                    className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[12px] font-medium mb-1.5">
+                <label className="block text-[13px] font-medium mb-1.5">
                   Notes <span className="text-(--muted) font-normal">(optional)</span>
                 </label>
                 <textarea
@@ -288,7 +288,7 @@ export function NewBudgetForm({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Add context or justification for this budget..."
                   rows={3}
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
+                  className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
                 />
               </div>
             </CardBody>
@@ -298,7 +298,7 @@ export function NewBudgetForm({
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Budget Line Items</p>
-                <p className="text-[12px] text-(--muted)">{items.length} item{items.length !== 1 ? "s" : ""}</p>
+                <p className="text-[13px] text-(--muted)">{items.length} item{items.length !== 1 ? "s" : ""}</p>
               </CardTitle>
               <Button variant="ghost" size="sm" onClick={addItem}>
                 <Plus size={13} /> Add Item
@@ -307,7 +307,7 @@ export function NewBudgetForm({
 
             <div className="grid grid-cols-[1fr_140px_80px_120px_100px_36px] gap-2 px-4 py-2.5 border-b border-(--border) bg-(--bg)">
               {["Description", "Category", "Qty", "Unit Cost (KES)", "Total", ""].map((h) => (
-                <span key={h} className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px]">{h}</span>
+                <span key={h} className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px]">{h}</span>
               ))}
             </div>
 
@@ -384,13 +384,13 @@ export function NewBudgetForm({
             </div>
 
             <div className="flex items-center justify-between px-4 py-3.5 border-t-2 border-(--border) bg-(--bg)">
-              <div className="flex items-center gap-2 text-[12px] text-(--muted)">
+              <div className="flex items-center gap-2 text-[13px] text-(--muted)">
                 <Calculator size={13} />
                 {items.length} line item{items.length !== 1 ? "s" : ""}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[12px] text-(--muted)">Total Budget</span>
-                <span className="text-[16px] font-semibold font-mono">{formatCurrency(total)}</span>
+                <span className="text-[13px] text-(--muted)">Total Budget</span>
+                <span className="text-[17px] font-semibold font-mono">{formatCurrency(total)}</span>
               </div>
             </div>
 
@@ -412,7 +412,7 @@ export function NewBudgetForm({
             </CardHeader>
             <CardBody className="space-y-3">
               <div className="bg-[var(--primary-light)] rounded-[10px] p-3.5 text-center">
-                <p className="text-[11px] text-(--primary) font-medium uppercase tracking-[0.5px] mb-1">Total Amount</p>
+                <p className="text-[12px] text-(--primary) font-medium uppercase tracking-[0.5px] mb-1">Total Amount</p>
                 <p className="text-[22px] font-semibold tracking-tight font-mono text-(--primary)">
                   {formatCurrency(total)}
                 </p>
@@ -420,7 +420,7 @@ export function NewBudgetForm({
 
               <div className="space-y-1.5">
                 {items.filter((i) => i.unitCost > 0).map((item) => (
-                  <div key={item.id} className="flex justify-between text-[12px]">
+                  <div key={item.id} className="flex justify-between text-[13px]">
                     <span className="text-(--muted) truncate pr-2">{item.description || "Item"}</span>
                     <span className="font-mono shrink-0">
                       {formatCurrency(item.quantity * item.unitCost).replace("KES ", "")}
@@ -430,7 +430,7 @@ export function NewBudgetForm({
               </div>
 
               {items.filter((i) => i.unitCost > 0).length > 0 && (
-                <div className="border-t border-(--border) pt-2 flex justify-between text-[12px] font-semibold">
+                <div className="border-t border-(--border) pt-2 flex justify-between text-[13px] font-semibold">
                   <span>Total</span>
                   <span className="font-mono">{formatCurrency(total).replace("KES ", "")}</span>
                 </div>
@@ -450,10 +450,10 @@ export function NewBudgetForm({
                   { step: "3", label: "Approved", desc: "Budget is activated for use" },
                 ].map((s) => (
                   <div key={s.step} className="flex gap-3">
-                    <div className="w-5 h-5 rounded-full bg-(--border) flex items-center justify-center text-[10px] font-semibold text-(--muted) shrink-0 mt-0.5">{s.step}</div>
+                    <div className="w-5 h-5 rounded-full bg-(--border) flex items-center justify-center text-[11px] font-semibold text-(--muted) shrink-0 mt-0.5">{s.step}</div>
                     <div>
-                      <p className="text-[12px] font-medium">{s.label}</p>
-                      <p className="text-[11px] text-(--muted)">{s.desc}</p>
+                      <p className="text-[13px] font-medium">{s.label}</p>
+                      <p className="text-[12px] text-(--muted)">{s.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -468,7 +468,7 @@ export function NewBudgetForm({
             <Button variant="ghost" className="w-full justify-center" onClick={() => handleSave(false)} loading={saving}>
               <Save size={13} /> Save as Draft
             </Button>
-            <Link href="/budgets" className="block w-full text-center py-2 text-[12px] text-(--muted) hover:text-(--text) transition-colors">
+            <Link href="/budgets" className="block w-full text-center py-2 text-[13px] text-(--muted) hover:text-(--text) transition-colors">
               Cancel
             </Link>
           </div>

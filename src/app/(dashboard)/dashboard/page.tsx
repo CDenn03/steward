@@ -131,8 +131,8 @@ export default async function DashboardPage() {
                   <DollarSign size={14} className="text-(--primary)" />
                 </div>
                 <div>
-                  <p className="text-[15px] font-semibold text-(--text)">Budget Overview</p>
-                  <p className="text-[12px] text-(--muted)">Latest budgets from the database</p>
+                  <p className="text-[16px] font-semibold text-(--text)">Budget Overview</p>
+                  <p className="text-[13px] text-(--muted)">Latest budgets from the database</p>
                 </div>
               </div>
             </CardTitle>
@@ -150,8 +150,8 @@ export default async function DashboardPage() {
                     <Clock size={14} className="text-(--primary)" />
                   </div>
                   <div>
-                    <p className="text-[15px] font-semibold text-(--text)">Pending Approvals</p>
-                    <p className="text-[12px] text-(--muted)">Awaiting action</p>
+                    <p className="text-[16px] font-semibold text-(--text)">Pending Approvals</p>
+                    <p className="text-[13px] text-(--muted)">Awaiting action</p>
                   </div>
                 </div>
               </CardTitle>
@@ -162,12 +162,12 @@ export default async function DashboardPage() {
                 const total = approval.budget.items.reduce((sum: number, item: { totalCost: number }) => sum + item.totalCost, 0);
                 return (
                   <Link key={approval.id} href={`/budgets/${approval.budgetId}`} className="flex items-start gap-3 px-5 py-3.5 hover:bg-(--bg) transition-colors">
-                    <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
+                    <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[12px] font-semibold text-(--primary) shrink-0">
                       {approval.budget.title.slice(0, 2).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate">{approval.budget.title}</p>
-                      <p className="text-[11px] text-(--muted)">{formatCurrency(total)} · Pending {approval.type.toLowerCase()} review</p>
+                      <p className="text-[14px] font-medium truncate">{approval.budget.title}</p>
+                      <p className="text-[12px] text-(--muted)">{formatCurrency(total)} · Pending {approval.type.toLowerCase()} review</p>
                     </div>
                     <Badge variant="info" className="shrink-0 capitalize">{approval.type.toLowerCase()}</Badge>
                   </Link>
@@ -184,8 +184,8 @@ export default async function DashboardPage() {
                     <Wallet size={14} className="text-(--primary)" />
                   </div>
                   <div>
-                    <p className="text-[15px] font-semibold text-(--text)">Account Balances</p>
-                    <p className="text-[12px] text-(--muted)">Current stored balances</p>
+                    <p className="text-[16px] font-semibold text-(--text)">Account Balances</p>
+                    <p className="text-[13px] text-(--muted)">Current stored balances</p>
                   </div>
                 </div>
               </CardTitle>
@@ -194,19 +194,19 @@ export default async function DashboardPage() {
             <div className="divide-y divide-(--border)">
               {accounts.map((account: AccountRow) => (
                 <div key={account.id} className="flex items-center gap-3 px-5 py-3">
-                  <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[10px] font-semibold text-(--primary) shrink-0">
+                  <div className="w-8 h-8 rounded-[8px] bg-(--primary-light) flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0">
                     {account.type === "CHECKING" ? "C" : account.type === "SAVINGS" ? "S" : account.type.slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium truncate">{account.name}</p>
-                    <p className="text-[11px] text-(--muted)">{account.provider ?? account.accountNumber ?? "Account"}</p>
+                    <p className="text-[14px] font-medium truncate">{account.name}</p>
+                    <p className="text-[12px] text-(--muted)">{account.provider ?? account.accountNumber ?? "Account"}</p>
                   </div>
-                  <p className="font-mono text-[13px] font-semibold text-(--text)">{formatCurrency(account.balance, account.currency, true)}</p>
+                  <p className="font-mono text-[14px] font-semibold text-(--text)">{formatCurrency(account.balance, account.currency, true)}</p>
                 </div>
               ))}
             </div>
             <div className="px-5 py-3.5 border-t border-(--border) flex justify-between items-center">
-              <span className="text-[12px] text-(--muted)">Total liquid assets</span>
+              <span className="text-[13px] text-(--muted)">Total liquid assets</span>
               <span className="font-mono font-semibold text-[14px] text-(--text)">{formatCurrency(totalBalance, "KES", true)}</span>
             </div>
           </Card>
@@ -222,8 +222,8 @@ export default async function DashboardPage() {
                   <Calendar size={14} className="text-(--primary)" />
                 </div>
                 <div>
-                  <p className="text-[15px] font-semibold text-(--text)">Upcoming Events</p>
-                  <p className="text-[12px] text-(--muted)">Events with active budgets</p>
+                  <p className="text-[16px] font-semibold text-(--text)">Upcoming Events</p>
+                  <p className="text-[13px] text-(--muted)">Events with active budgets</p>
                 </div>
               </div>
             </CardTitle>
@@ -239,8 +239,8 @@ export default async function DashboardPage() {
                     <p className="text-[8px] font-semibold text-(--primary) tracking-wide uppercase">{event.startDate.toLocaleString("en", { month: "short" })}</p>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium truncate">{event.name}</p>
-                    <p className="text-[11px] text-(--muted)">
+                    <p className="text-[14px] font-medium truncate">{event.name}</p>
+                    <p className="text-[12px] text-(--muted)">
                       {budget ? `Budget ${formatCurrency(total, "KES", true)}` : "Budget not started"}
                     </p>
                   </div>
@@ -259,8 +259,8 @@ export default async function DashboardPage() {
                   <Shield size={14} className="text-(--primary)" />
                 </div>
                 <div>
-                  <p className="text-[15px] font-semibold text-(--text)">Recent Activity</p>
-                  <p className="text-[12px] text-(--muted)">Audit trail</p>
+                  <p className="text-[16px] font-semibold text-(--text)">Recent Activity</p>
+                  <p className="text-[13px] text-(--muted)">Audit trail</p>
                 </div>
               </div>
             </CardTitle>
@@ -275,10 +275,10 @@ export default async function DashboardPage() {
                   {index < auditRows.length - 1 && <div className="w-px flex-1 bg-(--border) mt-1" />}
                 </div>
                 <div className="flex-1 min-w-0 pb-1">
-                  <p className="text-[13px] leading-snug">
+                  <p className="text-[14px] leading-snug">
                     <span className="font-medium capitalize">{log.entityType.replace(/_/g, " ")}</span> {log.action.replace(/_/g, " ")}
                   </p>
-                  <p className="text-[11px] text-(--muted) mt-0.5">{formatRelative(log.createdAt)}</p>
+                  <p className="text-[12px] text-(--muted) mt-0.5">{formatRelative(log.createdAt)}</p>
                 </div>
               </div>
             ))}

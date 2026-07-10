@@ -9,8 +9,6 @@ export async function updateOrgAction(formData: FormData): Promise<void> {
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
   const slug = formData.get("slug") as string;
-  const currency = formData.get("currency") as string;
-  const fiscalYearStart = formData.get("fiscalYearStart") as string;
 
   if (!id || !name || !slug) throw new Error("Name and slug are required");
 
@@ -19,7 +17,7 @@ export async function updateOrgAction(formData: FormData): Promise<void> {
 
   await prisma.organization.update({
     where: { id },
-    data: { name, slug, currency, fiscalYearStart },
+    data: { name, slug },
   });
 
   revalidatePath(`/admin/organisations/${id}`);

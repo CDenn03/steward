@@ -86,10 +86,10 @@ export function BudgetAttachmentUpload({
               <Paperclip size={14} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium truncate">{attachment.fileName}</p>
-              <p className="text-[11px] text-(--muted)">{attachment.mimeType} · {Math.ceil(attachment.size / 1024)} KB</p>
+              <p className="text-[14px] font-medium truncate">{attachment.fileName}</p>
+              <p className="text-[12px] text-(--muted)">{attachment.mimeType} · {Math.ceil(attachment.size / 1024)} KB</p>
             </div>
-            <span className="text-[11px] text-(--muted)">{formatRelative(attachment.createdAt)}</span>
+            <span className="text-[12px] text-(--muted)">{formatRelative(attachment.createdAt)}</span>
           </div>
         ))}
       </div>
@@ -110,7 +110,7 @@ export function BudgetAttachmentUpload({
         >
           <Upload size={13} /> Upload File
         </Button>
-        {error && <p className="text-[11px] text-danger mt-1">{error}</p>}
+        {error && <p className="text-[12px] text-danger mt-1">{error}</p>}
       </div>
     </div>
   );

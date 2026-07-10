@@ -252,7 +252,7 @@ export function NewExpenditureForm({
     <div className="max-w-[900px]">
       <Link
         href="/expenditures"
-        className="inline-flex items-center gap-1.5 text-[12px] text-(--muted) hover:text-(--text) transition-colors mb-5"
+        className="inline-flex items-center gap-1.5 text-[13px] text-(--muted) hover:text-(--text) transition-colors mb-5"
       >
         <ArrowLeft size={13} /> Back to Expenditures
       </Link>
@@ -262,7 +262,7 @@ export function NewExpenditureForm({
           <h1 className="text-[20px] font-semibold tracking-tight">
             New Expenditure Report
           </h1>
-          <p className="text-[13px] text-(--muted) mt-0.5">
+          <p className="text-[14px] text-(--muted) mt-0.5">
             Select a budget, upload receipts, and allocate costs
           </p>
         </div>
@@ -271,10 +271,10 @@ export function NewExpenditureForm({
       {/* Steps indicator */}
       <div className="flex items-center gap-0 mb-6 bg-(--surface) border border-(--border) rounded-(--r-card) p-2">
         {steps.map((s, i) => (
-          <div key={s} className="flex-1 flex items-center gap-2 text-[12px]">
+          <div key={s} className="flex-1 flex items-center gap-2 text-[13px]">
             <div
               className={cn(
-                "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0",
+                "w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0",
                 i < step
                   ? "bg-success text-white"
                   : i === step
@@ -300,7 +300,7 @@ export function NewExpenditureForm({
       </div>
 
       {formError && (
-        <div className="mb-4 rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[13px] text-danger">
+        <div className="mb-4 rounded-(--r-card) border border-red-200 bg-danger-bg px-4 py-3 text-[14px] text-danger">
           {formError}
         </div>
       )}
@@ -316,7 +316,7 @@ export function NewExpenditureForm({
             </CardHeader>
             <CardBody className="space-y-4">
               <div>
-                <label className="block text-[12px] font-medium mb-1.5">
+                <label className="block text-[13px] font-medium mb-1.5">
                   Report Title <span className="text-danger">*</span>
                 </label>
                 <input
@@ -324,11 +324,11 @@ export function NewExpenditureForm({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Youth Camp Expenditure Report"
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
+                  className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-medium mb-1.5">
+                <label className="block text-[13px] font-medium mb-1.5">
                   Notes <span className="text-(--muted) font-normal">(optional)</span>
                 </label>
                 <textarea
@@ -336,7 +336,7 @@ export function NewExpenditureForm({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Any additional context..."
                   rows={3}
-                  className="w-full px-3 py-2.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
+                  className="w-full px-3 py-2.5 text-[14px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
                 />
               </div>
             </CardBody>
@@ -346,14 +346,14 @@ export function NewExpenditureForm({
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Select Budget</p>
-                <p className="text-[12px] text-(--muted)">
+                <p className="text-[13px] text-(--muted)">
                   Choose an approved budget to report against
                 </p>
               </CardTitle>
             </CardHeader>
             <CardBody className="space-y-2">
               {budgets.length === 0 ? (
-                <p className="text-[13px] text-(--muted) text-center py-6">
+                <p className="text-[14px] text-(--muted) text-center py-6">
                   No approved budgets available. Create and approve a budget first.
                 </p>
               ) : (
@@ -370,8 +370,8 @@ export function NewExpenditureForm({
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium">{budget.title}</p>
-                        <p className="text-[11px] text-(--muted)">
+                        <p className="text-[14px] font-medium">{budget.title}</p>
+                        <p className="text-[12px] text-(--muted)">
                           {budget.department} · {budget.items.length} line items
                         </p>
                       </div>
@@ -390,7 +390,7 @@ export function NewExpenditureForm({
               <CardHeader>
                 <CardTitle>
                   <p className="text-[14px] font-medium">Budget Line Items</p>
-                  <p className="text-[12px] text-(--muted)">
+                  <p className="text-[13px] text-(--muted)">
                     {selectedBudget.items.length} items available for allocation
                   </p>
                 </CardTitle>
@@ -401,7 +401,7 @@ export function NewExpenditureForm({
                     {["Description", "Category", "Amount"].map((h) => (
                       <th
                         key={h}
-                        className="text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 last:text-right"
+                        className="text-left text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 last:text-right"
                       >
                         {h}
                       </th>
@@ -414,11 +414,11 @@ export function NewExpenditureForm({
                       key={item.id}
                       className="border-b border-(--border) last:border-0"
                     >
-                      <td className="px-4 py-3 text-[13px]">{item.description}</td>
-                      <td className="px-4 py-3 text-[12px] text-(--muted)">
+                      <td className="px-4 py-3 text-[14px]">{item.description}</td>
+                      <td className="px-4 py-3 text-[13px] text-(--muted)">
                         {item.category ?? "—"}
                       </td>
-                      <td className="px-4 py-3 text-[13px] font-mono text-right">
+                      <td className="px-4 py-3 text-[14px] font-mono text-right">
                         {formatCurrency(item.totalCost)}
                       </td>
                     </tr>
@@ -448,7 +448,7 @@ export function NewExpenditureForm({
             <CardHeader>
               <CardTitle>
                 <p className="text-[14px] font-medium">Upload Receipts</p>
-                <p className="text-[12px] text-(--muted)">
+                <p className="text-[13px] text-(--muted)">
                   Upload receipt images or PDFs. You can also record non-receipted expenses.
                 </p>
               </CardTitle>
@@ -456,10 +456,10 @@ export function NewExpenditureForm({
             <CardBody>
               <label className="flex flex-col items-center justify-center border-2 border-dashed border-(--border) rounded-(--r-card) py-10 px-6 cursor-pointer hover:border-(--primary) hover:bg-[var(--primary-light)] transition-all">
                 <Upload size={24} className="text-(--muted) mb-2" />
-                <span className="text-[13px] font-medium">
+                <span className="text-[14px] font-medium">
                   {uploading ? "Uploading..." : "Click to select files"}
                 </span>
-                <span className="text-[11px] text-(--muted) mt-1">
+                <span className="text-[12px] text-(--muted) mt-1">
                   PNG, JPG, PDF accepted
                 </span>
                 <input
@@ -495,10 +495,10 @@ export function NewExpenditureForm({
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium truncate">
+                        <p className="text-[14px] font-medium truncate">
                           {receipt.file.name}
                         </p>
-                        <p className="text-[11px] text-(--muted)">
+                        <p className="text-[12px] text-(--muted)">
                           {(receipt.file.size / 1024).toFixed(1)} KB
                         </p>
                       </div>
@@ -514,7 +514,7 @@ export function NewExpenditureForm({
                     {receipt.uploaded && (
                       <div className="grid grid-cols-3 gap-3 mt-3">
                         <div>
-                          <label className="block text-[11px] text-(--muted) mb-1">
+                          <label className="block text-[12px] text-(--muted) mb-1">
                             Amount (KES)
                           </label>
                           <input
@@ -525,11 +525,11 @@ export function NewExpenditureForm({
                               updateReceipt(receipt.id, "amount", Number.parseFloat(e.target.value) || 0)
                             }
                             placeholder="0"
-                            className="w-full px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) font-mono"
+                            className="w-full px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) font-mono"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] text-(--muted) mb-1">
+                          <label className="block text-[12px] text-(--muted) mb-1">
                             Vendor
                           </label>
                           <input
@@ -537,11 +537,11 @@ export function NewExpenditureForm({
                             value={receipt.vendor}
                             onChange={(e) => updateReceipt(receipt.id, "vendor", e.target.value)}
                             placeholder="Vendor name"
-                            className="w-full px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary)"
+                            className="w-full px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary)"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] text-(--muted) mb-1">
+                          <label className="block text-[12px] text-(--muted) mb-1">
                             Date
                           </label>
                           <input
@@ -550,7 +550,7 @@ export function NewExpenditureForm({
                             onChange={(e) =>
                               updateReceipt(receipt.id, "receiptDate", e.target.value)
                             }
-                            className="w-full px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary)"
+                            className="w-full px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary)"
                           />
                         </div>
                       </div>
@@ -587,7 +587,7 @@ export function NewExpenditureForm({
                       <p className="text-[14px] font-medium">
                         {receipt.file.name}
                       </p>
-                      <p className="text-[12px] text-(--muted)">
+                      <p className="text-[13px] text-(--muted)">
                         KES {receipt.amount.toLocaleString()} ·{" "}
                         {totalAlloc > 0
                           ? `Allocated ${formatCurrency(totalAlloc)}`
@@ -607,7 +607,7 @@ export function NewExpenditureForm({
                           (h) => (
                             <th
                               key={h}
-                              className="text-left text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 last:text-right"
+                              className="text-left text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] px-4 py-2.5 last:text-right"
                             >
                               {h}
                             </th>
@@ -623,13 +623,13 @@ export function NewExpenditureForm({
                             key={item.id}
                             className="border-b border-(--border) last:border-0"
                           >
-                            <td className="px-4 py-3 text-[13px]">
+                            <td className="px-4 py-3 text-[14px]">
                               {item.description}
                             </td>
-                            <td className="px-4 py-3 text-[12px] text-(--muted)">
+                            <td className="px-4 py-3 text-[13px] text-(--muted)">
                               {item.category ?? "—"}
                             </td>
-                            <td className="px-4 py-3 text-[13px] font-mono">
+                            <td className="px-4 py-3 text-[14px] font-mono">
                               {formatCurrency(item.totalCost)}
                             </td>
                             <td className="px-4 py-3 text-right">
@@ -646,7 +646,7 @@ export function NewExpenditureForm({
                                   )
                                 }
                                 placeholder="0"
-                                className="w-28 px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) font-mono text-right"
+                                className="w-28 px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-[8px] outline-none focus:border-(--primary) font-mono text-right"
                               />
                             </td>
                           </tr>
@@ -679,23 +679,23 @@ export function NewExpenditureForm({
               </CardTitle>
             </CardHeader>
             <CardBody className="space-y-3">
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Report</span>
                 <span className="font-medium">{title}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Budget</span>
                 <span className="font-medium">{selectedBudget.title}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Department</span>
                 <span className="font-medium">{selectedBudget.department}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Receipts</span>
                 <span className="font-medium">{receipts.length}</span>
               </div>
-              <div className="flex justify-between text-[13px]">
+              <div className="flex justify-between text-[14px]">
                 <span className="text-(--muted)">Total Claimed</span>
                 <span className="font-medium font-mono">
                   {formatCurrency(
@@ -717,9 +717,9 @@ export function NewExpenditureForm({
                 <div key={receipt.id} className="px-4 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-3 min-w-0">
                     <Check size={14} className="text-success shrink-0" />
-                    <span className="text-[13px] truncate">{receipt.file.name}</span>
+                    <span className="text-[14px] truncate">{receipt.file.name}</span>
                   </div>
-                  <span className="font-mono text-[13px] shrink-0">
+                  <span className="font-mono text-[14px] shrink-0">
                     {formatCurrency(receipt.amount)}
                   </span>
                 </div>

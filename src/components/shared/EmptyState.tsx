@@ -13,8 +13,8 @@ export function EmptyState({ icon, title, description, action, className }: Read
   return (
     <div className={cn("flex flex-col items-center justify-center py-16 px-8 text-center", className)}>
       {icon && <div className="text-4xl mb-4">{icon}</div>}
-      <h3 className="text-[15px] font-medium text-(--text) mb-1">{title}</h3>
-      {description && <p className="text-[13px] text-(--muted) max-w-sm">{description}</p>}
+      <h3 className="text-[16px] font-medium text-(--text) mb-1">{title}</h3>
+      {description && <p className="text-[14px] text-(--muted) max-w-sm">{description}</p>}
       {action && (
         <Button className="mt-4" onClick={action.onClick}>
           {action.label}

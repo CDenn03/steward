@@ -41,22 +41,22 @@ export function StatCard({
         className
       )}
     >
-      <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.6px] mb-2.5">
+      <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.6px] mb-2.5">
         {label}
       </p>
       <p
         className={cn(
-          "text-[22px] font-semibold tracking-tight tabular-nums leading-none",
+          "font-display text-[22px] font-semibold tracking-tight tabular-nums leading-none",
           valueClass
         )}
       >
         {value}
       </p>
-      <div className="mt-2 flex items-center gap-2 text-[12px] text-(--muted)">
+      <div className="mt-2 flex items-center gap-2 text-[13px] text-(--muted)">
         {delta !== undefined && delta !== null && (
           <span
             className={cn(
-              "text-[11px] font-medium px-1.5 py-0.5 rounded",
+              "text-[12px] font-medium px-1.5 py-0.5 rounded",
               delta > 0
                 ? "bg-success-bg text-success"
                 : delta < 0
@@ -75,7 +75,7 @@ export function StatCard({
         <div className="mt-3">
           <ProgressBar value={progress} />
           {progressLabel && (
-            <p className="text-[10px] text-(--muted) mt-1">{progressLabel}</p>
+            <p className="text-[11px] text-(--muted) mt-1">{progressLabel}</p>
           )}
         </div>
       )}

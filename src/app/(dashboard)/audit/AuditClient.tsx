@@ -39,7 +39,7 @@ export function AuditClient({
         <select
           value={selectedEntityType}
           onChange={(e) => updateFilter("entityType", e.target.value)}
-          className="px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+          className="px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
         >
           <option value="">All entities</option>
           {entityTypes.map((t) => (
@@ -50,7 +50,7 @@ export function AuditClient({
         <select
           value={selectedActorId}
           onChange={(e) => updateFilter("actorId", e.target.value)}
-          className="px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+          className="px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
         >
           <option value="">All actors</option>
           {actors.map((a) => (
@@ -61,7 +61,7 @@ export function AuditClient({
         <select
           value={selectedAction}
           onChange={(e) => updateFilter("action", e.target.value)}
-          className="px-2.5 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
+          className="px-2.5 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) transition-colors"
         >
           <option value="">All actions</option>
           {actions.map((a) => (
@@ -72,7 +72,7 @@ export function AuditClient({
         {(selectedEntityType || selectedActorId || selectedAction) && (
           <button
             onClick={() => router.push("/audit")}
-            className="text-[11px] text-(--muted) hover:text-(--text) underline-offset-2 hover:underline transition-colors ml-auto"
+            className="text-[12px] text-(--muted) hover:text-(--text) underline-offset-2 hover:underline transition-colors ml-auto"
           >
             Clear filters
           </button>

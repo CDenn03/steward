@@ -154,14 +154,14 @@ export function BudgetActions({
                 <p className="text-[14px] font-semibold">
                   {confirmDecision === "approved" ? "Approve Budget" : "Reject Budget"}
                 </p>
-                <p className="text-[12px] text-(--muted) mt-0.5">
+                <p className="text-[13px] text-(--muted) mt-0.5">
                   {confirmDecision === "approved"
                     ? "This will mark the budget as approved."
                     : "This will reject the budget."}
                 </p>
               </div>
               <div>
-                <label className="block text-[12px] font-medium mb-1.5">
+                <label className="block text-[13px] font-medium mb-1.5">
                   Comment <span className="text-(--muted) font-normal">(optional)</span>
                 </label>
                 <textarea
@@ -169,7 +169,7 @@ export function BudgetActions({
                   onChange={(e) => setConfirmComment(e.target.value)}
                   placeholder="Add a comment..."
                   rows={3}
-                  className="w-full bg-(--surface) border border-(--border) rounded-(--r-input) px-3 py-2 text-[13px] outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
+                  className="w-full bg-(--surface) border border-(--border) rounded-(--r-input) px-3 py-2 text-[14px] outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted) transition-colors resize-none"
                 />
               </div>
               <div className="flex justify-end gap-2">
@@ -200,7 +200,7 @@ export function BudgetActions({
               placeholder="Reason for requesting changes…"
               value={rejectComment}
               onChange={(e) => setRejectComment(e.target.value)}
-              className="flex-1 px-3 py-1.5 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted)"
+              className="flex-1 px-3 py-1.5 text-[13px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text) placeholder:text-(--muted)"
             />
             <Button variant="ghost" size="sm" disabled={pending} onClick={() => setShowRejectForm(false)}>Cancel</Button>
             <Button variant="danger" size="sm" disabled={pending} onClick={() => handleReview("needs_changes", rejectComment)}>
@@ -208,7 +208,7 @@ export function BudgetActions({
             </Button>
           </div>
         )}
-        {error && <p className="text-[12px] text-danger w-full">{error}</p>}
+        {error && <p className="text-[13px] text-danger w-full">{error}</p>}
       </div>
     );
   }
@@ -218,23 +218,23 @@ export function BudgetActions({
       <CardHeader>
         <CardTitle>
           <p className="text-[14px] font-medium">Comments</p>
-          <p className="text-[12px] text-(--muted)">{displayComments.length} comments</p>
+          <p className="text-[13px] text-(--muted)">{displayComments.length} comments</p>
         </CardTitle>
       </CardHeader>
       <CardBody className="space-y-4">
         {displayComments.map((c) => (
           <div key={c.id} className="flex gap-3">
-            <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0 mt-0.5">
+            <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[12px] font-semibold text-(--primary) shrink-0 mt-0.5">
               {getInitials(c.authorId)}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 {c.id.startsWith("optimistic-") && (
-                  <span className="text-[10px] text-(--muted) italic">Sending…</span>
+                  <span className="text-[11px] text-(--muted) italic">Sending…</span>
                 )}
-                <span className="text-[11px] text-(--muted) ml-auto">{formatRelative(c.createdAt)}</span>
+                <span className="text-[12px] text-(--muted) ml-auto">{formatRelative(c.createdAt)}</span>
               </div>
-              <p className="text-[13px] text-(--text) leading-relaxed bg-(--bg) border border-(--border) rounded-[10px] px-3.5 py-2.5">
+              <p className="text-[14px] text-(--text) leading-relaxed bg-(--bg) border border-(--border) rounded-[10px] px-3.5 py-2.5">
                 {c.body}
               </p>
             </div>
@@ -242,7 +242,7 @@ export function BudgetActions({
         ))}
 
         <div className="flex gap-3 pt-2">
-          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[11px] font-semibold text-(--primary) shrink-0 mt-0.5">
+          <div className="w-7 h-7 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[12px] font-semibold text-(--primary) shrink-0 mt-0.5">
             {currentUserInitials}
           </div>
           <div className="flex-1">
@@ -251,16 +251,16 @@ export function BudgetActions({
               rows={3}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full bg-(--surface) border border-(--border) rounded-[10px] px-3.5 py-2.5 text-[13px] text-(--text) placeholder:text-(--muted) outline-none focus:border-(--primary) transition-colors resize-none"
+              className="w-full bg-(--surface) border border-(--border) rounded-[10px] px-3.5 py-2.5 text-[14px] text-(--text) placeholder:text-(--muted) outline-none focus:border-(--primary) transition-colors resize-none"
             />
-            {error && <p className="text-[12px] text-danger mt-1">{error}</p>}
+            {error && <p className="text-[13px] text-danger mt-1">{error}</p>}
             <div className="flex justify-end mt-2">
               <Button size="sm" disabled={pending || !comment.trim() || !approvalId} onClick={handleComment}>
                 <MessageSquare size={12} /> Post Comment
               </Button>
             </div>
             {!approvalId && (
-              <p className="text-[11px] text-(--muted) mt-1">Comments require an active approval record.</p>
+              <p className="text-[12px] text-(--muted) mt-1">Comments require an active approval record.</p>
             )}
           </div>
         </div>

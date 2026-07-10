@@ -38,18 +38,18 @@ export function StatCard({ icon: Icon, label, value, trend, ring, className }: S
             <Icon size={16} className="text-(--primary)" />
           </div>
 
-          <p className="text-[11px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-1">
+          <p className="text-[12px] font-medium text-(--muted) uppercase tracking-[0.5px] mb-1">
             {label}
           </p>
 
-          <p className="text-[22px] md:text-[24px] font-semibold text-(--text) tracking-tight leading-tight">
+          <p className="font-display text-[22px] md:text-[24px] font-semibold text-(--text) tracking-tight leading-tight">
             {value}
           </p>
 
           {trend && (
             <span
               className={cn(
-                "inline-flex items-center gap-1 mt-2 px-1.5 py-0.5 rounded-full text-[10px] font-medium",
+                "inline-flex items-center gap-1 mt-2 px-1.5 py-0.5 rounded-full text-[11px] font-medium",
                 trend.direction === "up"
                   ? "text-(--success) bg-(--success-bg)"
                   : "text-(--danger) bg-(--danger-bg)"
@@ -98,7 +98,7 @@ function ProgressRingViz({ current, total, centerLabel }: ProgressRing) {
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-[11px] font-semibold text-(--text) leading-none">
+        <span className="text-[12px] font-semibold text-(--text) leading-none">
           {centerLabel ?? `${current}/${total}`}
         </span>
       </div>

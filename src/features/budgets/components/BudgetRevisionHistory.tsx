@@ -16,7 +16,7 @@ export function BudgetRevisionHistory({ revisions }: Readonly<{ revisions: Revis
 
   if (revisions.length === 0) {
     return (
-      <div className="px-4 py-8 text-center text-[13px] text-(--muted)">
+      <div className="px-4 py-8 text-center text-[14px] text-(--muted)">
         <History size={20} className="mx-auto mb-2 opacity-50" />
         No revision history available
       </div>
@@ -35,13 +35,13 @@ export function BudgetRevisionHistory({ revisions }: Readonly<{ revisions: Revis
             >
               {isExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium truncate">{rev.reason}</p>
-                <p className="text-[11px] text-(--muted)">{formatRelative(rev.createdAt)}</p>
+                <p className="text-[14px] font-medium truncate">{rev.reason}</p>
+                <p className="text-[12px] text-(--muted)">{formatRelative(rev.createdAt)}</p>
               </div>
             </button>
             {isExpanded && rev.snapshot && (
               <div className="mt-3 ml-5 bg-(--bg) border border-(--border) rounded-[10px] p-3">
-                <pre className="text-[11px] font-mono text-(--muted) whitespace-pre-wrap overflow-x-auto max-h-60">
+                <pre className="text-[12px] font-mono text-(--muted) whitespace-pre-wrap overflow-x-auto max-h-60">
                   {JSON.stringify(rev.snapshot, null, 2)}
                 </pre>
               </div>

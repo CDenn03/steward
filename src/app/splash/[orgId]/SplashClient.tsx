@@ -52,7 +52,7 @@ export function SplashClient({ orgName, orgColor, orgInitials, userName, role, r
             <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z"/>
             <polyline points="9 12 11 14 15 10"/>
           </svg>
-          <span className="text-white text-[13px] font-medium tracking-[0.5px] uppercase opacity-80">Steward</span>
+          <span className="text-white text-[14px] font-medium tracking-[0.5px] uppercase opacity-80">Steward</span>
         </div>
 
         <div className={`w-24 h-24 rounded-[24px] bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-[32px] tracking-tight shadow-2xl ring-4 ring-white/20 transition-all duration-500 ${phase === "loading" ? "scale-90 opacity-80" : "scale-100 opacity-100"}`}>
@@ -77,7 +77,7 @@ export function SplashClient({ orgName, orgColor, orgInitials, userName, role, r
           />
         </div>
 
-        <p className={`text-white/50 text-[12px] transition-all duration-300 ${phase === "ready" ? "opacity-100" : "opacity-0"}`}>
+        <p className={`text-white/50 text-[13px] transition-all duration-300 ${phase === "ready" ? "opacity-100" : "opacity-0"}`}>
           Loading your workspace…
         </p>
       </div>

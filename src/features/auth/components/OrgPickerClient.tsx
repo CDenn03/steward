@@ -60,13 +60,13 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
         </div>
         <div>
           <p className="text-[18px] font-semibold tracking-tight">Steward</p>
-          <p className="text-[10px] text-(--muted) uppercase tracking-[0.5px]">Financial Governance</p>
+          <p className="text-[11px] text-(--muted) uppercase tracking-[0.5px]">Financial Governance</p>
         </div>
       </div>
 
       <div className="mb-6 text-center">
         <h1 className="text-[22px] font-semibold tracking-tight mb-1">Choose an organisation</h1>
-        <p className="text-[13px] text-(--muted)">
+        <p className="text-[14px] text-(--muted)">
           You are a member of {memberships.length} organisation{memberships.length !== 1 ? "s" : ""}. Select one to continue.
         </p>
       </div>
@@ -90,23 +90,23 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
             >
               <div className="flex items-center gap-3.5">
                 <div
-                  className="w-11 h-11 rounded-[10px] flex items-center justify-center text-white font-semibold text-[15px] shrink-0"
+                  className="w-11 h-11 rounded-[10px] flex items-center justify-center text-white font-semibold text-[16px] shrink-0"
                   style={{ background: m.orgColor }}
                 >
                   {m.orgInitials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold truncate mb-0.5">{m.orgName}</p>
-                  <p className="text-[12px] text-(--muted)">{m.orgDescription}</p>
+                  <p className="text-[13px] text-(--muted)">{m.orgDescription}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
                     <span
-                      className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium"
+                      className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] font-medium"
                       style={{ background: m.orgColor + "18", color: m.orgColor }}
                     >
                       {roleLabels[m.role] ?? m.role}
                     </span>
                     {m.departmentName && (
-                      <span className="text-[11px] text-(--muted)">· {m.departmentName}</span>
+                      <span className="text-[12px] text-(--muted)">· {m.departmentName}</span>
                     )}
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export function OrgPickerClient({ memberships }: Readonly<{ memberships: Members
       </div>
 
       <button
-        className="w-full mt-6 flex items-center justify-center gap-2 text-[12px] text-(--muted) hover:text-(--text) transition-colors py-2"
+        className="w-full mt-6 flex items-center justify-center gap-2 text-[13px] text-(--muted) hover:text-(--text) transition-colors py-2"
         onClick={() => signOut({ callbackUrl: "/login" })}
       >
         <LogOut size={13} />

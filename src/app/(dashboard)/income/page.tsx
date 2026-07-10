@@ -86,14 +86,14 @@ export default async function IncomePage() {
               <div key={row.cat} className="px-5 py-3.5 flex items-center gap-3">
                 <div className="flex-1">
                   <div className="flex justify-between mb-1.5">
-                    <span className="text-[13px] font-medium">{row.cat}</span>
+                    <span className="text-[14px] font-medium">{row.cat}</span>
                     <span className="font-mono text-[12.5px]">{formatCurrency(row.amount)}</span>
                   </div>
                   <div className="h-1.5 bg-(--border) rounded-full overflow-hidden">
                     <div className="h-full bg-(--primary) rounded-full" style={{ width: `${row.pct}%` }} />
                   </div>
                 </div>
-                <span className="text-[11px] text-(--muted) w-8 text-right">{row.pct}%</span>
+                <span className="text-[12px] text-(--muted) w-8 text-right">{row.pct}%</span>
               </div>
             ))}
           </div>

@@ -40,7 +40,7 @@ export function UserActions({
             await removeMembershipAction(membershipId);
             router.refresh();
           }}
-          className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-danger hover:bg-danger-bg transition-colors"
+          className="w-6 h-6 flex items-center justify-center rounded-md text-(--muted) hover:text-(--danger) hover:bg-(--danger-bg) transition-colors"
           title="Remove from org"
         >
           <Trash2 size={11} />
@@ -54,7 +54,7 @@ export function UserActions({
       <select
         value={role}
         onChange={(e) => setRole(e.target.value)}
-        className="px-2 py-1 text-[11px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text)"
+        className="px-2 py-1 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text)"
       >
         {roleOptions.map((r) => (
           <option key={r} value={r}>{r.replace("_", " ")}</option>
@@ -64,7 +64,7 @@ export function UserActions({
         <select
           value={departmentId}
           onChange={(e) => setDepartmentId(e.target.value)}
-          className="px-2 py-1 text-[11px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text)"
+          className="px-2 py-1 text-[12px] bg-(--surface) border border-(--border) rounded-(--r-input) outline-none focus:border-(--primary) text-(--text)"
         >
           <option value="">No dept</option>
           {departments.map((d) => (

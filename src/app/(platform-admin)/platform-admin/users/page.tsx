@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma/client";
 import { getUsersWithMemberships } from "@/features/admin/repositories";
 import { PageHeader } from '@/components/shared/PageHeader';
-import { PlatformUsersTable } from '@/features/admin/components/PlatformUsersTable';
+import { PlatformUsersTable } from '@/features/admin/components/users/PlatformUsersTable';
 
 function computeOrgMeta(org: { id: string; name: string; slug: string }) {
   const initials = org.name
@@ -10,7 +10,7 @@ function computeOrgMeta(org: { id: string; name: string; slug: string }) {
     .join("")
     .slice(0, 2)
     .toUpperCase();
-  return { ...org, primaryColor: "#1F4B99", logoInitials: initials };
+  return { ...org, primaryColor: "#4B6650", logoInitials: initials };
 }
 
 export default async function PlatformUsersPage(props: { searchParams?: Promise<Record<string, string>> }) {

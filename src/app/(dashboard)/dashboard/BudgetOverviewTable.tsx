@@ -23,7 +23,7 @@ const columns = [
     cell: (info) => (
       <div>
         <p className="font-medium">{info.getValue()}</p>
-        <p className="text-[11px] text-(--muted)">{info.row.original.department?.name ?? "General"}</p>
+        <p className="text-[12px] text-(--muted)">{info.row.original.department?.name ?? "General"}</p>
       </div>
     ),
   }),
@@ -36,11 +36,11 @@ const columns = [
     header: "Utilisation",
     cell: (info) => {
       const { spentAmount, totalAmount } = info.row.original;
-      if (!spentAmount) return <span className="text-(--muted) text-[12px]">-</span>;
+      if (!spentAmount) return <span className="text-(--muted) text-[13px]">-</span>;
       const value = pct(spentAmount, totalAmount);
       return (
         <div className="w-24">
-          <span className="text-[12px] text-(--muted)">{value}%</span>
+          <span className="text-[13px] text-(--muted)">{value}%</span>
           <ProgressBar value={value} className="mt-1" />
         </div>
       );

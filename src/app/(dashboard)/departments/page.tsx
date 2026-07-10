@@ -52,14 +52,14 @@ export default async function DepartmentsPage() {
                 <div className="w-10 h-10 rounded-[10px] bg-[var(--primary-light)] flex items-center justify-center text-(--primary) mb-3">
                   <Building2 size={18} />
                 </div>
-                <h3 className="text-[15px] font-medium mb-1">{dept.name}</h3>
-                <p className="text-[12px] text-(--muted) mb-4">{dept.budgets.length} active budget{dept.budgets.length !== 1 ? "s" : ""}</p>
+                <h3 className="text-[16px] font-medium mb-1">{dept.name}</h3>
+                <p className="text-[13px] text-(--muted) mb-4">{dept.budgets.length} active budget{dept.budgets.length !== 1 ? "s" : ""}</p>
                 <div className="space-y-2">
-                  <div className="flex justify-between text-[12px]">
+                  <div className="flex justify-between text-[13px]">
                     <span className="text-(--muted)">Allocated</span>
                     <span className="font-mono">{formatCurrency(totalAllocated, session.organization.currency, true)}</span>
                   </div>
-                  <div className="flex justify-between text-[12px]">
+                  <div className="flex justify-between text-[13px]">
                     <span className="text-(--muted)">Spent</span>
                     <span className="font-mono">{totalSpent > 0 ? formatCurrency(totalSpent, session.organization.currency, true) : "-"}</span>
                   </div>
@@ -67,7 +67,7 @@ export default async function DepartmentsPage() {
                 {totalAllocated > 0 && (
                   <div className="mt-3">
                     <ProgressBar value={utilPct} />
-                    <p className="text-[10px] text-(--muted) mt-1">{utilPct}% utilised</p>
+                    <p className="text-[11px] text-(--muted) mt-1">{utilPct}% utilised</p>
                   </div>
                 )}
               </CardBody>

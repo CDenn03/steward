@@ -25,7 +25,7 @@ export function BudgetStatusFlow({ status, className }: Readonly<BudgetStatusFlo
   const current = getStepIndex(status);
   if (status === "rejected") {
     return (
-      <div className="flex items-center gap-2 text-danger text-[12px]">
+      <div className="flex items-center gap-2 text-danger text-[13px]">
         <span className="w-2 h-2 rounded-full bg-danger" /> {" "}
         Budget has been rejected
       </div>
@@ -42,7 +42,7 @@ export function BudgetStatusFlow({ status, className }: Readonly<BudgetStatusFlo
             <div className="flex flex-col items-center gap-1">
               <div
                 className={cn(
-                  "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-semibold transition-colors",
+                  "w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold transition-colors",
                   done && "bg-success text-white",
                   active && "bg-(--primary) text-white ring-4 ring-[var(--primary-light)]",
                   !done && !active && "bg-(--border) text-(--muted)"
@@ -50,7 +50,7 @@ export function BudgetStatusFlow({ status, className }: Readonly<BudgetStatusFlo
               >
                 {done ? "✓" : i + 1}
               </div>
-              <span className={cn("text-[10px] font-medium whitespace-nowrap",
+              <span className={cn("text-[11px] font-medium whitespace-nowrap",
                 active ? "text-(--primary)" : done ? "text-success" : "text-(--muted)"
               )}>
                 {step.label}
