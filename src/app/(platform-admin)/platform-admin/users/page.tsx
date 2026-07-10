@@ -13,7 +13,7 @@ function computeOrgMeta(org: { id: string; name: string; slug: string }) {
   return { ...org, primaryColor: "#4B6650", logoInitials: initials };
 }
 
-export default async function PlatformUsersPage(props: { searchParams?: Promise<Record<string, string>> }) {
+export default async function PlatformUsersPage(props: Readonly<{ searchParams?: Promise<Record<string, string>> }>) {
   const searchParams = (await props.searchParams) ?? {};
 
   const search = searchParams.search ?? "";

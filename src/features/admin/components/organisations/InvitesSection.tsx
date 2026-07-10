@@ -70,7 +70,7 @@ export function InvitesSection({ invites }: InvitesSectionProps) {
         <p className="text-[13px] font-semibold text-(--text) uppercase tracking-wider">Pending invites</p>
       </div>
 
-      <div className="bg-white border border-(--border) rounded-2xl overflow-hidden">
+      <div className="bg-(--surface) border border-(--border) rounded-2xl overflow-hidden">
         <DataTable
           columns={columns}
           data={invites}

@@ -202,7 +202,7 @@ export function PlatformUsersTable({
   return (
     <div className="bg-(--surface) border border-(--border) rounded-(--r-card) shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 p-5 border-b border-(--border) flex-wrap">
-        <div className="relative flex-1 min-w-[200px] sm:flex-none sm:w-64">
+        <div className="relative flex-1 min-w-50 sm:flex-none sm:w-64">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-(--muted)" />
           <input
             type="text"

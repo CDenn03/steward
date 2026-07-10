@@ -6,7 +6,7 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   flexRender,
-  createColumnHelper,
+  
   type ColumnDef,
   type SortingState,
   type PaginationState,
@@ -16,7 +16,7 @@ import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-export { createColumnHelper };
+
 export type { ColumnDef };
 
 interface DataTableProps<TData extends Record<string, unknown>> {
@@ -255,3 +255,5 @@ export function DataTable<TData extends Record<string, unknown>>({
     </div>
   );
 }
+
+export {createColumnHelper} from "@tanstack/react-table";

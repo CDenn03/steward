@@ -48,11 +48,11 @@ interface MembersSectionProps {
 const helper = createColumnHelper<Member>();
 
 const roleBadgeClass: Record<string, string> = {
-  admin:           "bg-ink text-white",
-  chairperson:     "bg-ink text-white",
-  department_head: "bg-[#F1EAE0] text-[#A6672E]",
-  finance:         "bg-linen text-[#4B6650]",
-  member:          "bg-linen text-[#4B6650]",
+  admin:           "bg-(--text) text-(--surface)",
+  chairperson:     "bg-(--text) text-(--surface)",
+  department_head: "bg-[#F1EAE0] text-[#A6672E] dark:bg-[#3a2a1a] dark:text-[#d4924e]",
+  finance:         "bg-(--bg) text-[#4B6650] dark:text-[#7aad87]",
+  member:          "bg-(--bg) text-[#4B6650] dark:text-[#7aad87]",
 };
 
 const roleLabels: Record<string, string> = {
@@ -90,7 +90,7 @@ function PillTabs({ value, onChange, tabs }: Readonly<PillTabsProps>) {
           className={cn(
             "px-4 py-1.75 text-[13px] font-medium rounded-lg transition-colors cursor-pointer",
             value === t.value
-              ? "bg-white text-(--text) shadow-sm"
+              ? "bg-(--surface) text-(--text) shadow-sm"
               : "text-(--muted) hover:text-(--text)"
           )}
         >
@@ -221,7 +221,7 @@ export function MembersSection({
         </Button>
       </div>
 
-      <div className="bg-white border border-(--border) rounded-2xl overflow-hidden">
+      <div className="border border-(--border) rounded-2xl overflow-hidden">
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-(--border)">
           <PillTabs
             value={currentTab}
