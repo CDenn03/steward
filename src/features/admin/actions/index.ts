@@ -6,6 +6,7 @@ import { requirePlatformAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma/client";
 import { getSignedUploadUrl } from "@/lib/storage/r2";
 import { validateFileMeta } from "@/lib/storage/validation";
+import { sendPlatformUserWelcomeEmail } from "@/lib/email/resend";
 import {
   UpdateMembershipSchema,
   UpdateUserSchema,
@@ -18,6 +19,7 @@ import {
   CreatePlatformUserSchema,
 } from "../schemas";
 import bcrypt from "bcryptjs";
+import crypto from "crypto"
 
 export type CreateOrganizationResult =
   | { success: true }
@@ -202,23 +204,47 @@ export async function createPlatformUserAction(formData: unknown) {
         error: "A user with this email already exists",
       };
     }
+    const temporaryPassword = `Pass@${crypto.randomInt(100000, 999999)}`;
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
 
-    const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
+    const organization = await prisma.organization.findUnique({
+      where: {
+        id: parsed.data.organizationId,
+      },
+    });
+
+    if (!organization) {
+      return {
+        error: "Organization not found",
+      };
+    }
     const user = await prisma.user.create({
-  data: {
-    name: parsed.data.name,
-    email: parsed.data.email,
-    password: hashedPassword,
-  },
-});
+      data: {
+        name: parsed.data.name,
+        email: parsed.data.email,
+        password: hashedPassword,
+      },
+    });
 
-await prisma.membership.create({
-  data: {
-    userId: user.id,
-    organizationId: parsed.data.organizationId,
-    role: parsed.data.role,
-  },
-});
+    await prisma.membership.create({
+      data: {
+        userId: user.id,
+        organizationId: parsed.data.organizationId,
+        role: parsed.data.role,
+      },
+    });
+try {
+  await sendPlatformUserWelcomeEmail({
+    to: user.email,
+    name: user.name,
+    organizationName: organization!.name,
+    temporaryPassword,
+    loginUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+  });
+} catch (error) {
+  console.error("Failed to send welcome email:", error);
+}
+
     revalidatePath("/platform-admin/users");
 
     return {

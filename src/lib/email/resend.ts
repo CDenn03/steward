@@ -89,3 +89,43 @@ export async function sendInviteEmail(opts: {
     `,
   });
 }
+
+export async function sendPlatformUserWelcomeEmail(opts: {
+  to: string;
+  name: string;
+  organizationName: string;
+  temporaryPassword: string;
+  loginUrl: string;
+}) {
+  await sendEmail({
+    to: opts.to,
+    subject: "Your Steward account has been created",
+    html: `
+      <p>Hi ${opts.name},</p>
+
+      <p>Your Steward account has been created successfully.</p>
+
+      <p>You have been added to <strong>${opts.organizationName}</strong>.</p>
+
+      <p>Your login details are:</p>
+
+      <ul>
+        <li><strong>Email:</strong> ${opts.to}</li>
+        <li><strong>Temporary Password:</strong> ${opts.temporaryPassword}</li>
+      </ul>
+
+      <p>
+        You can sign in here:
+        <a href="${opts.loginUrl}">${opts.loginUrl}</a>
+      </p>
+
+    
+
+      <p>Welcome to Steward!</p>
+
+      <p>— Steward Team</p>
+    `,
+  });
+}
+
+

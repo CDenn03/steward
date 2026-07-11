@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogBody
 } from "@/components/ui/Dialog";
 
 import { Input } from "@/components/ui/Input";
@@ -47,8 +48,6 @@ export function CreatePlatformUserModal({
     defaultValues: {
       name: "",
       email: "",
-      password: "",
-      confirmPassword: "",
       organizationId: "",
       role: "MEMBER",
     },
@@ -82,11 +81,12 @@ export function CreatePlatformUserModal({
     }
   }
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] p-8">
         <DialogHeader>
           <DialogTitle>Create Platform User</DialogTitle>
         </DialogHeader>
+        <DialogBody>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div>
@@ -112,7 +112,7 @@ export function CreatePlatformUserModal({
             )}
           </div>
           {/* Password */}
-          <div>
+          {/* <div>
             <Input
               type="password"
               placeholder="Password"
@@ -124,10 +124,10 @@ export function CreatePlatformUserModal({
                 {form.formState.errors.password.message}
               </p>
             )}
-          </div>
+          </div> */}
 
           {/* Confirm Password */}
-          <div>
+          {/* <div>
             <Input
               type="password"
               placeholder="Confirm password"
@@ -138,7 +138,7 @@ export function CreatePlatformUserModal({
                 {form.formState.errors.confirmPassword.message}
               </p>
             )}
-          </div>
+          </div> */}
           {/* Organization */}
           <div>
             <Controller
@@ -200,6 +200,7 @@ export function CreatePlatformUserModal({
             {form.formState.isSubmitting ? "Creating..." : "Create User"}
           </Button>
         </form>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );
