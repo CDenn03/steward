@@ -145,15 +145,15 @@ function DepartmentCard({ department: d, onEdit, onToggleActive, onDelete }: Rea
   const isUnstaffed = d.isActive && !d.head;
   const badgeLabel = !d.isActive ? "Archived" : isUnstaffed ? "Unstaffed" : "Active";
   const badgeClass = !d.isActive
-    ? "bg-linen text-(--muted)"
+    ? "bg-(--bg) text-(--muted)"
     : isUnstaffed
-    ? "bg-[#F1EAE0] text-[#A6672E]"
-    : "bg-linen text-[#4B6650]";
+    ? "bg-[#F1EAE0] text-[#A6672E] dark:bg-[#3a2a1a] dark:text-[#d4924e]"
+    : "bg-(--bg) text-[#4B6650] dark:text-[#7aad87]";
 
   return (
-    <div className="bg-white border border-(--border) rounded-2xl px-5 py-4.5">
+    <div className="bg-(--surface) border border-(--border) rounded-2xl px-5 py-4.5">
       <div className="flex justify-between items-start mb-2.5">
-        <p className="font-semibold text-[15px] text-ink">{d.name}</p>
+        <p className="font-semibold text-[15px] text-(--text)">{d.name}</p>
         <span
           className={`${badgeClass} text-[11px] font-medium px-2.5 py-0.75 rounded-full whitespace-nowrap`}
         >
@@ -164,12 +164,12 @@ function DepartmentCard({ department: d, onEdit, onToggleActive, onDelete }: Rea
       {d.description ? (
         <p className="text-[13px] text-(--muted) italic mb-3">{d.description}</p>
       ) : (
-        <p className="text-[13px] text-[#B3B0A5] italic mb-3">No description added</p>
+        <p className="text-[13px] text-(--muted) italic mb-3">No description added</p>
       )}
 
       <p className="text-[13px] text-(--muted) pb-3.5 mb-3.5 border-b border-(--border)">
         Head:{" "}
-        <span className="font-medium text-ink">{d.head?.name ?? "Not assigned"}</span>
+        <span className="font-medium text-(--text)">{d.head?.name ?? "Not assigned"}</span>
         {" · "}
         {d.memberCount} member{d.memberCount !== 1 ? "s" : ""}
       </p>
